@@ -80,7 +80,7 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-dist
+# MultiMIDI commits dist/ as the generated static website bundle.
 .output
 
 # Gatsby files

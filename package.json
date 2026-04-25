@@ -1,0 +1,17 @@
+{
+  "name": "multimidi",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Runtime-free Web MIDI patch editor generated from instrument YAML.",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "serve": "node scripts/build.mjs && node scripts/dev-server.mjs",
+    "test": "npm run build && node scripts/smoke-test.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}

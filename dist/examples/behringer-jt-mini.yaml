@@ -1,0 +1,109 @@
+name: Behringer JT Mini
+theme:
+  name: JT Mini
+  colors:
+    background: "#101112"
+    panel: "#1a1c1d"
+    panelAlt: "#222627"
+    text: "#f4f1e8"
+    muted: "#aeb4ad"
+    primary: "#17c9b2"
+    accent: "#f0bc4d"
+    danger: "#ff6b6b"
+sections:
+  - name: Performance
+    controls:
+      - cc: 1
+        label: Modulation
+        description: Modulation amount.
+        type: vertical-slider
+      - cc: 40
+        label: Voice Mode
+        description: Selects poly, unison, and arpeggiator voice modes.
+        type: switch
+        positions:
+          - label: Poly
+            value: 6
+          - label: Unison
+            value: 20
+          - label: Arp up
+            value: 40
+          - label: Arp down
+            value: 70
+          - label: Arp up and down
+            value: 100
+          - label: Random
+            value: 120
+      - cc: 41
+        label: Octave
+        description: Oscillator octave range.
+        type: switch
+        positions:
+          - label: 32'
+            value: 10
+          - label: 16'
+            value: 32
+          - label: 8'
+            value: 54
+          - label: 4'
+            value: 76
+          - label: 2'
+            value: 98
+          - label: 1'
+            value: 118
+  - name: VCO
+    controls:
+      - cc: 36
+        label: VCO PWM Modulation
+        description: Pulse width modulation depth.
+        type: horizontal-slider
+      - cc: 42
+        label: VCO Detune
+        description: Detunes the oscillator.
+        type: horizontal-slider
+      - cc: 47
+        label: VCO Pitch Modulation
+        description: Pitch modulation amount.
+        type: horizontal-slider
+  - name: LFO
+    controls:
+      - cc: 37
+        label: LFO Delay Time
+        description: Delay before LFO modulation fades in.
+        type: horizontal-slider
+      - cc: 46
+        label: LFO Rate
+        description: LFO speed.
+        type: horizontal-slider
+      - cc: 48
+        label: VCF LFO Modulation
+        description: LFO depth routed to the filter.
+        type: horizontal-slider
+  - name: VCF
+    controls:
+      - cc: 44
+        label: VCF Cutoff
+        description: Filter cutoff frequency.
+        type: vertical-slider
+      - cc: 45
+        label: VCF Envelope Modulation
+        description: Envelope depth routed to the filter.
+        type: horizontal-slider
+  - name: Envelope
+    controls:
+      - cc: 39
+        label: Envelope Release
+        description: Envelope release time.
+        type: horizontal-slider
+      - cc: 49
+        label: Envelope Attack Time
+        description: Envelope attack time.
+        type: horizontal-slider
+      - cc: 50
+        label: Envelope Decay Time
+        description: Envelope decay time.
+        type: horizontal-slider
+      - cc: 51
+        label: Envelope Sustain Level
+        description: Envelope sustain level.
+        type: horizontal-slider
