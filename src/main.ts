@@ -293,9 +293,7 @@ function renderControl(control) {
   label.textContent = control.label;
   title.append(label);
   if (control.description) {
-    const description = document.createElement("span");
-    description.textContent = control.description;
-    title.append(description);
+    label.title = control.description;
   }
 
   const badge = document.createElement("div");
