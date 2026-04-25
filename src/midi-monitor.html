@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MultiMIDI Input Monitor</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <div class="app-shell monitor-shell">
+      <header class="app-header">
+        <div>
+          <p class="eyebrow">MultiMIDI</p>
+          <h1>MIDI Input Monitor</h1>
+        </div>
+        <div class="midi-pill" id="monitor-status" role="status">MIDI not connected</div>
+      </header>
+
+      <main class="monitor-workspace" aria-label="MIDI input monitor">
+        <section class="monitor-setup" aria-label="MIDI input setup">
+          <div class="panel-block">
+            <h2>Input</h2>
+            <label class="field-label" for="midi-input">MIDI input</label>
+            <select id="midi-input" aria-label="MIDI input"></select>
+            <label class="checkbox-row" for="include-sysex">
+              <input id="include-sysex" type="checkbox">
+              <span>Include SysEx messages</span>
+            </label>
+            <button class="primary-action" id="connect-midi-input" type="button">
+              <span class="button-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img">
+                  <path d="M12 5v14M5 12h14"></path>
+                </svg>
+              </span>
+              Connect input
+            </button>
+          </div>
+
+          <div class="panel-block">
+            <h2>Last Event</h2>
+            <dl class="event-summary">
+              <div>
+                <dt>Type</dt>
+                <dd id="last-type">-</dd>
+              </div>
+              <div>
+                <dt>Channel</dt>
+                <dd id="last-channel">-</dd>
+              </div>
+              <div>
+                <dt>Data</dt>
+                <dd id="last-data">-</dd>
+              </div>
+              <div>
+                <dt>Raw</dt>
+                <dd id="last-raw">-</dd>
+              </div>
+            </dl>
+          </div>
+        </section>
+
+        <section class="monitor-panel" aria-label="Incoming MIDI events">
+          <div class="toolbar">
+            <div>
+              <p class="eyebrow">Incoming only</p>
+              <h2 id="event-count">0 events received</h2>
+            </div>
+            <button class="ghost-action" id="clear-events" type="button">Clear</button>
+          </div>
+
+          <div class="monitor-grid">
+            <section class="monitor-card">
+              <h3>Event Log</h3>
+              <div class="midi-event-log" id="incoming-events" aria-live="polite"></div>
+            </section>
+
+            <section class="monitor-card">
+              <h3>Latest CC Values</h3>
+              <div class="cc-value-table" id="cc-values"></div>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="./midi-monitor.js" defer></script>
+  </body>
+</html>

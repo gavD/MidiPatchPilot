@@ -293,6 +293,15 @@ input[type="number"] {
   padding: 10px 12px;
 }
 
+.ghost-action {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-weight: 800;
+  min-height: 38px;
+  padding: 0 14px;
+}
+
 .toolbar {
   background: color-mix(in srgb, var(--panel-alt) 78%, black);
   border-bottom: 1px solid var(--border);
@@ -457,8 +466,160 @@ input[type="range"] {
   padding: 24px;
 }
 
+.empty-state.compact {
+  min-height: 90px;
+  padding: 16px;
+}
+
+.monitor-shell .app-header {
+  max-width: 1280px;
+}
+
+.monitor-workspace {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(300px, 360px) minmax(0, 1fr);
+  margin: 0 auto;
+  max-width: 1280px;
+}
+
+.monitor-setup,
+.monitor-panel,
+.monitor-card {
+  background: color-mix(in srgb, var(--panel) 92%, black);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.monitor-setup {
+  align-self: start;
+}
+
+.monitor-panel {
+  min-height: calc(100vh - 132px);
+  overflow: hidden;
+}
+
+.monitor-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+  padding: 18px;
+}
+
+.monitor-card {
+  box-shadow: none;
+  min-width: 0;
+}
+
+.monitor-card h3 {
+  background: color-mix(in srgb, var(--panel-alt) 80%, black);
+  border-bottom: 1px solid var(--border);
+  color: var(--accent);
+  font-size: 0.9rem;
+  margin: 0;
+  padding: 12px 14px;
+  text-transform: uppercase;
+}
+
+.event-summary {
+  display: grid;
+  gap: 10px;
+  margin: 14px 0 0;
+}
+
+.event-summary div {
+  background: var(--panel-alt);
+  border: 1px solid var(--border);
+  padding: 10px;
+}
+
+.event-summary dt {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 850;
+  margin: 0 0 4px;
+  text-transform: uppercase;
+}
+
+.event-summary dd {
+  font-variant-numeric: tabular-nums;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.midi-event-log {
+  display: grid;
+  gap: 8px;
+  max-height: calc(100vh - 254px);
+  min-height: 420px;
+  overflow: auto;
+  padding: 14px;
+}
+
+.midi-event-row {
+  align-items: center;
+  background: var(--panel-alt);
+  border: 1px solid var(--border);
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 76px 150px minmax(0, 1fr) 100px;
+  min-height: 44px;
+  padding: 8px 10px;
+}
+
+.midi-event-time,
+.midi-event-row span,
+.midi-event-row code {
+  color: var(--muted);
+}
+
+.midi-event-row strong {
+  color: var(--primary);
+  overflow-wrap: anywhere;
+}
+
+.midi-event-row code {
+  background: #0c0d0d;
+  border: 1px solid var(--border);
+  font-size: 0.78rem;
+  padding: 4px 6px;
+  text-align: center;
+}
+
+.cc-value-table {
+  max-height: calc(100vh - 254px);
+  min-height: 420px;
+  overflow: auto;
+  padding: 14px;
+}
+
+.cc-value-table table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.cc-value-table th,
+.cc-value-table td {
+  border-bottom: 1px solid var(--border);
+  font-variant-numeric: tabular-nums;
+  padding: 10px 8px;
+  text-align: left;
+}
+
+.cc-value-table th {
+  color: var(--accent);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
 @media (max-width: 1040px) {
   .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .monitor-workspace,
+  .monitor-grid {
     grid-template-columns: 1fr;
   }
 
@@ -469,6 +630,15 @@ input[type="range"] {
   }
 
   .controls-grid {
+    max-height: none;
+  }
+
+  .monitor-panel {
+    min-height: auto;
+  }
+
+  .midi-event-log,
+  .cc-value-table {
     max-height: none;
   }
 }
@@ -492,6 +662,15 @@ input[type="range"] {
   .controls-grid {
     grid-template-columns: 1fr;
     padding: 12px;
+  }
+
+  .monitor-grid {
+    padding: 12px;
+  }
+
+  .midi-event-row {
+    align-items: start;
+    grid-template-columns: 1fr;
   }
 
   .slider-shell,

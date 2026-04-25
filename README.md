@@ -13,6 +13,8 @@ Open `http://127.0.0.1:4173`. Web MIDI usually requires a secure browser context
 
 The static bundle is emitted to `dist/` and does not load third-party runtime scripts, styles, or packages.
 
+For isolated incoming MIDI testing, open `http://127.0.0.1:4173/midi-monitor.html`. That page only listens to MIDI input events and never sends MIDI messages.
+
 ## Instrument YAML
 
 Controls must be grouped into sections. MIDI values are always clamped to `0-127`.

@@ -6,9 +6,10 @@ import { fileURLToPath } from "node:url";
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const distDir = path.join(rootDir, "dist");
 const appJs = await readFile(path.join(distDir, "app.js"), "utf8");
+const monitorJs = await readFile(path.join(distDir, "midi-monitor.js"), "utf8");
 const distFiles = await readdir(distDir, { recursive: true });
 
-assertNoRuntimeUrls(appJs, distFiles);
+assertNoRuntimeUrls(appJs, monitorJs, distFiles);
 
 class FakeElement {
   constructor(tagName, id = "") {
@@ -181,15 +182,83 @@ if (controls.length !== 15) {
   throw new Error(`Expected 15 rendered controls, got ${controls.length}.`);
 }
 
+runMonitorSmokeTest(monitorJs);
+
 console.log("Smoke test passed");
 
-function assertNoRuntimeUrls(appSource, files) {
+function assertNoRuntimeUrls(appSource, monitorSource, files) {
   const forbiddenPattern = /https?:\/\/|cdn|unpkg|fonts\.googleapis|@import|import\s/;
   if (forbiddenPattern.test(appSource)) {
     throw new Error("dist/app.js contains a forbidden runtime import or URL.");
   }
-  if (!files.includes("index.html") || !files.includes("styles.css") || !files.includes("app.js")) {
-    throw new Error("dist/ is missing expected static files.");
+  if (forbiddenPattern.test(monitorSource)) {
+    throw new Error("dist/midi-monitor.js contains a forbidden runtime import or URL.");
+  }
+
+  const requiredFiles = ["index.html", "midi-monitor.html", "styles.css", "app.js", "midi-monitor.js"];
+  for (const file of requiredFiles) {
+    if (!files.includes(file)) {
+      throw new Error(`dist/ is missing ${file}.`);
+    }
+  }
+}
+
+function runMonitorSmokeTest(source) {
+  const monitorIds = new Map();
+  const requiredMonitorIds = [
+    "monitor-status",
+    "midi-input",
+    "include-sysex",
+    "connect-midi-input",
+    "event-count",
+    "incoming-events",
+    "clear-events",
+    "cc-values",
+    "last-type",
+    "last-channel",
+    "last-data",
+    "last-raw",
+  ];
+
+  for (const id of requiredMonitorIds) {
+    monitorIds.set(id, new FakeElement("div", id));
+  }
+
+  const monitorContext = {
+    console,
+    Date,
+    Error,
+    Map,
+    Number,
+    Promise,
+    Set,
+    String,
+    URL,
+    Array,
+    Boolean,
+    JSON,
+    Math,
+    RegExp,
+    document: {
+      documentElement: new FakeElement("html", "document-element"),
+      createElement: (tagName) => new FakeElement(tagName),
+      getElementById: (id) => monitorIds.get(id) || null,
+    },
+    navigator: {},
+    window: {
+      addEventListener() {},
+      clearInterval,
+      clearTimeout,
+      setInterval,
+      setTimeout,
+    },
+  };
+
+  vm.createContext(monitorContext);
+  vm.runInContext(source, monitorContext, { filename: "dist/midi-monitor.js" });
+
+  if (!monitorIds.get("cc-values").children.length) {
+    throw new Error("Expected MIDI monitor empty CC state to render.");
   }
 }
 
