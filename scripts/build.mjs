@@ -1,29 +1,48 @@
-import { copyFile, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const distDir = path.join(rootDir, "dist");
 const srcDir = path.join(rootDir, "src");
-const examplesDir = path.join(rootDir, "examples");
-const defaultYamlPath = path.join(examplesDir, "behringer-jt-mini.yaml");
+const presetsDir = path.join(rootDir, "presets");
+const defaultYamlPath = path.join(presetsDir, "behringer-jt-mini.yaml");
 
 await rm(distDir, { recursive: true, force: true });
-await mkdir(path.join(distDir, "examples"), { recursive: true });
+await mkdir(path.join(distDir, "presets"), { recursive: true });
 
-const [html, monitorHtml, css, tsSource, monitorSource, defaultYaml] = await Promise.all([
+const [html, monitorHtml, css, tsSource, monitorSource, defaultYaml, presetFiles] = await Promise.all([
   readFile(path.join(srcDir, "index.html"), "utf8"),
   readFile(path.join(srcDir, "midi-monitor.html"), "utf8"),
   readFile(path.join(srcDir, "styles.css"), "utf8"),
   readFile(path.join(srcDir, "main.ts"), "utf8"),
   readFile(path.join(srcDir, "midi-monitor.ts"), "utf8"),
   readFile(defaultYamlPath, "utf8"),
+  readdir(presetsDir),
 ]);
-
-const appJs = compileTypescript(tsSource).replace(
-  "\"__DEFAULT_INSTRUMENT_YAML__\"",
-  JSON.stringify(defaultYaml),
+const presetYamlFiles = presetFiles.filter((file) => /\.ya?ml$/i.test(file)).sort((left, right) => {
+  if (left === "behringer-jt-mini.yaml") {
+    return -1;
+  }
+  if (right === "behringer-jt-mini.yaml") {
+    return 1;
+  }
+  return left.localeCompare(right);
+});
+const presetManifest = await Promise.all(
+  presetYamlFiles.map(async (file) => {
+    const yaml = await readFile(path.join(presetsDir, file), "utf8");
+    return {
+      file,
+      name: extractPresetName(yaml, file),
+      yaml,
+    };
+  }),
 );
+
+const appJs = compileTypescript(tsSource)
+  .replace("\"__DEFAULT_INSTRUMENT_YAML__\"", JSON.stringify(defaultYaml))
+  .replace("\"__PRESET_MANIFEST__\"", JSON.stringify(presetManifest));
 const monitorJs = compileTypescript(monitorSource);
 
 await Promise.all([
@@ -32,7 +51,7 @@ await Promise.all([
   writeFile(path.join(distDir, "styles.css"), css, "utf8"),
   writeFile(path.join(distDir, "app.js"), appJs, "utf8"),
   writeFile(path.join(distDir, "midi-monitor.js"), monitorJs, "utf8"),
-  copyFile(defaultYamlPath, path.join(distDir, "examples", "behringer-jt-mini.yaml")),
+  ...presetYamlFiles.map((file) => copyFile(path.join(presetsDir, file), path.join(distDir, "presets", file))),
 ]);
 
 console.log(`Built static site in ${path.relative(rootDir, distDir)}`);
@@ -43,4 +62,12 @@ function compileTypescript(source) {
     .replace(/^type\s+\w+\s*=[\s\S]*?;\n/gm, "")
     .replace(/\s+as\s+any/g, "")
     .trimStart();
+}
+
+function extractPresetName(yaml, file) {
+  const match = yaml.match(/^name:\s*(.+)$/m);
+  if (!match) {
+    return file.replace(/\.ya?ml$/i, "");
+  }
+  return match[1].trim().replace(/^["']|["']$/g, "");
 }

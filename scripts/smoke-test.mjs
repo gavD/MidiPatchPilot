@@ -116,6 +116,7 @@ const ids = new Map();
 const requiredIds = [
   "yaml-editor",
   "yaml-file",
+  "preset-select",
   "parse-status",
   "instrument-title",
   "control-summary",
@@ -124,10 +125,16 @@ const requiredIds = [
   "connect-midi",
   "midi-status",
   "midi-channel",
+  "midi-input",
   "midi-output",
   "play-note",
   "loop-note",
+  "send-start",
+  "send-stop",
   "event-log",
+  "incoming-event-count",
+  "incoming-event-log",
+  "clear-incoming-events",
 ];
 
 for (const id of requiredIds) {
@@ -195,7 +202,16 @@ function assertNoRuntimeUrls(appSource, monitorSource, files) {
     throw new Error("dist/midi-monitor.js contains a forbidden runtime import or URL.");
   }
 
-  const requiredFiles = ["index.html", "midi-monitor.html", "styles.css", "app.js", "midi-monitor.js"];
+  const requiredFiles = [
+    "index.html",
+    "midi-monitor.html",
+    "styles.css",
+    "app.js",
+    "midi-monitor.js",
+    "presets/behringer-jt-mini.yaml",
+    "presets/behringer-pro-vs-mini.yaml",
+    "presets/behringer-jt-4000m-micro.yaml",
+  ];
   for (const file of requiredFiles) {
     if (!files.includes(file)) {
       throw new Error(`dist/ is missing ${file}.`);

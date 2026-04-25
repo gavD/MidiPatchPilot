@@ -9,7 +9,7 @@ npm run build
 npm run serve -- --port 4173
 ```
 
-Open `http://127.0.0.1:4173`. Web MIDI usually requires a secure browser context; localhost is accepted by Chromium-based browsers.
+Open `http://127.0.0.1:4173`. Web MIDI usually requires a secure browser context; localhost is accepted by Chromium-based browsers. The app includes a preset selector for the bundled YAML presets, and loaded presets can still be edited directly in the YAML editor.
 
 The static bundle is emitted to `dist/` and does not load third-party runtime scripts, styles, or packages.
 
@@ -39,6 +39,7 @@ sections:
         label: LFO Rate
         description: LFO speed.
         type: horizontal-slider
+        max: 99
       - cc: 47
         label: LFO Enable
         type: toggle-button
@@ -56,4 +57,10 @@ sections:
             value: 127
 ```
 
-Supported control types are `vertical-slider`, `horizontal-slider`, `toggle-button`, and `switch`. The starter Behringer JT Mini definition lives in `examples/behringer-jt-mini.yaml`.
+Supported control types are `vertical-slider`, `horizontal-slider`, `toggle-button`, and `switch`. Presets live in `presets/`; sliders can optionally define `min` and `max`.
+
+Included presets:
+
+- `behringer-jt-mini.yaml`
+- `behringer-pro-vs-mini.yaml`
+- `behringer-jt-4000m-micro.yaml`

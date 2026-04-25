@@ -1,0 +1,172 @@
+name: Behringer JT-4000M Micro
+theme:
+  name: JT-4000M Micro
+  colors:
+    background: "#111412"
+    panel: "#171d1a"
+    panelAlt: "#22302b"
+    text: "#f3f7ef"
+    muted: "#b5bcb3"
+    primary: "#7ce36f"
+    accent: "#79c7ff"
+    danger: "#ff6b6b"
+sections:
+  - name: Performance
+    controls:
+      - cc: 1
+        label: Modulation
+        description: Modulation amount.
+        type: vertical-slider
+      - cc: 5
+        label: Portamento Time
+        description: Portamento time.
+        type: horizontal-slider
+      - cc: 29
+        label: Oscillator Balance
+        description: Balance between oscillators.
+        type: horizontal-slider
+  - name: Oscillators
+    controls:
+      - cc: 24
+        label: OSC1 Wave
+        description: OSC1 wave selection.
+        type: horizontal-slider
+      - cc: 25
+        label: OSC2 Wave
+        description: OSC2 wave selection.
+        type: horizontal-slider
+      - cc: 95
+        label: Ring Modulation Amount
+        description: Ring modulation amount.
+        type: horizontal-slider
+      - cc: 96
+        label: Ring Modulation
+        description: Ring modulation on or off.
+        type: toggle-button
+        offValue: 0
+        onValue: 127
+      - cc: 113
+        label: OSC1 PWM/Supersaw Detune/FM Feedback
+        description: OSC1 PWM, supersaw detune, or FM feedback.
+        type: horizontal-slider
+      - cc: 114
+        label: OSC2 PWM
+        description: OSC2 pulse width modulation.
+        type: horizontal-slider
+  - name: LFO
+    controls:
+      - cc: 54
+        label: LFO 1 Waveform
+        description: LFO 1 waveform.
+        type: switch
+        positions:
+          - label: Triangle
+            value: 21
+          - label: Square
+            value: 64
+          - label: Saw
+            value: 106
+      - cc: 55
+        label: LFO 2 Waveform
+        description: LFO 2 waveform.
+        type: switch
+        positions:
+          - label: Triangle
+            value: 21
+          - label: Square
+            value: 64
+          - label: Saw
+            value: 106
+      - cc: 56
+        label: LFO 1 Destination
+        description: LFO 1 destination.
+        type: switch
+        positions:
+          - label: VCF
+            value: 32
+          - label: OSC
+            value: 96
+      - cc: 70
+        label: LFO 1 Amount
+        description: LFO 1 modulation amount.
+        type: horizontal-slider
+      - cc: 28
+        label: LFO 2 Amount
+        description: LFO 2 modulation amount.
+        type: horizontal-slider
+      - cc: 72
+        label: LFO 1 Rate
+        description: LFO 1 rate.
+        type: horizontal-slider
+      - cc: 73
+        label: LFO 2 Rate
+        description: LFO 2 rate.
+        type: horizontal-slider
+  - name: Filter
+    controls:
+      - cc: 74
+        label: VCF Cutoff
+        description: Filter cutoff.
+        type: vertical-slider
+      - cc: 71
+        label: VCF Resonance
+        description: Filter resonance.
+        type: horizontal-slider
+      - cc: 47
+        label: Filter Envelope Amount
+        description: Filter envelope amount.
+        type: horizontal-slider
+  - name: VCA Envelope
+    controls:
+      - cc: 81
+        label: VCA EG Attack
+        description: VCA envelope attack.
+        type: horizontal-slider
+      - cc: 82
+        label: VCA EG Decay
+        description: VCA envelope decay.
+        type: horizontal-slider
+      - cc: 83
+        label: VCA EG Sustain
+        description: VCA envelope sustain.
+        type: horizontal-slider
+      - cc: 84
+        label: VCA EG Release
+        description: VCA envelope release.
+        type: horizontal-slider
+  - name: VCF Envelope
+    controls:
+      - cc: 85
+        label: VCF EG Attack
+        description: VCF envelope attack.
+        type: horizontal-slider
+      - cc: 86
+        label: VCF EG Decay
+        description: VCF envelope decay.
+        type: horizontal-slider
+      - cc: 87
+        label: VCF EG Sustain
+        description: VCF envelope sustain.
+        type: horizontal-slider
+      - cc: 88
+        label: VCF EG Release
+        description: VCF envelope release.
+        type: horizontal-slider
+  - name: Tuning
+    controls:
+      - cc: 111
+        label: OSC1 Fine Tune
+        description: OSC1 fine tune.
+        type: horizontal-slider
+      - cc: 112
+        label: OSC2 Fine Tune
+        description: OSC2 fine tune.
+        type: horizontal-slider
+      - cc: 115
+        label: OSC1 Coarse Tune
+        description: OSC1 coarse tune.
+        type: horizontal-slider
+      - cc: 116
+        label: OSC2 Coarse Tune
+        description: OSC2 coarse tune.
+        type: horizontal-slider

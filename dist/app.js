@@ -1,8 +1,12 @@
 const DEFAULT_INSTRUMENT_YAML = "name: Behringer JT Mini\ntheme:\n  name: JT Mini\n  colors:\n    background: \"#101112\"\n    panel: \"#1a1c1d\"\n    panelAlt: \"#222627\"\n    text: \"#f4f1e8\"\n    muted: \"#aeb4ad\"\n    primary: \"#17c9b2\"\n    accent: \"#f0bc4d\"\n    danger: \"#ff6b6b\"\nsections:\n  - name: Performance\n    controls:\n      - cc: 1\n        label: Modulation\n        description: Modulation amount.\n        type: vertical-slider\n      - cc: 40\n        label: Voice Mode\n        description: Selects poly, unison, and arpeggiator voice modes.\n        type: switch\n        positions:\n          - label: Poly\n            value: 6\n          - label: Unison\n            value: 20\n          - label: Arp up\n            value: 40\n          - label: Arp down\n            value: 70\n          - label: Arp up and down\n            value: 100\n          - label: Random\n            value: 120\n      - cc: 41\n        label: Octave\n        description: Oscillator octave range.\n        type: switch\n        positions:\n          - label: 32'\n            value: 10\n          - label: 16'\n            value: 32\n          - label: 8'\n            value: 54\n          - label: 4'\n            value: 76\n          - label: 2'\n            value: 98\n          - label: 1'\n            value: 118\n  - name: VCO\n    controls:\n      - cc: 36\n        label: VCO PWM Modulation\n        description: Pulse width modulation depth.\n        type: horizontal-slider\n      - cc: 42\n        label: VCO Detune\n        description: Detunes the oscillator.\n        type: horizontal-slider\n      - cc: 47\n        label: VCO Pitch Modulation\n        description: Pitch modulation amount.\n        type: horizontal-slider\n  - name: LFO\n    controls:\n      - cc: 37\n        label: LFO Delay Time\n        description: Delay before LFO modulation fades in.\n        type: horizontal-slider\n      - cc: 46\n        label: LFO Rate\n        description: LFO speed.\n        type: horizontal-slider\n      - cc: 48\n        label: VCF LFO Modulation\n        description: LFO depth routed to the filter.\n        type: horizontal-slider\n  - name: VCF\n    controls:\n      - cc: 44\n        label: VCF Cutoff\n        description: Filter cutoff frequency.\n        type: vertical-slider\n      - cc: 45\n        label: VCF Envelope Modulation\n        description: Envelope depth routed to the filter.\n        type: horizontal-slider\n  - name: Envelope\n    controls:\n      - cc: 39\n        label: Envelope Release\n        description: Envelope release time.\n        type: horizontal-slider\n      - cc: 49\n        label: Envelope Attack Time\n        description: Envelope attack time.\n        type: horizontal-slider\n      - cc: 50\n        label: Envelope Decay Time\n        description: Envelope decay time.\n        type: horizontal-slider\n      - cc: 51\n        label: Envelope Sustain Level\n        description: Envelope sustain level.\n        type: horizontal-slider\n";
+const PRESET_MANIFEST = [{"file":"behringer-jt-mini.yaml","name":"Behringer JT Mini","yaml":"name: Behringer JT Mini\ntheme:\n  name: JT Mini\n  colors:\n    background: \"#101112\"\n    panel: \"#1a1c1d\"\n    panelAlt: \"#222627\"\n    text: \"#f4f1e8\"\n    muted: \"#aeb4ad\"\n    primary: \"#17c9b2\"\n    accent: \"#f0bc4d\"\n    danger: \"#ff6b6b\"\nsections:\n  - name: Performance\n    controls:\n      - cc: 1\n        label: Modulation\n        description: Modulation amount.\n        type: vertical-slider\n      - cc: 40\n        label: Voice Mode\n        description: Selects poly, unison, and arpeggiator voice modes.\n        type: switch\n        positions:\n          - label: Poly\n            value: 6\n          - label: Unison\n            value: 20\n          - label: Arp up\n            value: 40\n          - label: Arp down\n            value: 70\n          - label: Arp up and down\n            value: 100\n          - label: Random\n            value: 120\n      - cc: 41\n        label: Octave\n        description: Oscillator octave range.\n        type: switch\n        positions:\n          - label: 32'\n            value: 10\n          - label: 16'\n            value: 32\n          - label: 8'\n            value: 54\n          - label: 4'\n            value: 76\n          - label: 2'\n            value: 98\n          - label: 1'\n            value: 118\n  - name: VCO\n    controls:\n      - cc: 36\n        label: VCO PWM Modulation\n        description: Pulse width modulation depth.\n        type: horizontal-slider\n      - cc: 42\n        label: VCO Detune\n        description: Detunes the oscillator.\n        type: horizontal-slider\n      - cc: 47\n        label: VCO Pitch Modulation\n        description: Pitch modulation amount.\n        type: horizontal-slider\n  - name: LFO\n    controls:\n      - cc: 37\n        label: LFO Delay Time\n        description: Delay before LFO modulation fades in.\n        type: horizontal-slider\n      - cc: 46\n        label: LFO Rate\n        description: LFO speed.\n        type: horizontal-slider\n      - cc: 48\n        label: VCF LFO Modulation\n        description: LFO depth routed to the filter.\n        type: horizontal-slider\n  - name: VCF\n    controls:\n      - cc: 44\n        label: VCF Cutoff\n        description: Filter cutoff frequency.\n        type: vertical-slider\n      - cc: 45\n        label: VCF Envelope Modulation\n        description: Envelope depth routed to the filter.\n        type: horizontal-slider\n  - name: Envelope\n    controls:\n      - cc: 39\n        label: Envelope Release\n        description: Envelope release time.\n        type: horizontal-slider\n      - cc: 49\n        label: Envelope Attack Time\n        description: Envelope attack time.\n        type: horizontal-slider\n      - cc: 50\n        label: Envelope Decay Time\n        description: Envelope decay time.\n        type: horizontal-slider\n      - cc: 51\n        label: Envelope Sustain Level\n        description: Envelope sustain level.\n        type: horizontal-slider\n"},{"file":"behringer-jt-4000m-micro.yaml","name":"Behringer JT-4000M Micro","yaml":"name: Behringer JT-4000M Micro\ntheme:\n  name: JT-4000M Micro\n  colors:\n    background: \"#111412\"\n    panel: \"#171d1a\"\n    panelAlt: \"#22302b\"\n    text: \"#f3f7ef\"\n    muted: \"#b5bcb3\"\n    primary: \"#7ce36f\"\n    accent: \"#79c7ff\"\n    danger: \"#ff6b6b\"\nsections:\n  - name: Performance\n    controls:\n      - cc: 1\n        label: Modulation\n        description: Modulation amount.\n        type: vertical-slider\n      - cc: 5\n        label: Portamento Time\n        description: Portamento time.\n        type: horizontal-slider\n      - cc: 29\n        label: Oscillator Balance\n        description: Balance between oscillators.\n        type: horizontal-slider\n  - name: Oscillators\n    controls:\n      - cc: 24\n        label: OSC1 Wave\n        description: OSC1 wave selection.\n        type: horizontal-slider\n      - cc: 25\n        label: OSC2 Wave\n        description: OSC2 wave selection.\n        type: horizontal-slider\n      - cc: 95\n        label: Ring Modulation Amount\n        description: Ring modulation amount.\n        type: horizontal-slider\n      - cc: 96\n        label: Ring Modulation\n        description: Ring modulation on or off.\n        type: toggle-button\n        offValue: 0\n        onValue: 127\n      - cc: 113\n        label: OSC1 PWM/Supersaw Detune/FM Feedback\n        description: OSC1 PWM, supersaw detune, or FM feedback.\n        type: horizontal-slider\n      - cc: 114\n        label: OSC2 PWM\n        description: OSC2 pulse width modulation.\n        type: horizontal-slider\n  - name: LFO\n    controls:\n      - cc: 54\n        label: LFO 1 Waveform\n        description: LFO 1 waveform.\n        type: switch\n        positions:\n          - label: Triangle\n            value: 21\n          - label: Square\n            value: 64\n          - label: Saw\n            value: 106\n      - cc: 55\n        label: LFO 2 Waveform\n        description: LFO 2 waveform.\n        type: switch\n        positions:\n          - label: Triangle\n            value: 21\n          - label: Square\n            value: 64\n          - label: Saw\n            value: 106\n      - cc: 56\n        label: LFO 1 Destination\n        description: LFO 1 destination.\n        type: switch\n        positions:\n          - label: VCF\n            value: 32\n          - label: OSC\n            value: 96\n      - cc: 70\n        label: LFO 1 Amount\n        description: LFO 1 modulation amount.\n        type: horizontal-slider\n      - cc: 28\n        label: LFO 2 Amount\n        description: LFO 2 modulation amount.\n        type: horizontal-slider\n      - cc: 72\n        label: LFO 1 Rate\n        description: LFO 1 rate.\n        type: horizontal-slider\n      - cc: 73\n        label: LFO 2 Rate\n        description: LFO 2 rate.\n        type: horizontal-slider\n  - name: Filter\n    controls:\n      - cc: 74\n        label: VCF Cutoff\n        description: Filter cutoff.\n        type: vertical-slider\n      - cc: 71\n        label: VCF Resonance\n        description: Filter resonance.\n        type: horizontal-slider\n      - cc: 47\n        label: Filter Envelope Amount\n        description: Filter envelope amount.\n        type: horizontal-slider\n  - name: VCA Envelope\n    controls:\n      - cc: 81\n        label: VCA EG Attack\n        description: VCA envelope attack.\n        type: horizontal-slider\n      - cc: 82\n        label: VCA EG Decay\n        description: VCA envelope decay.\n        type: horizontal-slider\n      - cc: 83\n        label: VCA EG Sustain\n        description: VCA envelope sustain.\n        type: horizontal-slider\n      - cc: 84\n        label: VCA EG Release\n        description: VCA envelope release.\n        type: horizontal-slider\n  - name: VCF Envelope\n    controls:\n      - cc: 85\n        label: VCF EG Attack\n        description: VCF envelope attack.\n        type: horizontal-slider\n      - cc: 86\n        label: VCF EG Decay\n        description: VCF envelope decay.\n        type: horizontal-slider\n      - cc: 87\n        label: VCF EG Sustain\n        description: VCF envelope sustain.\n        type: horizontal-slider\n      - cc: 88\n        label: VCF EG Release\n        description: VCF envelope release.\n        type: horizontal-slider\n  - name: Tuning\n    controls:\n      - cc: 111\n        label: OSC1 Fine Tune\n        description: OSC1 fine tune.\n        type: horizontal-slider\n      - cc: 112\n        label: OSC2 Fine Tune\n        description: OSC2 fine tune.\n        type: horizontal-slider\n      - cc: 115\n        label: OSC1 Coarse Tune\n        description: OSC1 coarse tune.\n        type: horizontal-slider\n      - cc: 116\n        label: OSC2 Coarse Tune\n        description: OSC2 coarse tune.\n        type: horizontal-slider\n"},{"file":"behringer-pro-vs-mini.yaml","name":"Behringer Pro VS Mini","yaml":"name: Behringer Pro VS Mini\ntheme:\n  name: Pro VS Mini\n  colors:\n    background: \"#111217\"\n    panel: \"#181b22\"\n    panelAlt: \"#232833\"\n    text: \"#f7f1e3\"\n    muted: \"#b4bac4\"\n    primary: \"#5ee1ff\"\n    accent: \"#ffc857\"\n    danger: \"#ff6b7a\"\nsections:\n  - name: Performance\n    controls:\n      - cc: 1\n        label: Modulation\n        description: Modulation amount.\n        type: vertical-slider\n      - cc: 91\n        label: Chorus Depth\n        description: Chorus depth.\n        type: horizontal-slider\n        max: 99\n      - cc: 92\n        label: Chorus Rate\n        description: Chorus rate.\n        type: horizontal-slider\n        max: 99\n  - name: Voice Waves\n    controls:\n      - cc: 24\n        label: Voice A Wave\n        description: Voice A wavetable selection.\n        type: horizontal-slider\n      - cc: 25\n        label: Voice B Wave\n        description: Voice B wavetable selection.\n        type: horizontal-slider\n      - cc: 26\n        label: Voice C Wave\n        description: Voice C wavetable selection.\n        type: horizontal-slider\n      - cc: 27\n        label: Voice D Wave\n        description: Voice D wavetable selection.\n        type: horizontal-slider\n  - name: LFO\n    controls:\n      - cc: 54\n        label: LFO 1 Waveform\n        description: LFO 1 waveform.\n        type: switch\n        positions:\n          - label: Triangle\n            value: 21\n          - label: Square\n            value: 64\n          - label: Saw\n            value: 106\n      - cc: 55\n        label: LFO 2 Waveform\n        description: LFO 2 waveform.\n        type: switch\n        positions:\n          - label: Triangle\n            value: 21\n          - label: Square\n            value: 64\n          - label: Saw\n            value: 106\n      - cc: 56\n        label: LFO 1 Destination\n        description: LFO 1 destination.\n        type: switch\n        positions:\n          - label: VCF\n            value: 32\n          - label: OSC\n            value: 96\n      - cc: 70\n        label: LFO 1 Amount\n        description: LFO 1 modulation amount.\n        type: horizontal-slider\n        max: 99\n      - cc: 28\n        label: LFO 2 Amount\n        description: LFO 2 modulation amount.\n        type: horizontal-slider\n        max: 99\n      - cc: 72\n        label: LFO 1 Rate\n        description: LFO 1 rate.\n        type: horizontal-slider\n        max: 99\n      - cc: 73\n        label: LFO 2 Rate\n        description: LFO 2 rate.\n        type: horizontal-slider\n        max: 99\n  - name: Filter\n    controls:\n      - cc: 74\n        label: Filter Cutoff\n        description: Filter cutoff.\n        type: vertical-slider\n        max: 99\n      - cc: 71\n        label: Filter Resonance\n        description: Filter resonance.\n        type: horizontal-slider\n        max: 99\n      - cc: 47\n        label: Filter Env Amount\n        description: Filter envelope amount.\n        type: horizontal-slider\n  - name: Amplifier Envelope\n    controls:\n      - cc: 81\n        label: Amplitude Envelope Attack\n        description: Amplitude envelope attack.\n        type: horizontal-slider\n        max: 99\n      - cc: 82\n        label: Amplitude Envelope Decay\n        description: Amplitude envelope decay.\n        type: horizontal-slider\n        max: 99\n      - cc: 83\n        label: Amplitude Envelope Sustain\n        description: Amplitude envelope sustain.\n        type: horizontal-slider\n        max: 99\n      - cc: 84\n        label: Amplitude Envelope Release\n        description: Amplitude envelope release.\n        type: horizontal-slider\n        max: 99\n  - name: Filter Envelope\n    controls:\n      - cc: 85\n        label: Filter Envelope Attack\n        description: Filter envelope attack.\n        type: horizontal-slider\n        max: 99\n      - cc: 86\n        label: Filter Envelope Decay\n        description: Filter envelope decay.\n        type: horizontal-slider\n        max: 99\n      - cc: 87\n        label: Filter Envelope Sustain\n        description: Filter envelope sustain.\n        type: horizontal-slider\n        max: 99\n      - cc: 88\n        label: Filter Envelope Release\n        description: Filter envelope release.\n        type: horizontal-slider\n        max: 99\n  - name: Tuning\n    controls:\n      - cc: 111\n        label: Voice A Fine Tuning\n        description: Voice A fine tuning.\n        type: horizontal-slider\n        max: 99\n      - cc: 112\n        label: Voice B Fine Tuning\n        description: Voice B fine tuning.\n        type: horizontal-slider\n        max: 99\n      - cc: 113\n        label: Voice C Fine Tuning\n        description: Voice C fine tuning.\n        type: horizontal-slider\n        max: 99\n      - cc: 114\n        label: Voice D Fine Tuning\n        description: Voice D fine tuning.\n        type: horizontal-slider\n        max: 99\n      - cc: 115\n        label: Voice A Coarse Tuning\n        description: Voice A coarse tuning.\n        type: horizontal-slider\n        max: 99\n      - cc: 116\n        label: Voice B Coarse Tuning\n        description: Voice B coarse tuning.\n        type: horizontal-slider\n        max: 99\n      - cc: 117\n        label: Voice C Coarse Tuning\n        description: Voice C coarse tuning.\n        type: horizontal-slider\n        max: 99\n      - cc: 118\n        label: Voice D Coarse Tuning\n        description: Voice D coarse tuning.\n        type: horizontal-slider\n        max: 99\n"}];
 const MIDI_NOTE_MIDDLE_C = 60;
 const MIDI_NOTE_VELOCITY = 96;
 const LOOP_INTERVAL_MS = 3000;
 const YAML_RELOAD_DELAY_MS = 220;
+const MAX_INCOMING_LOG_EVENTS = 250;
+const MIDI_START = 0xfa;
+const MIDI_STOP = 0xfc;
 
 const allowedControlTypes = new Set([
   "vertical-slider",
@@ -14,13 +18,17 @@ const allowedControlTypes = new Set([
 const state = {
   instrument: null,
   midiAccess: null,
+  midiInput: null,
   midiOutput: null,
+  incomingEventCount: 0,
   loopTimer: null,
   reloadTimer: null,
   values: new Map(),
+  highlightTimers: new Map(),
 };
 
 const elements = {
+  presetSelect: byId("preset-select"),
   yamlEditor: byId("yaml-editor"),
   yamlFile: byId("yaml-file"),
   parseStatus: byId("parse-status"),
@@ -31,10 +39,16 @@ const elements = {
   connectMidi: byId("connect-midi"),
   midiStatus: byId("midi-status"),
   midiChannel: byId("midi-channel"),
+  midiInput: byId("midi-input"),
   midiOutput: byId("midi-output"),
   playNote: byId("play-note"),
   loopNote: byId("loop-note"),
+  sendStart: byId("send-start"),
+  sendStop: byId("send-stop"),
   eventLog: byId("event-log"),
+  incomingEventCount: byId("incoming-event-count"),
+  incomingEventLog: byId("incoming-event-log"),
+  clearIncomingEvents: byId("clear-incoming-events"),
 };
 
 function byId(id) {
@@ -47,15 +61,46 @@ function byId(id) {
 
 function initialize() {
   populateMidiChannels();
+  populatePresetSelect();
   elements.yamlEditor.value = DEFAULT_INSTRUMENT_YAML;
+  elements.presetSelect.addEventListener("change", handlePresetSelection);
   elements.yamlEditor.addEventListener("input", queueYamlReload);
   elements.yamlFile.addEventListener("change", handleYamlFile);
   elements.connectMidi.addEventListener("click", connectMidi);
+  elements.midiInput.addEventListener("change", selectMidiInput);
   elements.midiOutput.addEventListener("change", selectMidiOutput);
   elements.playNote.addEventListener("click", playMiddleC);
   elements.loopNote.addEventListener("change", syncLoopPlayback);
+  elements.sendStart.addEventListener("click", sendMidiStart);
+  elements.sendStop.addEventListener("click", sendMidiStop);
+  elements.clearIncomingEvents.addEventListener("click", clearIncomingEvents);
   window.addEventListener("beforeunload", stopLoopPlayback);
+  renderEmptyMidiSelect(elements.midiInput, "Connect MIDI first");
+  renderEmptyMidiSelect(elements.midiOutput, "Connect MIDI first");
   loadYaml(DEFAULT_INSTRUMENT_YAML);
+}
+
+function populatePresetSelect() {
+  elements.presetSelect.innerHTML = "";
+
+  for (const preset of PRESET_MANIFEST) {
+    const option = document.createElement("option");
+    option.value = preset.file;
+    option.textContent = preset.name;
+    elements.presetSelect.append(option);
+  }
+
+  const customOption = document.createElement("option");
+  customOption.value = "__custom__";
+  customOption.textContent = "Custom YAML";
+  elements.presetSelect.append(customOption);
+
+  const defaultPreset = PRESET_MANIFEST.find((preset) => preset.yaml === DEFAULT_INSTRUMENT_YAML) || PRESET_MANIFEST[0];
+  if (defaultPreset) {
+    elements.presetSelect.value = defaultPreset.file;
+  } else {
+    elements.presetSelect.value = "__custom__";
+  }
 }
 
 function populateMidiChannels() {
@@ -69,10 +114,21 @@ function populateMidiChannels() {
 }
 
 function queueYamlReload() {
+  elements.presetSelect.value = "__custom__";
   window.clearTimeout(state.reloadTimer);
   state.reloadTimer = window.setTimeout(() => {
     loadYaml(elements.yamlEditor.value);
   }, YAML_RELOAD_DELAY_MS);
+}
+
+function handlePresetSelection() {
+  const preset = PRESET_MANIFEST.find((candidate) => candidate.file === elements.presetSelect.value);
+  if (!preset) {
+    return;
+  }
+
+  elements.yamlEditor.value = preset.yaml;
+  loadYaml(preset.yaml);
 }
 
 function handleYamlFile(event) {
@@ -83,6 +139,7 @@ function handleYamlFile(event) {
 
   const reader = new FileReader();
   reader.addEventListener("load", () => {
+    elements.presetSelect.value = "__custom__";
     elements.yamlEditor.value = String(reader.result || "");
     loadYaml(elements.yamlEditor.value);
   });
@@ -196,8 +253,8 @@ function renderSliderControl(control) {
 
   const range = document.createElement("input");
   range.type = "range";
-  range.min = "0";
-  range.max = "127";
+  range.min = String(control.min);
+  range.max = String(control.max);
   range.value = String(currentValue);
   range.setAttribute("aria-label", control.label);
 
@@ -207,13 +264,13 @@ function renderSliderControl(control) {
 
   const number = document.createElement("input");
   number.type = "number";
-  number.min = "0";
-  number.max = "127";
+  number.min = String(control.min);
+  number.max = String(control.max);
   number.value = String(currentValue);
   number.setAttribute("aria-label", `${control.label} value`);
 
   const syncValue = (value) => {
-    const midiValue = coerceMidiValue(value);
+    const midiValue = normalizeControlValue(control, value);
     range.value = String(midiValue);
     number.value = String(midiValue);
     meter.textContent = String(midiValue);
@@ -238,17 +295,19 @@ function renderToggleControl(control) {
   button.className = "toggle-button";
   button.type = "button";
 
-  const applyToggleState = (value) => {
+  const applyToggleState = (value, shouldSend) => {
     const isOn = value === control.onValue;
     button.setAttribute("aria-pressed", String(isOn));
     button.textContent = isOn ? `On (${control.onValue})` : `Off (${control.offValue})`;
-    updateControlValue(control, value);
+    if (shouldSend) {
+      updateControlValue(control, value);
+    }
   };
 
-  applyToggleState(currentValue === control.onValue ? control.onValue : control.offValue);
+  applyToggleState(currentValue === control.onValue ? control.onValue : control.offValue, false);
   button.addEventListener("click", () => {
     const isOn = button.getAttribute("aria-pressed") === "true";
-    applyToggleState(isOn ? control.offValue : control.onValue);
+    applyToggleState(isOn ? control.offValue : control.onValue, true);
   });
 
   return button;
@@ -296,18 +355,19 @@ function renderSwitchControl(control) {
 }
 
 function updateControlValue(control, value) {
-  const midiValue = coerceMidiValue(value);
+  const midiValue = normalizeControlValue(control, value);
   state.values.set(String(control.cc), midiValue);
+  syncRenderedControl(control, midiValue);
   sendControlChange(control.cc, midiValue);
 }
 
 function getControlValue(control) {
   const storedValue = state.values.get(String(control.cc));
   if (Number.isFinite(storedValue)) {
-    return storedValue;
+    return normalizeControlValue(control, storedValue);
   }
   if (Number.isFinite(control.value)) {
-    return coerceMidiValue(control.value);
+    return normalizeControlValue(control, control.value);
   }
   if (control.type === "switch" && control.positions.length) {
     return control.positions[0].value;
@@ -316,6 +376,88 @@ function getControlValue(control) {
     return control.offValue;
   }
   return 0;
+}
+
+function applyIncomingControlChange(cc, value) {
+  const control = findControlByCc(cc);
+  if (!control) {
+    return;
+  }
+
+  const midiValue = normalizeControlValue(control, value);
+  state.values.set(String(control.cc), midiValue);
+  syncRenderedControl(control, midiValue);
+}
+
+function syncRenderedControl(control, value) {
+  const wrapper = elements.controlsGrid.querySelector(`[data-cc="${control.cc}"]`);
+  if (!wrapper) {
+    return;
+  }
+
+  highlightControl(wrapper);
+
+  if (control.type === "vertical-slider" || control.type === "horizontal-slider") {
+    const range = wrapper.querySelector('input[type="range"]');
+    const number = wrapper.querySelector('input[type="number"]');
+    const meter = wrapper.querySelector(".value-meter");
+    if (range) {
+      range.value = String(value);
+    }
+    if (number) {
+      number.value = String(value);
+    }
+    if (meter) {
+      meter.textContent = String(value);
+    }
+    return;
+  }
+
+  if (control.type === "toggle-button") {
+    const button = wrapper.querySelector(".toggle-button");
+    if (!button) {
+      return;
+    }
+    const isOn = value === control.onValue;
+    button.setAttribute("aria-pressed", String(isOn));
+    button.textContent = isOn ? `On (${control.onValue})` : `Off (${control.offValue})`;
+    return;
+  }
+
+  for (const option of wrapper.querySelectorAll(".switch-option")) {
+    option.classList.toggle("is-active", Number(option.dataset.value) === value);
+  }
+}
+
+function highlightControl(wrapper) {
+  const cc = wrapper.dataset.cc;
+  const existingTimer = state.highlightTimers.get(cc);
+  if (existingTimer) {
+    window.clearTimeout(existingTimer);
+  }
+
+  wrapper.classList.add("is-midi-updated");
+  state.highlightTimers.set(
+    cc,
+    window.setTimeout(() => {
+      wrapper.classList.remove("is-midi-updated");
+      state.highlightTimers.delete(cc);
+    }, 360),
+  );
+}
+
+function findControlByCc(cc) {
+  if (!state.instrument) {
+    return null;
+  }
+
+  for (const section of state.instrument.sections) {
+    const control = section.controls.find((candidate) => candidate.cc === cc);
+    if (control) {
+      return control;
+    }
+  }
+  return null;
 }
 
 async function connectMidi() {
@@ -327,12 +469,17 @@ async function connectMidi() {
   try {
     setMidiStatus("Requesting MIDI access...", "");
     state.midiAccess = await navigator.requestMIDIAccess({ sysex: false });
-    state.midiAccess.onstatechange = refreshMidiOutputs;
-    refreshMidiOutputs();
+    state.midiAccess.onstatechange = refreshMidiDevices;
+    refreshMidiDevices();
   } catch (error) {
     const message = error instanceof Error ? error.message : "MIDI access was denied.";
     setMidiStatus(message, "error");
   }
+}
+
+function refreshMidiDevices() {
+  refreshMidiOutputs();
+  refreshMidiInputs();
 }
 
 function refreshMidiOutputs() {
@@ -340,11 +487,7 @@ function refreshMidiOutputs() {
   elements.midiOutput.innerHTML = "";
 
   if (!state.midiAccess) {
-    const option = document.createElement("option");
-    option.textContent = "Connect MIDI first";
-    option.value = "";
-    elements.midiOutput.append(option);
-    elements.midiOutput.disabled = true;
+    renderEmptyMidiSelect(elements.midiOutput, "Connect MIDI first");
     return;
   }
 
@@ -352,10 +495,7 @@ function refreshMidiOutputs() {
   elements.midiOutput.disabled = outputs.length === 0;
 
   if (!outputs.length) {
-    const option = document.createElement("option");
-    option.textContent = "No outputs found";
-    option.value = "";
-    elements.midiOutput.append(option);
+    renderEmptyMidiSelect(elements.midiOutput, "No outputs found");
     state.midiOutput = null;
     setMidiStatus("MIDI connected, but no outputs were found.", "error");
     return;
@@ -376,6 +516,48 @@ function refreshMidiOutputs() {
   setMidiStatus(`Output: ${targetOutput.name || targetOutput.id}`, "ok");
 }
 
+function refreshMidiInputs() {
+  const previousInputId = state.midiInput ? state.midiInput.id : "";
+  detachMidiInput();
+  elements.midiInput.innerHTML = "";
+
+  if (!state.midiAccess) {
+    renderEmptyMidiSelect(elements.midiInput, "Connect MIDI first");
+    return;
+  }
+
+  const inputs = Array.from(state.midiAccess.inputs.values());
+  elements.midiInput.disabled = inputs.length === 0;
+
+  if (!inputs.length) {
+    renderEmptyMidiSelect(elements.midiInput, "No inputs found");
+    return;
+  }
+
+  for (const input of inputs) {
+    const option = document.createElement("option");
+    option.value = input.id;
+    option.textContent = input.manufacturer
+      ? `${input.name || input.id} - ${input.manufacturer}`
+      : input.name || input.id;
+    elements.midiInput.append(option);
+  }
+
+  const preferredInput = inputs.find((input) => /behringer|jt|pro vs/i.test(`${input.name || ""} ${input.manufacturer || ""}`));
+  const targetInput = inputs.find((input) => input.id === previousInputId) || preferredInput || inputs[0];
+  elements.midiInput.value = targetInput.id;
+  attachMidiInput(targetInput);
+}
+
+function renderEmptyMidiSelect(select, label) {
+  select.innerHTML = "";
+  select.disabled = true;
+  const option = document.createElement("option");
+  option.value = "";
+  option.textContent = label;
+  select.append(option);
+}
+
 function selectMidiOutput() {
   if (!state.midiAccess) {
     return;
@@ -390,6 +572,154 @@ function selectMidiOutput() {
   } else {
     setMidiStatus("No MIDI output selected.", "error");
   }
+}
+
+function selectMidiInput() {
+  if (!state.midiAccess) {
+    return;
+  }
+
+  const inputId = elements.midiInput.value;
+  const input = Array.from(state.midiAccess.inputs.values()).find((candidate) => candidate.id === inputId);
+  if (input) {
+    attachMidiInput(input);
+  } else {
+    detachMidiInput();
+  }
+}
+
+function attachMidiInput(input) {
+  detachMidiInput();
+  state.midiInput = input;
+  input.onmidimessage = handleIncomingMidiMessage;
+}
+
+function detachMidiInput() {
+  if (state.midiInput) {
+    state.midiInput.onmidimessage = null;
+    state.midiInput = null;
+  }
+}
+
+function handleIncomingMidiMessage(event) {
+  const bytes = Array.from(event.data || []);
+  const decoded = decodeMidiMessage(bytes);
+
+  if (decoded.kind === "Control Change") {
+    applyIncomingControlChange(decoded.data1, decoded.data2);
+  }
+
+  addIncomingEvent(decoded, bytes);
+}
+
+function decodeMidiMessage(bytes) {
+  const status = bytes[0] || 0;
+  if (status >= 0xf0) {
+    return decodeSystemMessage(status, bytes);
+  }
+
+  const command = status & 0xf0;
+  const channel = (status & 0x0f) + 1;
+  const data1 = bytes[1] ?? 0;
+  const data2 = bytes[2] ?? 0;
+  const names = {
+    0x80: "Note Off",
+    0x90: data2 === 0 ? "Note Off" : "Note On",
+    0xa0: "Poly Aftertouch",
+    0xb0: "Control Change",
+    0xc0: "Program Change",
+    0xd0: "Channel Pressure",
+    0xe0: "Pitch Bend",
+  };
+
+  return {
+    kind: names[command] || `Channel Message 0x${hex(status)}`,
+    channel,
+    data1,
+    data2,
+    detail: describeChannelData(command, data1, data2),
+  };
+}
+
+function decodeSystemMessage(status, bytes) {
+  const names = {
+    0xf0: "SysEx",
+    0xf1: "MIDI Time Code Quarter Frame",
+    0xf2: "Song Position Pointer",
+    0xf3: "Song Select",
+    0xf6: "Tune Request",
+    0xf8: "Clock",
+    0xfa: "Start",
+    0xfb: "Continue",
+    0xfc: "Stop",
+    0xfe: "Active Sensing",
+    0xff: "Reset",
+  };
+
+  return {
+    kind: names[status] || `System Message 0x${hex(status)}`,
+    channel: null,
+    data1: bytes[1] ?? null,
+    data2: bytes[2] ?? null,
+    detail: bytes.length > 1 ? `${bytes.length} bytes` : "System real-time",
+  };
+}
+
+function describeChannelData(command, data1, data2) {
+  if (command === 0xb0) {
+    return `CC ${data1} = ${data2}`;
+  }
+  if (command === 0x90 || command === 0x80) {
+    return `Note ${data1}, velocity ${data2}`;
+  }
+  if (command === 0xc0) {
+    return `Program ${data1}`;
+  }
+  if (command === 0xd0) {
+    return `Pressure ${data1}`;
+  }
+  if (command === 0xe0) {
+    const bend = ((data2 << 7) | data1) - 8192;
+    return `Bend ${bend}`;
+  }
+  return [data1, data2].filter((value) => value !== null).join(", ");
+}
+
+function addIncomingEvent(decoded, bytes) {
+  state.incomingEventCount += 1;
+  elements.incomingEventCount.textContent =
+    `${state.incomingEventCount} message${state.incomingEventCount === 1 ? "" : "s"}`;
+
+  const row = document.createElement("div");
+  row.className = "compact-midi-row";
+
+  const type = document.createElement("strong");
+  type.textContent = decoded.kind;
+
+  const channel = document.createElement("span");
+  channel.textContent = decoded.channel ? `Ch ${decoded.channel}` : "-";
+
+  const detail = document.createElement("span");
+  detail.textContent = decoded.detail;
+
+  const raw = document.createElement("code");
+  raw.textContent = bytes.length ? bytes.map((byte) => hex(byte)).join(" ") : "";
+
+  row.append(channel, type, detail);
+  if (raw.textContent) {
+    row.append(raw);
+  }
+  elements.incomingEventLog.prepend(row);
+
+  while (elements.incomingEventLog.children.length > MAX_INCOMING_LOG_EVENTS) {
+    elements.incomingEventLog.removeChild(elements.incomingEventLog.lastElementChild);
+  }
+}
+
+function clearIncomingEvents() {
+  state.incomingEventCount = 0;
+  elements.incomingEventCount.textContent = "0 messages";
+  elements.incomingEventLog.innerHTML = "";
 }
 
 function sendControlChange(cc, value) {
@@ -418,6 +748,25 @@ function playMiddleC() {
     output.send([0x80 + channel, MIDI_NOTE_MIDDLE_C, 0]);
   }, 420);
   logEvent(`Sent middle C on channel ${channel + 1}.`);
+}
+
+function sendMidiStart() {
+  sendSystemRealtime(MIDI_START, "MIDI Start");
+}
+
+function sendMidiStop() {
+  sendSystemRealtime(MIDI_STOP, "MIDI Stop");
+}
+
+function sendSystemRealtime(status, label) {
+  const output = state.midiOutput;
+  if (!output) {
+    logEvent(`${label} not sent: no output selected.`);
+    return;
+  }
+
+  output.send([status]);
+  logEvent(`Sent ${label}.`);
 }
 
 function syncLoopPlayback() {
@@ -527,6 +876,12 @@ function validateControl(rawControl, sectionName) {
     throw new Error(`CC ${cc} "${label}" has unsupported type "${rawControl.type}".`);
   }
 
+  const min = Number(rawControl.min ?? 0);
+  const max = Number(rawControl.max ?? 127);
+  if (!Number.isInteger(min) || !Number.isInteger(max) || min < 0 || max > 127 || min > max) {
+    throw new Error(`CC ${cc} "${label}" needs min/max values between 0 and 127.`);
+  }
+
   const control = {
     cc,
     label,
@@ -535,6 +890,9 @@ function validateControl(rawControl, sectionName) {
     positions: [],
     onValue: coerceMidiValue(rawControl.onValue ?? 127),
     offValue: coerceMidiValue(rawControl.offValue ?? 0),
+    min,
+    max,
+    value: normalizeRawControlValue(rawControl.value, min),
   };
 
   if (type === "switch") {
@@ -643,6 +1001,43 @@ function coerceMidiValue(value) {
     return 0;
   }
   return Math.min(127, Math.max(0, Math.round(parsed)));
+}
+
+function normalizeRawControlValue(value, fallback) {
+  if (!Number.isFinite(Number(value))) {
+    return fallback;
+  }
+  return coerceMidiValue(value);
+}
+
+function normalizeControlValue(control, value) {
+  if (control.type === "switch") {
+    return nearestSwitchValue(control, value);
+  }
+  if (control.type === "toggle-button") {
+    const midpoint = (control.onValue + control.offValue) / 2;
+    return Number(value) >= midpoint ? control.onValue : control.offValue;
+  }
+
+  const midiValue = coerceMidiValue(value);
+  return Math.min(control.max, Math.max(control.min, midiValue));
+}
+
+function nearestSwitchValue(control, value) {
+  const midiValue = coerceMidiValue(value);
+  if (!control.positions.length) {
+    return midiValue;
+  }
+
+  return control.positions.reduce((nearest, position) => {
+    const nearestDistance = Math.abs(nearest.value - midiValue);
+    const positionDistance = Math.abs(position.value - midiValue);
+    return positionDistance < nearestDistance ? position : nearest;
+  }, control.positions[0]).value;
+}
+
+function hex(value) {
+  return Number(value).toString(16).padStart(2, "0").toUpperCase();
 }
 
 function stringOr(value, fallback) {
