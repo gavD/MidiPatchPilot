@@ -256,6 +256,79 @@ input[type="text"] {
   font-weight: 850;
 }
 
+.patch-save-row {
+  align-items: center;
+  display: grid;
+  gap: 6px;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.patch-save-row .primary-action {
+  margin-top: 0;
+  white-space: nowrap;
+  width: auto;
+}
+
+.patch-list {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.patch-empty,
+.patch-row {
+  background: var(--panel-alt);
+  border: 1px solid var(--border);
+}
+
+.patch-empty {
+  color: var(--muted);
+  padding: 8px;
+}
+
+.patch-row {
+  align-items: center;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  min-height: 36px;
+  padding: 6px;
+}
+
+.patch-row-name {
+  font-weight: 800;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.patch-row-actions {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.patch-row-actions .ghost-action {
+  min-height: 30px;
+  padding: 0 8px;
+}
+
+.export-patches-action {
+  margin-top: 8px;
+  text-transform: none;
+  width: 100%;
+}
+
+.test-play-row {
+  align-items: center;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.test-play-row .secondary-action,
+.test-play-row .checkbox-row {
+  margin-top: 0;
+}
+
 .transport-row {
   align-items: center;
   display: grid;
@@ -345,17 +418,6 @@ input[type="text"] {
   font-weight: 800;
   min-height: 34px;
   padding: 0 10px;
-}
-
-.patch-actions {
-  display: grid;
-  gap: 6px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  margin-top: 8px;
-}
-
-.patch-actions .ghost-action {
-  padding: 0 6px;
 }
 
 .toolbar {
@@ -832,6 +894,17 @@ input[type="range"] {
   .midi-pill {
     justify-content: center;
     width: 100%;
+  }
+
+  .patch-save-row,
+  .patch-row,
+  .test-play-row {
+    grid-template-columns: 1fr;
+  }
+
+  .patch-row-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
   }
 
   .controls-grid {

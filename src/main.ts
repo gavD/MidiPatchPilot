@@ -125,11 +125,10 @@ const elements = {
   yamlEditor: byId("yaml-editor"),
   yamlFile: byId("yaml-file"),
   parseStatus: byId("parse-status"),
+  patchHeading: byId("patch-heading"),
   patchName: byId("patch-name"),
-  patchSelect: byId("patch-select"),
+  patchList: byId("patch-list"),
   savePatch: byId("save-patch"),
-  applyPatch: byId("apply-patch"),
-  deletePatch: byId("delete-patch"),
   exportPatches: byId("export-patches"),
   patchStatus: byId("patch-status"),
   instrumentTitle: byId("instrument-title"),
@@ -169,8 +168,6 @@ function initialize() {
   elements.yamlEditor.addEventListener("input", queueYamlReload);
   elements.yamlFile.addEventListener("change", handleYamlFile);
   elements.savePatch.addEventListener("click", saveCurrentPatch);
-  elements.applyPatch.addEventListener("click", applySelectedPatch);
-  elements.deletePatch.addEventListener("click", deleteSelectedPatch);
   elements.exportPatches.addEventListener("click", exportCurrentInstrumentPatches);
   elements.connectMidi.addEventListener("click", connectMidi);
   elements.midiInput.addEventListener("change", selectMidiInput);
@@ -271,10 +268,7 @@ function loadYaml(source) {
     renderInstrument(instrument);
     renderPatches();
     applyTheme(instrument.theme);
-    setParseStatus(
-      `Loaded ${instrument.name}: ${countControls(instrument)} controls in ${instrument.sections.length} sections.`,
-      "ok",
-    );
+    setParseStatus("", "");
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     setParseStatus(message, "error");
@@ -360,35 +354,55 @@ function renderInstrument(instrument) {
   }
 }
 
-function renderPatches(selectedPatchId = elements.patchSelect.value) {
+function renderPatches() {
   const patches = getCurrentInstrumentPatches();
-  elements.patchSelect.innerHTML = "";
+  elements.patchHeading.textContent = state.instrument ? `Patches for ${state.instrument.name}` : "Patches";
+  elements.patchList.innerHTML = "";
   const hasPatches = patches.length > 0;
 
   if (!hasPatches) {
-    const option = document.createElement("option");
-    option.value = "";
-    option.textContent = state.instrument ? "No patches saved" : "Load an instrument first";
-    elements.patchSelect.append(option);
+    const empty = document.createElement("div");
+    empty.className = "patch-empty";
+    empty.textContent = state.instrument ? "No patches saved" : "Load an instrument first";
+    elements.patchList.append(empty);
     elements.patchStatus.textContent = state.instrument ? "No patches saved." : "Load an instrument to save patches.";
   } else {
     for (const patch of patches) {
-      const option = document.createElement("option");
-      option.value = patch.id;
-      option.textContent = patch.name;
-      elements.patchSelect.append(option);
-    }
-    if (patches.some((patch) => patch.id === selectedPatchId)) {
-      elements.patchSelect.value = selectedPatchId;
+      elements.patchList.append(renderPatchRow(patch));
     }
     elements.patchStatus.textContent = `${patches.length} saved patch${patches.length === 1 ? "" : "es"}.`;
   }
 
-  elements.patchSelect.disabled = !hasPatches;
-  elements.applyPatch.disabled = !hasPatches;
-  elements.deletePatch.disabled = !hasPatches;
   elements.exportPatches.disabled = !hasPatches;
   elements.savePatch.disabled = !state.instrument;
+}
+
+function renderPatchRow(patch) {
+  const row = document.createElement("div");
+  row.className = "patch-row";
+
+  const name = document.createElement("div");
+  name.className = "patch-row-name";
+  name.textContent = patch.name;
+
+  const actions = document.createElement("div");
+  actions.className = "patch-row-actions";
+
+  const load = document.createElement("button");
+  load.className = "ghost-action";
+  load.type = "button";
+  load.textContent = "load";
+  load.addEventListener("click", () => loadPatch(patch));
+
+  const deleteButton = document.createElement("button");
+  deleteButton.className = "ghost-action";
+  deleteButton.type = "button";
+  deleteButton.textContent = "delete";
+  deleteButton.addEventListener("click", () => deletePatch(patch));
+
+  actions.append(load, deleteButton);
+  row.append(name, actions);
+  return row;
 }
 
 function getCurrentInstrumentPatches() {
@@ -423,7 +437,7 @@ function saveCurrentPatch() {
   state.patches[key] = [...getCurrentInstrumentPatches().filter((candidate) => candidate.name !== name), patch];
   const didPersist = savePatchLibrary();
   elements.patchName.value = "";
-  renderPatches(patch.id);
+  renderPatches();
   elements.patchStatus.textContent = didPersist
     ? `Saved "${patch.name}".`
     : `Saved "${patch.name}" for this session, but browser storage failed.`;
@@ -437,14 +451,9 @@ function serializeCurrentPatchValues() {
   return values;
 }
 
-function applySelectedPatch() {
-  const patch = getCurrentInstrumentPatches().find((candidate) => candidate.id === elements.patchSelect.value);
-  if (!patch) {
-    return;
-  }
-
+function loadPatch(patch) {
   applyPatchValues(patch.values);
-  elements.patchStatus.textContent = `Applied "${patch.name}".`;
+  elements.patchStatus.textContent = `Loaded "${patch.name}".`;
 }
 
 function applyPatchValues(values) {
@@ -456,13 +465,8 @@ function applyPatchValues(values) {
   }
 }
 
-function deleteSelectedPatch() {
+function deletePatch(patch) {
   const key = instrumentKey();
-  const patch = getCurrentInstrumentPatches().find((candidate) => candidate.id === elements.patchSelect.value);
-  if (!patch) {
-    return;
-  }
-
   state.patches[key] = getCurrentInstrumentPatches().filter((candidate) => candidate.id !== patch.id);
   const didPersist = savePatchLibrary();
   renderPatches();

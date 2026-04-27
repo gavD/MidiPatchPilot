@@ -5,10 +5,12 @@ import { fileURLToPath } from "node:url";
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const distDir = path.join(rootDir, "dist");
+const indexHtml = await readFile(path.join(distDir, "index.html"), "utf8");
 const appJs = await readFile(path.join(distDir, "app.js"), "utf8");
 const monitorJs = await readFile(path.join(distDir, "midi-monitor.js"), "utf8");
 const distFiles = await readdir(distDir, { recursive: true });
 
+assertIndexHtml(indexHtml);
 assertNoRuntimeUrls(appJs, monitorJs, distFiles);
 
 class FakeElement {
@@ -119,11 +121,10 @@ const requiredIds = [
   "yaml-file",
   "preset-select",
   "parse-status",
+  "patch-heading",
   "patch-name",
-  "patch-select",
+  "patch-list",
   "save-patch",
-  "apply-patch",
-  "delete-patch",
   "export-patches",
   "patch-status",
   "instrument-title",
@@ -191,6 +192,7 @@ vm.runInContext(appJs, context, { filename: "dist/app.js" });
 
 const title = ids.get("instrument-title").textContent;
 const summary = ids.get("control-summary").textContent;
+const parseStatus = ids.get("parse-status").textContent;
 const controlsGrid = ids.get("controls-grid");
 const sectionPanels = controlsGrid.querySelectorAll(".section-panel");
 const controls = controlsGrid.querySelectorAll(".control");
@@ -207,6 +209,15 @@ if (!ids.get("yaml-editor").hidden) {
 }
 if (presetOptions[presetOptions.length - 1].textContent !== "Custom") {
   throw new Error("Expected custom preset option to be labelled Custom.");
+}
+if (ids.get("patch-heading").textContent !== "Patches for Behringer JT Mini") {
+  throw new Error(`Expected instrument-scoped patch heading, got "${ids.get("patch-heading").textContent}".`);
+}
+if (!ids.get("export-patches").disabled) {
+  throw new Error("Expected export button to be disabled when no patches are saved.");
+}
+if (parseStatus !== "") {
+  throw new Error(`Expected successful instrument load status to be empty, got "${parseStatus}".`);
 }
 if (!summary.includes("15 MIDI CC controls")) {
   throw new Error(`Expected default control count, got "${summary}".`);
@@ -233,6 +244,22 @@ if (valueMeters.length !== 0) {
 runMonitorSmokeTest(monitorJs);
 
 console.log("Smoke test passed");
+
+function assertIndexHtml(source) {
+  const requiredSnippets = [
+    'title="Load a YAML file from your device that confiigured MultiMidi for your MIDI instrument"',
+    'title="Ransomises the value of all controls"',
+    'title="loop every 3 seconds"',
+    'id="patch-list"',
+    "export all patches",
+  ];
+
+  for (const snippet of requiredSnippets) {
+    if (!source.includes(snippet)) {
+      throw new Error(`dist/index.html is missing ${snippet}.`);
+    }
+  }
+}
 
 function assertNoRuntimeUrls(appSource, monitorSource, files) {
   const forbiddenPattern = /https?:\/\/|cdn|unpkg|fonts\.googleapis|@import|import\s/;

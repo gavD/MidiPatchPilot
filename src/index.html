@@ -21,7 +21,7 @@
           <section class="panel-block">
             <div class="section-heading">
               <h2>Instrument</h2>
-              <label class="file-picker">
+              <label class="file-picker" title="Load a YAML file from your device that confiigured MultiMidi for your MIDI instrument">
                 <span>Load from disk</span>
                 <input id="yaml-file" type="file" accept=".yaml,.yml,text/yaml,text/plain">
               </label>
@@ -29,22 +29,17 @@
             <label class="field-label" for="preset-select">Preset</label>
             <select id="preset-select" aria-label="Instrument"></select>
             <textarea id="yaml-editor" spellcheck="false" aria-label="Instrument YAML editor"></textarea>
-            <div class="parse-status" id="parse-status" role="status">Ready</div>
+            <div class="parse-status" id="parse-status" role="status"></div>
           </section>
 
           <section class="panel-block">
-            <h2>Patches</h2>
-            <label class="field-label" for="patch-name">Name</label>
-            <input id="patch-name" type="text" autocomplete="off" placeholder="Patch name">
-            <button class="primary-action" id="save-patch" type="button">Save patch</button>
-
-            <label class="field-label" for="patch-select">Saved</label>
-            <select id="patch-select" aria-label="Saved patches"></select>
-            <div class="patch-actions">
-              <button class="ghost-action" id="apply-patch" type="button">Apply</button>
-              <button class="ghost-action" id="delete-patch" type="button">Delete</button>
-              <button class="ghost-action" id="export-patches" type="button">Export YAML</button>
+            <h2 id="patch-heading">Patches</h2>
+            <div class="patch-save-row">
+              <input id="patch-name" type="text" autocomplete="off" placeholder="Patch name" aria-label="Patch name">
+              <button class="primary-action" id="save-patch" type="button">Save patch</button>
             </div>
+            <div class="patch-list" id="patch-list" aria-label="Saved patches"></div>
+            <button class="ghost-action export-patches-action" id="export-patches" type="button">export all patches</button>
             <div class="parse-status" id="patch-status" role="status">No patches saved.</div>
           </section>
 
@@ -71,18 +66,20 @@
 
           <section class="panel-block">
             <h2>Test Area</h2>
-            <button class="secondary-action" id="play-note" type="button">
-              <span class="button-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" role="img">
-                  <path d="M8 5v14l11-7z"></path>
-                </svg>
-              </span>
-              Play middle C
-            </button>
-            <label class="checkbox-row" for="loop-note">
-              <input id="loop-note" type="checkbox">
-              <span>Loop every 3 seconds</span>
-            </label>
+            <div class="test-play-row">
+              <button class="secondary-action" id="play-note" type="button">
+                <span class="button-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" role="img">
+                    <path d="M8 5v14l11-7z"></path>
+                  </svg>
+                </span>
+                Play middle C
+              </button>
+              <label class="checkbox-row" for="loop-note" title="loop every 3 seconds">
+                <input id="loop-note" type="checkbox">
+                <span>loop</span>
+              </label>
+            </div>
             <div class="transport-row">
               <button class="transport-action" id="send-start" type="button">
                 <span class="button-icon" aria-hidden="true">
@@ -124,7 +121,7 @@
               <h2 id="control-summary">No instrument loaded</h2>
             </div>
             <div class="toolbar-actions">
-              <button class="ghost-action" id="randomise-controls" type="button">Randomise</button>
+              <button class="ghost-action" id="randomise-controls" type="button" title="Ransomises the value of all controls">Randomise</button>
             </div>
           </div>
           <div class="controls-grid" id="controls-grid"></div>
