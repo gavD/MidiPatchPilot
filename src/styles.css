@@ -43,15 +43,15 @@ button {
 
 .app-shell {
   min-height: 100vh;
-  padding: 24px;
+  padding: 16px;
 }
 
 .app-header {
   align-items: center;
   display: flex;
-  gap: 16px;
+  gap: 12px;
   justify-content: space-between;
-  margin: 0 auto 20px;
+  margin: 0 auto 14px;
   max-width: 1480px;
 }
 
@@ -73,7 +73,7 @@ button {
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0;
-  margin: 0 0 8px;
+  margin: 0 0 6px;
   text-transform: uppercase;
 }
 
@@ -91,14 +91,14 @@ button {
   border: 1px solid var(--border);
   border-radius: 999px;
   display: inline-flex;
-  min-height: 38px;
-  padding: 8px 14px;
+  min-height: 34px;
+  padding: 6px 10px;
   white-space: nowrap;
 }
 
 .workspace {
   display: grid;
-  gap: 18px;
+  gap: 12px;
   grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
   margin: 0 auto;
   max-width: 1480px;
@@ -115,18 +115,18 @@ button {
   align-self: start;
   display: grid;
   gap: 0;
-  max-height: calc(100vh - 132px);
+  max-height: calc(100vh - 100px);
   overflow: auto;
 }
 
 .editor-panel {
-  min-height: calc(100vh - 132px);
+  min-height: calc(100vh - 100px);
   overflow: hidden;
 }
 
 .panel-block {
   border-bottom: 1px solid var(--border);
-  padding: 18px;
+  padding: 12px;
 }
 
 .panel-block:last-child {
@@ -145,7 +145,7 @@ button {
 .switch-row {
   align-items: center;
   display: flex;
-  gap: 12px;
+  gap: 8px;
   justify-content: space-between;
 }
 
@@ -157,8 +157,8 @@ button {
   display: inline-flex;
   font-size: 0.82rem;
   font-weight: 700;
-  min-height: 36px;
-  padding: 0 12px;
+  min-height: 32px;
+  padding: 0 10px;
 }
 
 .file-picker input {
@@ -175,10 +175,10 @@ button {
   font-family: "SFMono-Regular", "Cascadia Code", "Liberation Mono", Menlo, Consolas, monospace;
   font-size: 0.86rem;
   line-height: 1.45;
-  margin-top: 14px;
+  margin-top: 10px;
   min-height: 360px;
   outline: none;
-  padding: 12px;
+  padding: 10px;
   resize: vertical;
   tab-size: 2;
   width: 100%;
@@ -194,7 +194,7 @@ button:focus-visible {
 
 .parse-status {
   min-height: 24px;
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 .parse-status.is-error,
@@ -212,7 +212,7 @@ button:focus-visible {
   display: block;
   font-size: 0.82rem;
   font-weight: 800;
-  margin: 14px 0 6px;
+  margin: 10px 0 4px;
   text-transform: uppercase;
 }
 
@@ -222,8 +222,8 @@ input[type="number"] {
   background: var(--panel-alt);
   border: 1px solid var(--border);
   color: var(--text);
-  min-height: 40px;
-  padding: 0 10px;
+  min-height: 36px;
+  padding: 0 8px;
   width: 100%;
 }
 
@@ -232,11 +232,11 @@ input[type="number"] {
   align-items: center;
   border: 0;
   display: inline-flex;
-  gap: 10px;
+  gap: 8px;
   justify-content: center;
-  margin-top: 14px;
-  min-height: 42px;
-  padding: 0 14px;
+  margin-top: 10px;
+  min-height: 38px;
+  padding: 0 10px;
   width: 100%;
 }
 
@@ -255,9 +255,9 @@ input[type="number"] {
 .transport-row {
   align-items: center;
   display: grid;
-  gap: 8px;
+  gap: 6px;
   grid-template-columns: 1fr 1fr auto;
-  margin-top: 12px;
+  margin-top: 10px;
 }
 
 .transport-action {
@@ -266,10 +266,10 @@ input[type="number"] {
   border: 1px solid var(--border);
   color: var(--text);
   display: inline-flex;
-  gap: 8px;
+  gap: 6px;
   justify-content: center;
-  min-height: 38px;
-  padding: 0 10px;
+  min-height: 34px;
+  padding: 0 8px;
 }
 
 .info-dot {
@@ -280,9 +280,9 @@ input[type="number"] {
   display: inline-flex;
   font-size: 0.78rem;
   font-weight: 900;
-  height: 28px;
+  height: 24px;
   justify-content: center;
-  width: 28px;
+  width: 24px;
 }
 
 .button-icon {
@@ -316,8 +316,8 @@ input[type="number"] {
   align-items: center;
   color: var(--text);
   display: flex;
-  gap: 10px;
-  margin-top: 12px;
+  gap: 8px;
+  margin-top: 10px;
 }
 
 .checkbox-row input {
@@ -329,9 +329,9 @@ input[type="number"] {
 .event-log {
   background: color-mix(in srgb, var(--panel-alt) 70%, black);
   border-left: 3px solid var(--primary);
-  margin: 14px 0 0;
-  min-height: 46px;
-  padding: 10px 12px;
+  margin: 10px 0 0;
+  min-height: 40px;
+  padding: 8px 10px;
 }
 
 .ghost-action {
@@ -339,24 +339,23 @@ input[type="number"] {
   border: 1px solid var(--border);
   color: var(--text);
   font-weight: 800;
-  min-height: 38px;
-  padding: 0 14px;
+  min-height: 34px;
+  padding: 0 10px;
 }
 
 .toolbar {
   background: color-mix(in srgb, var(--panel-alt) 78%, black);
   border-bottom: 1px solid var(--border);
-  min-height: 84px;
-  padding: 18px 20px;
+  min-height: 64px;
+  padding: 12px 14px;
 }
 
 .controls-grid {
   display: grid;
-  gap: 16px;
+  gap: 12px;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  max-height: calc(100vh - 216px);
+  max-height: calc(100vh - 164px);
   overflow: auto;
-  padding: 18px;
 }
 
 .section-panel {
@@ -370,23 +369,22 @@ input[type="number"] {
   border-bottom: 1px solid var(--border);
   color: var(--accent);
   font-size: 0.9rem;
-  padding: 12px 14px;
+  padding: 8px 10px;
   text-transform: uppercase;
 }
 
 .section-controls {
   display: grid;
-  gap: 12px;
-  padding: 14px;
+  gap: 8px;
 }
 
 .control {
   background: var(--panel-alt);
   border: 1px solid var(--border);
   display: grid;
-  gap: 12px;
-  min-height: 126px;
-  padding: 14px;
+  gap: 8px;
+  min-height: 90px;
+  padding: 10px;
 }
 
 .control.is-midi-updated {
@@ -423,19 +421,20 @@ input[type="number"] {
   flex: 0 0 auto;
   font-size: 0.78rem;
   font-weight: 850;
-  padding: 5px 8px;
+  padding: 4px 6px;
 }
 
 .slider-shell {
   align-items: center;
   display: grid;
-  gap: 12px;
+  gap: 8px;
   grid-template-columns: minmax(0, 1fr) 76px;
 }
 
 .slider-shell.is-vertical {
   align-items: end;
-  grid-template-columns: 72px minmax(0, 1fr) 76px;
+  grid-template-columns: 72px 76px;
+  justify-content: start;
 }
 
 input[type="range"] {
@@ -450,15 +449,55 @@ input[type="range"] {
   width: 48px;
 }
 
-.value-meter {
-  background: #0c0d0d;
-  border: 1px solid var(--border);
-  color: var(--primary);
-  font-variant-numeric: tabular-nums;
+.vertical-slider-group {
+  min-height: 0;
+}
+
+.vertical-slider-group-controls {
+  align-items: end;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(64px, 1fr));
+}
+
+.vertical-slider-control {
+  align-items: end;
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+  min-width: 0;
+  outline: 1px solid transparent;
+  outline-offset: 4px;
+}
+
+.vertical-slider-control.is-midi-updated {
+  outline-color: var(--primary);
+}
+
+.vertical-slider-label {
+  color: var(--text);
+  font-size: 0.96rem;
   font-weight: 850;
-  min-height: 40px;
-  padding: 9px 10px;
+  line-height: 1;
   text-align: center;
+}
+
+.vertical-slider-control input[type="range"] {
+  direction: rtl;
+  height: 160px;
+  writing-mode: vertical-lr;
+  width: 48px;
+}
+
+.vertical-slider-control input[type="number"] {
+  width: 64px;
+}
+
+.vertical-slider-cc {
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1;
 }
 
 .toggle-button {
@@ -466,8 +505,8 @@ input[type="range"] {
   border: 1px solid var(--border);
   color: var(--text);
   font-weight: 850;
-  min-height: 44px;
-  padding: 0 12px;
+  min-height: 38px;
+  padding: 0 10px;
 }
 
 .toggle-button[aria-pressed="true"] {
@@ -486,8 +525,8 @@ input[type="range"] {
   border: 1px solid var(--border);
   color: var(--text);
   flex: 1 1 110px;
-  min-height: 40px;
-  padding: 8px 10px;
+  min-height: 36px;
+  padding: 6px 8px;
 }
 
 .switch-option.is-active {
@@ -507,13 +546,13 @@ input[type="range"] {
   border: 1px dashed var(--border);
   color: var(--muted);
   grid-column: 1 / -1;
-  min-height: 160px;
-  padding: 24px;
+  min-height: 132px;
+  padding: 16px;
 }
 
 .empty-state.compact {
   min-height: 90px;
-  padding: 16px;
+  padding: 12px;
 }
 
 .incoming-log-block {
@@ -526,10 +565,10 @@ input[type="range"] {
   background: color-mix(in srgb, var(--panel-alt) 80%, black);
   border-bottom: 1px solid var(--border);
   display: flex;
-  gap: 10px;
+  gap: 8px;
   justify-content: space-between;
-  min-height: 70px;
-  padding: 12px;
+  min-height: 56px;
+  padding: 10px;
 }
 
 .incoming-log-header h3 {
@@ -540,20 +579,20 @@ input[type="range"] {
 
 .compact-midi-log {
   display: grid;
-  gap: 6px;
+  gap: 5px;
   max-height: 280px;
   overflow: auto;
-  padding: 10px;
+  padding: 8px;
 }
 
 .compact-midi-row {
   background: var(--panel-alt);
   border: 1px solid var(--border);
   display: grid;
-  gap: 6px;
+  gap: 5px;
   grid-template-columns: 48px 112px minmax(0, 1fr) 72px;
-  min-height: 34px;
-  padding: 6px 8px;
+  min-height: 30px;
+  padding: 5px 6px;
 }
 
 .compact-midi-row strong {
@@ -578,7 +617,7 @@ input[type="range"] {
 
 .monitor-workspace {
   display: grid;
-  gap: 18px;
+  gap: 12px;
   grid-template-columns: minmax(300px, 360px) minmax(0, 1fr);
   margin: 0 auto;
   max-width: 1280px;
@@ -597,15 +636,15 @@ input[type="range"] {
 }
 
 .monitor-panel {
-  min-height: calc(100vh - 132px);
+  min-height: calc(100vh - 100px);
   overflow: hidden;
 }
 
 .monitor-grid {
   display: grid;
-  gap: 16px;
+  gap: 12px;
   grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
-  padding: 18px;
+  padding: 12px;
 }
 
 .monitor-card {
@@ -619,20 +658,20 @@ input[type="range"] {
   color: var(--accent);
   font-size: 0.9rem;
   margin: 0;
-  padding: 12px 14px;
+  padding: 8px 10px;
   text-transform: uppercase;
 }
 
 .event-summary {
   display: grid;
-  gap: 10px;
-  margin: 14px 0 0;
+  gap: 8px;
+  margin: 10px 0 0;
 }
 
 .event-summary div {
   background: var(--panel-alt);
   border: 1px solid var(--border);
-  padding: 10px;
+  padding: 8px;
 }
 
 .event-summary dt {
@@ -651,11 +690,11 @@ input[type="range"] {
 
 .midi-event-log {
   display: grid;
-  gap: 8px;
+  gap: 6px;
   max-height: calc(100vh - 254px);
-  min-height: 420px;
+  min-height: 360px;
   overflow: auto;
-  padding: 14px;
+  padding: 10px;
 }
 
 .midi-event-row {
@@ -663,10 +702,10 @@ input[type="range"] {
   background: var(--panel-alt);
   border: 1px solid var(--border);
   display: grid;
-  gap: 10px;
+  gap: 8px;
   grid-template-columns: 76px 150px minmax(0, 1fr) 100px;
-  min-height: 44px;
-  padding: 8px 10px;
+  min-height: 38px;
+  padding: 6px 8px;
 }
 
 .midi-event-time,
@@ -684,15 +723,15 @@ input[type="range"] {
   background: #0c0d0d;
   border: 1px solid var(--border);
   font-size: 0.78rem;
-  padding: 4px 6px;
+  padding: 3px 5px;
   text-align: center;
 }
 
 .cc-value-table {
   max-height: calc(100vh - 254px);
-  min-height: 420px;
+  min-height: 360px;
   overflow: auto;
-  padding: 14px;
+  padding: 10px;
 }
 
 .cc-value-table table {
@@ -704,7 +743,7 @@ input[type="range"] {
 .cc-value-table td {
   border-bottom: 1px solid var(--border);
   font-variant-numeric: tabular-nums;
-  padding: 10px 8px;
+  padding: 7px 6px;
   text-align: left;
 }
 
@@ -750,7 +789,7 @@ input[type="range"] {
 
 @media (max-width: 640px) {
   .app-shell {
-    padding: 14px;
+    padding: 10px;
   }
 
   .app-header,
@@ -768,8 +807,12 @@ input[type="range"] {
     grid-template-columns: 1fr;
   }
 
+  .section-panel {
+    grid-column: auto !important;
+  }
+
   .monitor-grid {
-    padding: 12px;
+    padding: 10px;
   }
 
   .compact-midi-row {
@@ -790,5 +833,14 @@ input[type="range"] {
     height: auto;
     writing-mode: horizontal-tb;
     width: 100%;
+  }
+
+  .vertical-slider-group-controls {
+    gap: 8px;
+    grid-template-columns: repeat(auto-fit, minmax(56px, 1fr));
+  }
+
+  .vertical-slider-control input[type="number"] {
+    width: 60px;
   }
 }

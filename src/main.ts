@@ -40,14 +40,17 @@ interface InstrumentTheme {
 
 interface InstrumentSection {
   name: string;
-  controls: ControlDefinition[];
+  gridColumn: string;
+  controls: ControlItem[];
 }
+
+type ControlItem = ControlDefinition | VerticalSliderGroupDefinition;
 
 interface ControlDefinition {
   cc: number;
   label: string;
   description: string;
-  type: ControlType;
+  type: MidiControlType;
   positions: SwitchPosition[];
   onValue: number;
   offValue: number;
@@ -56,17 +59,25 @@ interface ControlDefinition {
   value: number;
 }
 
+interface VerticalSliderGroupDefinition {
+  type: "vertical-slider-group";
+  description: string;
+  controls: ControlDefinition[];
+}
+
 interface SwitchPosition {
   label: string;
   value: number;
   range?: string;
 }
 
-type ControlType =
+type MidiControlType =
   | "vertical-slider"
   | "horizontal-slider"
   | "switch"
   | "toggle-button";
+
+type ControlType = MidiControlType | "vertical-slider-group";
 
 const DEFAULT_INSTRUMENT_YAML = "__DEFAULT_INSTRUMENT_YAML__";
 const PRESET_MANIFEST = "__PRESET_MANIFEST__";
@@ -80,6 +91,7 @@ const MIDI_STOP = 0xfc;
 
 const allowedControlTypes = new Set([
   "vertical-slider",
+  "vertical-slider-group",
   "horizontal-slider",
   "switch",
   "toggle-button",
@@ -243,7 +255,15 @@ function setParseStatus(message, stateName) {
 }
 
 function countControls(instrument) {
-  return instrument.sections.reduce((count, section) => count + section.controls.length, 0);
+  return instrument.sections.reduce(
+    (count, section) => count + section.controls.reduce((sectionCount, control) => {
+      if (isVerticalSliderGroup(control)) {
+        return sectionCount + control.controls.length;
+      }
+      return sectionCount + 1;
+    }, 0),
+    0,
+  );
 }
 
 function renderInstrument(instrument) {
@@ -263,6 +283,9 @@ function renderInstrument(instrument) {
   for (const section of instrument.sections) {
     const sectionElement = document.createElement("section");
     sectionElement.className = "section-panel";
+    if (section.gridColumn) {
+      sectionElement.style.gridColumn = section.gridColumn;
+    }
 
     const heading = document.createElement("h3");
     heading.textContent = section.name;
@@ -271,12 +294,19 @@ function renderInstrument(instrument) {
     const controls = document.createElement("div");
     controls.className = "section-controls";
     for (const control of section.controls) {
-      controls.append(renderControl(control));
+      controls.append(renderControlItem(control));
     }
 
     sectionElement.append(controls);
     elements.controlsGrid.append(sectionElement);
   }
+}
+
+function renderControlItem(control) {
+  if (isVerticalSliderGroup(control)) {
+    return renderVerticalSliderGroup(control);
+  }
+  return renderControl(control);
 }
 
 function renderControl(control) {
@@ -326,10 +356,6 @@ function renderSliderControl(control) {
   range.value = String(currentValue);
   range.setAttribute("aria-label", control.label);
 
-  const meter = document.createElement("div");
-  meter.className = "value-meter";
-  meter.textContent = String(currentValue);
-
   const number = document.createElement("input");
   number.type = "number";
   number.min = String(control.min);
@@ -341,20 +367,77 @@ function renderSliderControl(control) {
     const midiValue = normalizeControlValue(control, value);
     range.value = String(midiValue);
     number.value = String(midiValue);
-    meter.textContent = String(midiValue);
     updateControlValue(control, midiValue);
   };
 
   range.addEventListener("input", () => syncValue(range.value));
   number.addEventListener("input", () => syncValue(number.value));
 
-  if (control.type === "vertical-slider") {
-    shell.append(range, meter, number);
-  } else {
-    shell.append(range, number);
-  }
+  shell.append(range, number);
 
   return shell;
+}
+
+function renderVerticalSliderGroup(group) {
+  const wrapper = document.createElement("article");
+  wrapper.className = "control vertical-slider-group";
+
+  const sliders = document.createElement("div");
+  sliders.className = "vertical-slider-group-controls";
+  if (group.description) {
+    sliders.title = group.description;
+  }
+  for (const control of group.controls) {
+    sliders.append(renderGroupedVerticalSlider(control));
+  }
+
+  wrapper.append(sliders);
+  return wrapper;
+}
+
+function renderGroupedVerticalSlider(control) {
+  const currentValue = getControlValue(control);
+  const item = document.createElement("div");
+  item.className = "vertical-slider-control";
+  item.dataset.cc = String(control.cc);
+
+  const label = document.createElement("div");
+  label.className = "vertical-slider-label";
+  label.textContent = control.label;
+  if (control.description) {
+    label.title = control.description;
+  }
+
+  const range = document.createElement("input");
+  range.type = "range";
+  range.min = String(control.min);
+  range.max = String(control.max);
+  range.value = String(currentValue);
+  range.setAttribute("aria-label", control.label);
+
+  const number = document.createElement("input");
+  number.type = "number";
+  number.min = String(control.min);
+  number.max = String(control.max);
+  number.value = String(currentValue);
+  number.setAttribute("aria-label", `${control.label} value`);
+
+  const cc = document.createElement("div");
+  cc.className = "vertical-slider-cc";
+  cc.textContent = `CC ${control.cc}`;
+
+  const syncValue = (value) => {
+    const midiValue = normalizeControlValue(control, value);
+    range.value = String(midiValue);
+    number.value = String(midiValue);
+    updateControlValue(control, midiValue);
+  };
+
+  range.addEventListener("input", () => syncValue(range.value));
+  number.addEventListener("input", () => syncValue(number.value));
+
+  item.append(label, range, number, cc);
+  return item;
 }
 
 function renderToggleControl(control) {
@@ -468,15 +551,11 @@ function syncRenderedControl(control, value) {
   if (control.type === "vertical-slider" || control.type === "horizontal-slider") {
     const range = wrapper.querySelector('input[type="range"]');
     const number = wrapper.querySelector('input[type="number"]');
-    const meter = wrapper.querySelector(".value-meter");
     if (range) {
       range.value = String(value);
     }
     if (number) {
       number.value = String(value);
-    }
-    if (meter) {
-      meter.textContent = String(value);
     }
     return;
   }
@@ -520,9 +599,23 @@ function findControlByCc(cc) {
   }
 
   for (const section of state.instrument.sections) {
-    const control = section.controls.find((candidate) => candidate.cc === cc);
+    const control = findSectionControlByCc(section, cc);
     if (control) {
       return control;
+    }
+  }
+  return null;
+}
+
+function findSectionControlByCc(section, cc) {
+  for (const candidate of section.controls) {
+    if (isVerticalSliderGroup(candidate)) {
+      const nestedControl = candidate.controls.find((control) => control.cc === cc);
+      if (nestedControl) {
+        return nestedControl;
+      }
+    } else if (candidate.cc === cc) {
+      return candidate;
     }
   }
   return null;
@@ -920,6 +1013,7 @@ function validateSection(rawSection) {
 
   return {
     name,
+    gridColumn: stringOr(rawSection["grid-column"] ?? rawSection.gridColumn, "").trim(),
     controls: rawSection.controls.map((control) => validateControl(control, name)),
   };
 }
@@ -929,6 +1023,38 @@ function validateControl(rawControl, sectionName) {
     throw new Error(`A control in section "${sectionName}" must be a mapping.`);
   }
 
+  const type = normalizeControlType(rawControl.type);
+  if (type === "vertical-slider-group") {
+    return validateVerticalSliderGroup(rawControl, sectionName);
+  }
+  if (!allowedControlTypes.has(type)) {
+    throw new Error(`Control "${rawControl.label || "unnamed"}" has unsupported type "${rawControl.type}".`);
+  }
+
+  return validateMidiControl(rawControl, sectionName, type);
+}
+
+function validateVerticalSliderGroup(rawGroup, sectionName) {
+  if (!Array.isArray(rawGroup.controls) || rawGroup.controls.length === 0) {
+    throw new Error(`A vertical slider group in section "${sectionName}" needs at least one control.`);
+  }
+
+  const controls = rawGroup.controls.map((rawControl) => {
+    const control = validateControl({ type: "vertical-slider", ...rawControl }, sectionName);
+    if (isVerticalSliderGroup(control) || control.type !== "vertical-slider") {
+      throw new Error(`A vertical slider group in section "${sectionName}" only supports vertical-slider controls.`);
+    }
+    return control;
+  });
+
+  return {
+    type: "vertical-slider-group",
+    description: stringOr(rawGroup.description, ""),
+    controls,
+  };
+}
+
+function validateMidiControl(rawControl, sectionName, type) {
   const cc = Number(rawControl.cc);
   if (!Number.isInteger(cc) || cc < 0 || cc > 127) {
     throw new Error(`Control "${rawControl.label || "unnamed"}" needs a CC number from 0 to 127.`);
@@ -937,11 +1063,6 @@ function validateControl(rawControl, sectionName) {
   const label = stringOr(rawControl.label || rawControl.description, "").trim();
   if (!label) {
     throw new Error(`CC ${cc} needs a label.`);
-  }
-
-  const type = normalizeControlType(rawControl.type);
-  if (!allowedControlTypes.has(type)) {
-    throw new Error(`CC ${cc} "${label}" has unsupported type "${rawControl.type}".`);
   }
 
   const min = Number(rawControl.min ?? 0);
@@ -971,6 +1092,10 @@ function validateControl(rawControl, sectionName) {
   }
 
   return control;
+}
+
+function isVerticalSliderGroup(control) {
+  return control.type === "vertical-slider-group";
 }
 
 function validatePosition(rawPosition, cc, controlLabel) {
@@ -1016,6 +1141,13 @@ function normalizeControlType(type) {
 
   if (normalized === "vertical" || normalized === "vertical-slider") {
     return "vertical-slider";
+  }
+  if (
+    normalized === "vertical-group" ||
+    normalized === "vertical-slider-group" ||
+    normalized === "vertical-sliders"
+  ) {
+    return "vertical-slider-group";
   }
   if (normalized === "horizontal" || normalized === "horizontal-slider" || normalized === "slider") {
     return "horizontal-slider";

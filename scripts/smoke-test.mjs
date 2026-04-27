@@ -177,7 +177,12 @@ vm.runInContext(appJs, context, { filename: "dist/app.js" });
 
 const title = ids.get("instrument-title").textContent;
 const summary = ids.get("control-summary").textContent;
-const controls = ids.get("controls-grid").querySelectorAll(".control");
+const controlsGrid = ids.get("controls-grid");
+const sectionPanels = controlsGrid.querySelectorAll(".section-panel");
+const controls = controlsGrid.querySelectorAll(".control");
+const midiControls = collectMidiControls(controlsGrid);
+const verticalSliderGroups = controlsGrid.querySelectorAll(".vertical-slider-group");
+const valueMeters = controlsGrid.querySelectorAll(".value-meter");
 
 if (title !== "Behringer JT Mini") {
   throw new Error(`Expected default title to render, got "${title}".`);
@@ -185,8 +190,23 @@ if (title !== "Behringer JT Mini") {
 if (!summary.includes("15 MIDI CC controls")) {
   throw new Error(`Expected default control count, got "${summary}".`);
 }
-if (controls.length !== 15) {
-  throw new Error(`Expected 15 rendered controls, got ${controls.length}.`);
+if (controls.length !== 12) {
+  throw new Error(`Expected 12 rendered control panels, got ${controls.length}.`);
+}
+if (midiControls.length !== 15) {
+  throw new Error(`Expected 15 rendered MIDI controls, got ${midiControls.length}.`);
+}
+if (verticalSliderGroups.length !== 1) {
+  throw new Error(`Expected one vertical slider group, got ${verticalSliderGroups.length}.`);
+}
+if (!verticalSliderGroups[0].firstElementChild?.classList.contains("vertical-slider-group-controls")) {
+  throw new Error("Expected vertical slider group to render without its own label header.");
+}
+if (!sectionPanels.some((sectionPanel) => sectionPanel.style.gridColumn === "span 2")) {
+  throw new Error("Expected a rendered section to use grid-column: span 2.");
+}
+if (valueMeters.length !== 0) {
+  throw new Error(`Expected no value meter elements, got ${valueMeters.length}.`);
 }
 
 runMonitorSmokeTest(monitorJs);
@@ -286,4 +306,14 @@ function walk(element, callback) {
     callback(child);
     walk(child, callback);
   }
+}
+
+function collectMidiControls(root) {
+  const matches = [];
+  walk(root, (element) => {
+    if (element.dataset.cc !== undefined) {
+      matches.push(element);
+    }
+  });
+  return matches;
 }

@@ -1,6 +1,6 @@
 name: Behringer JT Mini
 theme:
-  name: JT Mini GD
+  name: JT Mini
   colors:
     background: "#333232"
     panel: "#1a1c1d"
@@ -91,20 +91,19 @@ sections:
         description: Envelope depth routed to the filter.
         type: horizontal-slider
   - name: Envelope
+    grid-column: span 2
     controls:
-      - cc: 49
-        label: Envelope Attack Time
-        description: Envelope attack time.
-        type: horizontal-slider
-      - cc: 50
-        label: Envelope Decay Time
-        description: Envelope decay time.
-        type: horizontal-slider
-      - cc: 51
-        label: Envelope Sustain Level
-        description: Envelope sustain level.
-        type: horizontal-slider
-      - cc: 39
-        label: Envelope Release
-        description: Envelope release time.
-        type: horizontal-slider
+      - type: vertical-slider-group
+        controls:
+          - cc: 49
+            label: A
+            description: Envelope attack time.
+          - cc: 50
+            label: D
+            description: Envelope decay time.
+          - cc: 51
+            label: S
+            description: Envelope sustain level.
+          - cc: 39
+            label: R
+            description: Envelope release time.

@@ -1,5 +1,5 @@
-const DEFAULT_INSTRUMENT_YAML = "name: Behringer JT Mini\ntheme:\n  name: JT Mini GD\n  colors:\n    background: \"#333232\"\n    panel: \"#1a1c1d\"\n    panelAlt: \"#222627\"\n    text: \"#f4f1e8\"\n    muted: \"#aeb4ad\"\n    primary: \"#fe5a2d\"\n    accent: \"#FFFFFF\"\n    danger: \"#ff6b6b\"\nsections:\n  - name: Performance\n    controls:\n      - cc: 1\n        label: Modulation\n        description: Modulation amount.\n        type: horizontal-slider\n      - cc: 40\n        label: Voice Mode\n        description: Selects poly, unison, and arpeggiator voice modes.\n        type: switch\n        positions:\n          - label: Poly\n            value: 6\n          - label: Unison\n            value: 20\n          - label: Arp up\n            value: 40\n          - label: Arp down\n            value: 70\n          - label: Arp up and down\n            value: 100\n          - label: Random\n            value: 120\n      - cc: 41\n        label: Octave\n        description: Oscillator octave range.\n        type: switch\n        positions:\n          - label: 32'\n            value: 10\n          - label: 16'\n            value: 32\n          - label: 8'\n            value: 54\n          - label: 4'\n            value: 76\n          - label: 2'\n            value: 98\n          - label: 1'\n            value: 118\n  - name: LFO\n    controls:\n      - cc: 46\n        label: LFO Rate\n        description: LFO speed.\n        type: horizontal-slider\n      - cc: 37\n        label: LFO Delay Time\n        description: Delay before LFO modulation fades in.\n        type: horizontal-slider\n  - name: VCO\n    controls:\n      - cc: 36\n        label: VCO PWM Modulation\n        description: Pulse width modulation depth.\n        type: horizontal-slider\n      - cc: 42\n        label: VCO Detune\n        description: Detunes the oscillator.\n        type: horizontal-slider\n      - cc: 47\n        label: VCO Pitch Modulation\n        description: Pitch modulation amount.\n        type: horizontal-slider\n\n  - name: VCF\n    controls:\n      - cc: 44\n        label: VCF Cutoff\n        description: Filter cutoff frequency.\n        type: horizontal-slider\n      - cc: 48\n        label: VCF LFO Modulation\n        description: LFO depth routed to the filter.\n        type: horizontal-slider\n      - cc: 45\n        label: VCF Envelope Modulation\n        description: Envelope depth routed to the filter.\n        type: horizontal-slider\n  - name: Envelope\n    controls:\n      - cc: 49\n        label: Envelope Attack Time\n        description: Envelope attack time.\n        type: horizontal-slider\n      - cc: 50\n        label: Envelope Decay Time\n        description: Envelope decay time.\n        type: horizontal-slider\n      - cc: 51\n        label: Envelope Sustain Level\n        description: Envelope sustain level.\n        type: horizontal-slider\n      - cc: 39\n        label: Envelope Release\n        description: Envelope release time.\n        type: horizontal-slider";
-const PRESET_MANIFEST = [{"file":"behringer-jt-mini.yaml","name":"Behringer JT Mini","yaml":"name: Behringer JT Mini\ntheme:\n  name: JT Mini GD\n  colors:\n    background: \"#333232\"\n    panel: \"#1a1c1d\"\n    panelAlt: \"#222627\"\n    text: \"#f4f1e8\"\n    muted: \"#aeb4ad\"\n    primary: \"#fe5a2d\"\n    accent: \"#FFFFFF\"\n    danger: \"#ff6b6b\"\nsections:\n  - name: Performance\n    controls:\n      - cc: 1\n        label: Modulation\n        description: Modulation amount.\n        type: horizontal-slider\n      - cc: 40\n        label: Voice Mode\n        description: Selects poly, unison, and arpeggiator voice modes.\n        type: switch\n        positions:\n          - label: Poly\n            value: 6\n          - label: Unison\n            value: 20\n          - label: Arp up\n            value: 40\n          - label: Arp down\n            value: 70\n          - label: Arp up and down\n            value: 100\n          - label: Random\n            value: 120\n      - cc: 41\n        label: Octave\n        description: Oscillator octave range.\n        type: switch\n        positions:\n          - label: 32'\n            value: 10\n          - label: 16'\n            value: 32\n          - label: 8'\n            value: 54\n          - label: 4'\n            value: 76\n          - label: 2'\n            value: 98\n          - label: 1'\n            value: 118\n  - name: LFO\n    controls:\n      - cc: 46\n        label: LFO Rate\n        description: LFO speed.\n        type: horizontal-slider\n      - cc: 37\n        label: LFO Delay Time\n        description: Delay before LFO modulation fades in.\n        type: horizontal-slider\n  - name: VCO\n    controls:\n      - cc: 36\n        label: VCO PWM Modulation\n        description: Pulse width modulation depth.\n        type: horizontal-slider\n      - cc: 42\n        label: VCO Detune\n        description: Detunes the oscillator.\n        type: horizontal-slider\n      - cc: 47\n        label: VCO Pitch Modulation\n        description: Pitch modulation amount.\n        type: horizontal-slider\n\n  - name: VCF\n    controls:\n      - cc: 44\n        label: VCF Cutoff\n        description: Filter cutoff frequency.\n        type: horizontal-slider\n      - cc: 48\n        label: VCF LFO Modulation\n        description: LFO depth routed to the filter.\n        type: horizontal-slider\n      - cc: 45\n        label: VCF Envelope Modulation\n        description: Envelope depth routed to the filter.\n        type: horizontal-slider\n  - name: Envelope\n    controls:\n      - cc: 49\n        label: Envelope Attack Time\n        description: Envelope attack time.\n        type: horizontal-slider\n      - cc: 50\n        label: Envelope Decay Time\n        description: Envelope decay time.\n        type: horizontal-slider\n      - cc: 51\n        label: Envelope Sustain Level\n        description: Envelope sustain level.\n        type: horizontal-slider\n      - cc: 39\n        label: Envelope Release\n        description: Envelope release time.\n        type: horizontal-slider"},{"file":"behringer-jt-4000m-micro.yaml","name":"Behringer JT-4000M Micro","yaml":"name: Behringer JT-4000M Micro\ntheme:\n  name: JT-4000M Micro\n  colors:\n    background: \"#111412\"\n    panel: \"#171d1a\"\n    panelAlt: \"#22302b\"\n    text: \"#f3f7ef\"\n    muted: \"#b5bcb3\"\n    primary: \"#7ce36f\"\n    accent: \"#79c7ff\"\n    danger: \"#ff6b6b\"\nsections:\n  - name: Performance\n    controls:\n      - cc: 1\n        label: Modulation\n        description: Modulation amount.\n        type: vertical-slider\n      - cc: 5\n        label: Portamento Time\n        description: Portamento time.\n        type: horizontal-slider\n      - cc: 29\n        label: Oscillator Balance\n        description: Balance between oscillators.\n        type: horizontal-slider\n  - name: Oscillators\n    controls:\n      - cc: 24\n        label: OSC1 Wave\n        description: OSC1 wave selection.\n        type: horizontal-slider\n      - cc: 25\n        label: OSC2 Wave\n        description: OSC2 wave selection.\n        type: horizontal-slider\n      - cc: 95\n        label: Ring Modulation Amount\n        description: Ring modulation amount.\n        type: horizontal-slider\n      - cc: 96\n        label: Ring Modulation\n        description: Ring modulation on or off.\n        type: toggle-button\n        offValue: 0\n        onValue: 127\n      - cc: 113\n        label: OSC1 PWM/Supersaw Detune/FM Feedback\n        description: OSC1 PWM, supersaw detune, or FM feedback.\n        type: horizontal-slider\n      - cc: 114\n        label: OSC2 PWM\n        description: OSC2 pulse width modulation.\n        type: horizontal-slider\n  - name: LFO\n    controls:\n      - cc: 54\n        label: LFO 1 Waveform\n        description: LFO 1 waveform.\n        type: switch\n        positions:\n          - label: Triangle\n            value: 21\n          - label: Square\n            value: 64\n          - label: Saw\n            value: 106\n      - cc: 55\n        label: LFO 2 Waveform\n        description: LFO 2 waveform.\n        type: switch\n        positions:\n          - label: Triangle\n            value: 21\n          - label: Square\n            value: 64\n          - label: Saw\n            value: 106\n      - cc: 56\n        label: LFO 1 Destination\n        description: LFO 1 destination.\n        type: switch\n        positions:\n          - label: VCF\n            value: 32\n          - label: OSC\n            value: 96\n      - cc: 70\n        label: LFO 1 Amount\n        description: LFO 1 modulation amount.\n        type: horizontal-slider\n      - cc: 28\n        label: LFO 2 Amount\n        description: LFO 2 modulation amount.\n        type: horizontal-slider\n      - cc: 72\n        label: LFO 1 Rate\n        description: LFO 1 rate.\n        type: horizontal-slider\n      - cc: 73\n        label: LFO 2 Rate\n        description: LFO 2 rate.\n        type: horizontal-slider\n  - name: Filter\n    controls:\n      - cc: 74\n        label: VCF Cutoff\n        description: Filter cutoff.\n        type: vertical-slider\n      - cc: 71\n        label: VCF Resonance\n        description: Filter resonance.\n        type: horizontal-slider\n      - cc: 47\n        label: Filter Envelope Amount\n        description: Filter envelope amount.\n        type: horizontal-slider\n  - name: VCA Envelope\n    controls:\n      - cc: 81\n        label: VCA EG Attack\n        description: VCA envelope attack.\n        type: horizontal-slider\n      - cc: 82\n        label: VCA EG Decay\n        description: VCA envelope decay.\n        type: horizontal-slider\n      - cc: 83\n        label: VCA EG Sustain\n        description: VCA envelope sustain.\n        type: horizontal-slider\n      - cc: 84\n        label: VCA EG Release\n        description: VCA envelope release.\n        type: horizontal-slider\n  - name: VCF Envelope\n    controls:\n      - cc: 85\n        label: VCF EG Attack\n        description: VCF envelope attack.\n        type: horizontal-slider\n      - cc: 86\n        label: VCF EG Decay\n        description: VCF envelope decay.\n        type: horizontal-slider\n      - cc: 87\n        label: VCF EG Sustain\n        description: VCF envelope sustain.\n        type: horizontal-slider\n      - cc: 88\n        label: VCF EG Release\n        description: VCF envelope release.\n        type: horizontal-slider\n  - name: Tuning\n    controls:\n      - cc: 111\n        label: OSC1 Fine Tune\n        description: OSC1 fine tune.\n        type: horizontal-slider\n      - cc: 112\n        label: OSC2 Fine Tune\n        description: OSC2 fine tune.\n        type: horizontal-slider\n      - cc: 115\n        label: OSC1 Coarse Tune\n        description: OSC1 coarse tune.\n        type: horizontal-slider\n      - cc: 116\n        label: OSC2 Coarse Tune\n        description: OSC2 coarse tune.\n        type: horizontal-slider\n"},{"file":"behringer-pro-vs-mini.yaml","name":"Behringer Pro VS Mini","yaml":"name: Behringer Pro VS Mini\ntheme:\n  name: Pro VS Mini\n  colors:\n    background: \"#111217\"\n    panel: \"#181b22\"\n    panelAlt: \"#232833\"\n    text: \"#f7f1e3\"\n    muted: \"#b4bac4\"\n    primary: \"#5ee1ff\"\n    accent: \"#ffc857\"\n    danger: \"#ff6b7a\"\nsections:\n  - name: Performance\n    controls:\n      - cc: 1\n        label: Modulation\n        description: Modulation amount.\n        type: vertical-slider\n      - cc: 91\n        label: Chorus Depth\n        description: Chorus depth.\n        type: horizontal-slider\n        max: 99\n      - cc: 92\n        label: Chorus Rate\n        description: Chorus rate.\n        type: horizontal-slider\n        max: 99\n  - name: Voice Waves\n    controls:\n      - cc: 24\n        label: Voice A Wave\n        description: Voice A wavetable selection.\n        type: horizontal-slider\n      - cc: 25\n        label: Voice B Wave\n        description: Voice B wavetable selection.\n        type: horizontal-slider\n      - cc: 26\n        label: Voice C Wave\n        description: Voice C wavetable selection.\n        type: horizontal-slider\n      - cc: 27\n        label: Voice D Wave\n        description: Voice D wavetable selection.\n        type: horizontal-slider\n  - name: LFO\n    controls:\n      - cc: 54\n        label: LFO 1 Waveform\n        description: LFO 1 waveform.\n        type: switch\n        positions:\n          - label: Triangle\n            value: 21\n          - label: Square\n            value: 64\n          - label: Saw\n            value: 106\n      - cc: 55\n        label: LFO 2 Waveform\n        description: LFO 2 waveform.\n        type: switch\n        positions:\n          - label: Triangle\n            value: 21\n          - label: Square\n            value: 64\n          - label: Saw\n            value: 106\n      - cc: 56\n        label: LFO 1 Destination\n        description: LFO 1 destination.\n        type: switch\n        positions:\n          - label: VCF\n            value: 32\n          - label: OSC\n            value: 96\n      - cc: 70\n        label: LFO 1 Amount\n        description: LFO 1 modulation amount.\n        type: horizontal-slider\n        max: 99\n      - cc: 28\n        label: LFO 2 Amount\n        description: LFO 2 modulation amount.\n        type: horizontal-slider\n        max: 99\n      - cc: 72\n        label: LFO 1 Rate\n        description: LFO 1 rate.\n        type: horizontal-slider\n        max: 99\n      - cc: 73\n        label: LFO 2 Rate\n        description: LFO 2 rate.\n        type: horizontal-slider\n        max: 99\n  - name: Filter\n    controls:\n      - cc: 74\n        label: Filter Cutoff\n        description: Filter cutoff.\n        type: vertical-slider\n        max: 99\n      - cc: 71\n        label: Filter Resonance\n        description: Filter resonance.\n        type: horizontal-slider\n        max: 99\n      - cc: 47\n        label: Filter Env Amount\n        description: Filter envelope amount.\n        type: horizontal-slider\n  - name: Amplifier Envelope\n    controls:\n      - cc: 81\n        label: Amplitude Envelope Attack\n        description: Amplitude envelope attack.\n        type: horizontal-slider\n        max: 99\n      - cc: 82\n        label: Amplitude Envelope Decay\n        description: Amplitude envelope decay.\n        type: horizontal-slider\n        max: 99\n      - cc: 83\n        label: Amplitude Envelope Sustain\n        description: Amplitude envelope sustain.\n        type: horizontal-slider\n        max: 99\n      - cc: 84\n        label: Amplitude Envelope Release\n        description: Amplitude envelope release.\n        type: horizontal-slider\n        max: 99\n  - name: Filter Envelope\n    controls:\n      - cc: 85\n        label: Filter Envelope Attack\n        description: Filter envelope attack.\n        type: horizontal-slider\n        max: 99\n      - cc: 86\n        label: Filter Envelope Decay\n        description: Filter envelope decay.\n        type: horizontal-slider\n        max: 99\n      - cc: 87\n        label: Filter Envelope Sustain\n        description: Filter envelope sustain.\n        type: horizontal-slider\n        max: 99\n      - cc: 88\n        label: Filter Envelope Release\n        description: Filter envelope release.\n        type: horizontal-slider\n        max: 99\n  - name: Tuning\n    controls:\n      - cc: 111\n        label: Voice A Fine Tuning\n        description: Voice A fine tuning.\n        type: horizontal-slider\n        max: 99\n      - cc: 112\n        label: Voice B Fine Tuning\n        description: Voice B fine tuning.\n        type: horizontal-slider\n        max: 99\n      - cc: 113\n        label: Voice C Fine Tuning\n        description: Voice C fine tuning.\n        type: horizontal-slider\n        max: 99\n      - cc: 114\n        label: Voice D Fine Tuning\n        description: Voice D fine tuning.\n        type: horizontal-slider\n        max: 99\n      - cc: 115\n        label: Voice A Coarse Tuning\n        description: Voice A coarse tuning.\n        type: horizontal-slider\n        max: 99\n      - cc: 116\n        label: Voice B Coarse Tuning\n        description: Voice B coarse tuning.\n        type: horizontal-slider\n        max: 99\n      - cc: 117\n        label: Voice C Coarse Tuning\n        description: Voice C coarse tuning.\n        type: horizontal-slider\n        max: 99\n      - cc: 118\n        label: Voice D Coarse Tuning\n        description: Voice D coarse tuning.\n        type: horizontal-slider\n        max: 99\n"}];
+const DEFAULT_INSTRUMENT_YAML = "name: Behringer JT Mini\ntheme:\n  name: JT Mini\n  colors:\n    background: \"#333232\"\n    panel: \"#1a1c1d\"\n    panelAlt: \"#222627\"\n    text: \"#f4f1e8\"\n    muted: \"#aeb4ad\"\n    primary: \"#fe5a2d\"\n    accent: \"#FFFFFF\"\n    danger: \"#ff6b6b\"\nsections:\n  - name: Performance\n    controls:\n      - cc: 1\n        label: Modulation\n        description: Modulation amount.\n        type: horizontal-slider\n      - cc: 40\n        label: Voice Mode\n        description: Selects poly, unison, and arpeggiator voice modes.\n        type: switch\n        positions:\n          - label: Poly\n            value: 6\n          - label: Unison\n            value: 20\n          - label: Arp up\n            value: 40\n          - label: Arp down\n            value: 70\n          - label: Arp up and down\n            value: 100\n          - label: Random\n            value: 120\n      - cc: 41\n        label: Octave\n        description: Oscillator octave range.\n        type: switch\n        positions:\n          - label: 32'\n            value: 10\n          - label: 16'\n            value: 32\n          - label: 8'\n            value: 54\n          - label: 4'\n            value: 76\n          - label: 2'\n            value: 98\n          - label: 1'\n            value: 118\n  - name: LFO\n    controls:\n      - cc: 46\n        label: LFO Rate\n        description: LFO speed.\n        type: horizontal-slider\n      - cc: 37\n        label: LFO Delay Time\n        description: Delay before LFO modulation fades in.\n        type: horizontal-slider\n  - name: VCO\n    controls:\n      - cc: 36\n        label: VCO PWM Modulation\n        description: Pulse width modulation depth.\n        type: horizontal-slider\n      - cc: 42\n        label: VCO Detune\n        description: Detunes the oscillator.\n        type: horizontal-slider\n      - cc: 47\n        label: VCO Pitch Modulation\n        description: Pitch modulation amount.\n        type: horizontal-slider\n\n  - name: VCF\n    controls:\n      - cc: 44\n        label: VCF Cutoff\n        description: Filter cutoff frequency.\n        type: horizontal-slider\n      - cc: 48\n        label: VCF LFO Modulation\n        description: LFO depth routed to the filter.\n        type: horizontal-slider\n      - cc: 45\n        label: VCF Envelope Modulation\n        description: Envelope depth routed to the filter.\n        type: horizontal-slider\n  - name: Envelope\n    grid-column: span 2\n    controls:\n      - type: vertical-slider-group\n        controls:\n          - cc: 49\n            label: A\n            description: Envelope attack time.\n          - cc: 50\n            label: D\n            description: Envelope decay time.\n          - cc: 51\n            label: S\n            description: Envelope sustain level.\n          - cc: 39\n            label: R\n            description: Envelope release time.\n";
+const PRESET_MANIFEST = [{"file":"behringer-jt-mini.yaml","name":"Behringer JT Mini","yaml":"name: Behringer JT Mini\ntheme:\n  name: JT Mini\n  colors:\n    background: \"#333232\"\n    panel: \"#1a1c1d\"\n    panelAlt: \"#222627\"\n    text: \"#f4f1e8\"\n    muted: \"#aeb4ad\"\n    primary: \"#fe5a2d\"\n    accent: \"#FFFFFF\"\n    danger: \"#ff6b6b\"\nsections:\n  - name: Performance\n    controls:\n      - cc: 1\n        label: Modulation\n        description: Modulation amount.\n        type: horizontal-slider\n      - cc: 40\n        label: Voice Mode\n        description: Selects poly, unison, and arpeggiator voice modes.\n        type: switch\n        positions:\n          - label: Poly\n            value: 6\n          - label: Unison\n            value: 20\n          - label: Arp up\n            value: 40\n          - label: Arp down\n            value: 70\n          - label: Arp up and down\n            value: 100\n          - label: Random\n            value: 120\n      - cc: 41\n        label: Octave\n        description: Oscillator octave range.\n        type: switch\n        positions:\n          - label: 32'\n            value: 10\n          - label: 16'\n            value: 32\n          - label: 8'\n            value: 54\n          - label: 4'\n            value: 76\n          - label: 2'\n            value: 98\n          - label: 1'\n            value: 118\n  - name: LFO\n    controls:\n      - cc: 46\n        label: LFO Rate\n        description: LFO speed.\n        type: horizontal-slider\n      - cc: 37\n        label: LFO Delay Time\n        description: Delay before LFO modulation fades in.\n        type: horizontal-slider\n  - name: VCO\n    controls:\n      - cc: 36\n        label: VCO PWM Modulation\n        description: Pulse width modulation depth.\n        type: horizontal-slider\n      - cc: 42\n        label: VCO Detune\n        description: Detunes the oscillator.\n        type: horizontal-slider\n      - cc: 47\n        label: VCO Pitch Modulation\n        description: Pitch modulation amount.\n        type: horizontal-slider\n\n  - name: VCF\n    controls:\n      - cc: 44\n        label: VCF Cutoff\n        description: Filter cutoff frequency.\n        type: horizontal-slider\n      - cc: 48\n        label: VCF LFO Modulation\n        description: LFO depth routed to the filter.\n        type: horizontal-slider\n      - cc: 45\n        label: VCF Envelope Modulation\n        description: Envelope depth routed to the filter.\n        type: horizontal-slider\n  - name: Envelope\n    grid-column: span 2\n    controls:\n      - type: vertical-slider-group\n        controls:\n          - cc: 49\n            label: A\n            description: Envelope attack time.\n          - cc: 50\n            label: D\n            description: Envelope decay time.\n          - cc: 51\n            label: S\n            description: Envelope sustain level.\n          - cc: 39\n            label: R\n            description: Envelope release time.\n"},{"file":"behringer-jt-4000m-micro.yaml","name":"Behringer JT-4000M Micro","yaml":"name: Behringer JT-4000M Micro\ntheme:\n  name: JT-4000M Micro\n  colors:\n    background: \"#111412\"\n    panel: \"#171d1a\"\n    panelAlt: \"#22302b\"\n    text: \"#f3f7ef\"\n    muted: \"#b5bcb3\"\n    primary: \"#7ce36f\"\n    accent: \"#79c7ff\"\n    danger: \"#ff6b6b\"\nsections:\n  - name: Performance\n    controls:\n      - cc: 1\n        label: Modulation\n        description: Modulation amount.\n        type: vertical-slider\n      - cc: 5\n        label: Portamento Time\n        description: Portamento time.\n        type: horizontal-slider\n      - cc: 29\n        label: Oscillator Balance\n        description: Balance between oscillators.\n        type: horizontal-slider\n  - name: Oscillators\n    controls:\n      - cc: 24\n        label: OSC1 Wave\n        description: OSC1 wave selection.\n        type: horizontal-slider\n      - cc: 25\n        label: OSC2 Wave\n        description: OSC2 wave selection.\n        type: horizontal-slider\n      - cc: 95\n        label: Ring Modulation Amount\n        description: Ring modulation amount.\n        type: horizontal-slider\n      - cc: 96\n        label: Ring Modulation\n        description: Ring modulation on or off.\n        type: toggle-button\n        offValue: 0\n        onValue: 127\n      - cc: 113\n        label: OSC1 PWM/Supersaw Detune/FM Feedback\n        description: OSC1 PWM, supersaw detune, or FM feedback.\n        type: horizontal-slider\n      - cc: 114\n        label: OSC2 PWM\n        description: OSC2 pulse width modulation.\n        type: horizontal-slider\n  - name: LFO\n    controls:\n      - cc: 54\n        label: LFO 1 Waveform\n        description: LFO 1 waveform.\n        type: switch\n        positions:\n          - label: Triangle\n            value: 21\n          - label: Square\n            value: 64\n          - label: Saw\n            value: 106\n      - cc: 55\n        label: LFO 2 Waveform\n        description: LFO 2 waveform.\n        type: switch\n        positions:\n          - label: Triangle\n            value: 21\n          - label: Square\n            value: 64\n          - label: Saw\n            value: 106\n      - cc: 56\n        label: LFO 1 Destination\n        description: LFO 1 destination.\n        type: switch\n        positions:\n          - label: VCF\n            value: 32\n          - label: OSC\n            value: 96\n      - cc: 70\n        label: LFO 1 Amount\n        description: LFO 1 modulation amount.\n        type: horizontal-slider\n      - cc: 28\n        label: LFO 2 Amount\n        description: LFO 2 modulation amount.\n        type: horizontal-slider\n      - cc: 72\n        label: LFO 1 Rate\n        description: LFO 1 rate.\n        type: horizontal-slider\n      - cc: 73\n        label: LFO 2 Rate\n        description: LFO 2 rate.\n        type: horizontal-slider\n  - name: Filter\n    controls:\n      - cc: 74\n        label: VCF Cutoff\n        description: Filter cutoff.\n        type: vertical-slider\n      - cc: 71\n        label: VCF Resonance\n        description: Filter resonance.\n        type: horizontal-slider\n      - cc: 47\n        label: Filter Envelope Amount\n        description: Filter envelope amount.\n        type: horizontal-slider\n  - name: VCA Envelope\n    controls:\n      - cc: 81\n        label: VCA EG Attack\n        description: VCA envelope attack.\n        type: horizontal-slider\n      - cc: 82\n        label: VCA EG Decay\n        description: VCA envelope decay.\n        type: horizontal-slider\n      - cc: 83\n        label: VCA EG Sustain\n        description: VCA envelope sustain.\n        type: horizontal-slider\n      - cc: 84\n        label: VCA EG Release\n        description: VCA envelope release.\n        type: horizontal-slider\n  - name: VCF Envelope\n    controls:\n      - cc: 85\n        label: VCF EG Attack\n        description: VCF envelope attack.\n        type: horizontal-slider\n      - cc: 86\n        label: VCF EG Decay\n        description: VCF envelope decay.\n        type: horizontal-slider\n      - cc: 87\n        label: VCF EG Sustain\n        description: VCF envelope sustain.\n        type: horizontal-slider\n      - cc: 88\n        label: VCF EG Release\n        description: VCF envelope release.\n        type: horizontal-slider\n  - name: Tuning\n    controls:\n      - cc: 111\n        label: OSC1 Fine Tune\n        description: OSC1 fine tune.\n        type: horizontal-slider\n      - cc: 112\n        label: OSC2 Fine Tune\n        description: OSC2 fine tune.\n        type: horizontal-slider\n      - cc: 115\n        label: OSC1 Coarse Tune\n        description: OSC1 coarse tune.\n        type: horizontal-slider\n      - cc: 116\n        label: OSC2 Coarse Tune\n        description: OSC2 coarse tune.\n        type: horizontal-slider\n"},{"file":"behringer-pro-vs-mini.yaml","name":"Behringer Pro VS Mini","yaml":"name: Behringer Pro VS Mini\ntheme:\n  name: Pro VS Mini\n  colors:\n    background: \"#111217\"\n    panel: \"#181b22\"\n    panelAlt: \"#232833\"\n    text: \"#f7f1e3\"\n    muted: \"#b4bac4\"\n    primary: \"#5ee1ff\"\n    accent: \"#ffc857\"\n    danger: \"#ff6b7a\"\nsections:\n  - name: Performance\n    controls:\n      - cc: 1\n        label: Modulation\n        description: Modulation amount.\n        type: horizontal-slider\n      - cc: 91\n        label: Chorus Depth\n        description: Chorus depth.\n        type: horizontal-slider\n        max: 99\n      - cc: 92\n        label: Chorus Rate\n        description: Chorus rate.\n        type: horizontal-slider\n        max: 99\n  - name: Voice Waves\n    controls:\n      - cc: 24\n        label: Voice A Wave\n        description: Voice A wavetable selection.\n        type: horizontal-slider\n      - cc: 25\n        label: Voice B Wave\n        description: Voice B wavetable selection.\n        type: horizontal-slider\n      - cc: 26\n        label: Voice C Wave\n        description: Voice C wavetable selection.\n        type: horizontal-slider\n      - cc: 27\n        label: Voice D Wave\n        description: Voice D wavetable selection.\n        type: horizontal-slider\n  - name: LFO\n    controls:\n      - cc: 54\n        label: LFO 1 Waveform\n        description: LFO 1 waveform.\n        type: switch\n        positions:\n          - label: Triangle\n            value: 21\n          - label: Square\n            value: 64\n          - label: Saw\n            value: 106\n      - cc: 56\n        label: LFO 1 Destination\n        description: LFO 1 destination.\n        type: switch\n        positions:\n          - label: VCF\n            value: 32\n          - label: OSC\n            value: 96\n      - cc: 72\n        label: LFO 1 Rate\n        description: LFO 1 rate.\n        type: horizontal-slider\n        max: 99\n      - cc: 70\n        label: LFO 1 Amount\n        description: LFO 1 modulation amount.\n        type: horizontal-slider\n        max: 99\n      - cc: 55\n        label: LFO 2 Waveform\n        description: LFO 2 waveform.\n        type: switch\n        positions:\n          - label: Triangle\n            value: 21\n          - label: Square\n            value: 64\n          - label: Saw\n            value: 106\n      - cc: 28\n        label: LFO 2 Amount\n        description: LFO 2 modulation amount.\n        type: horizontal-slider\n        max: 99\n      - cc: 73\n        label: LFO 2 Rate\n        description: LFO 2 rate.\n        type: horizontal-slider\n        max: 99\n  - name: Filter\n    controls:\n      - cc: 74\n        label: Filter Cutoff\n        description: Filter cutoff.\n        type: horizontal-slider\n        max: 99\n      - cc: 71\n        label: Filter Resonance\n        description: Filter resonance.\n        type: horizontal-slider\n        max: 99\n      - cc: 47\n        label: Filter Env Amount\n        description: Filter envelope amount.\n        type: horizontal-slider\n  - name: Amplifier Envelope\n    grid-column: span 2\n    controls:\n      - type: vertical-slider-group\n        controls:\n          - cc: 81\n            label: A\n            description: Amplitude envelope attack.\n            type: vertical-slider\n            max: 99\n          - cc: 82\n            label: D\n            description: Amplitude envelope decay.\n            type: vertical-slider\n            max: 99\n          - cc: 83\n            label: S\n            description: Amplitude envelope sustain.\n            type: vertical-slider\n            max: 99\n          - cc: 84\n            label: R\n            description: Amplitude envelope release.\n            type: vertical-slider\n            max: 99\n  - name: Filter Envelope\n    grid-column: span 2\n    controls:\n      - type: vertical-slider-group\n        controls:\n          - cc: 85\n            label: A\n            description: Filter envelope attack.\n            type: vertical-slider\n            max: 99\n          - cc: 86\n            label: D\n            description: Filter envelope decay.\n            type: vertical-slider\n            max: 99\n          - cc: 87\n            label: S\n            description: Filter envelope sustain.\n            type: vertical-slider\n            max: 99\n          - cc: 88\n            label: R\n            description: Filter envelope release.\n            type: vertical-slider\n            max: 99\n  - name: Tuning\n    grid-column: span 3\n    controls:\n      - type: vertical-slider-group\n        controls:\n          - cc: 115\n            label: A Coarse\n            description: Voice A coarse tuning.\n            type: vertical-slider\n            max: 99\n          - cc: 111\n            label: A Fine\n            description: Voice A fine tuning.\n            type: vertical-slider\n            max: 99\n          - cc: 116\n            label: B Coarse\n            description: Voice B coarse tuning.\n            type: vertical-slider\n            max: 99\n          - cc: 112\n            label: B Fine\n            description: Voice B fine tuning.\n            type: vertical-slider\n            max: 99\n          - cc: 117\n            label: C Coarse\n            description: Voice C coarse tuning.\n            type: vertical-slider\n            max: 99\n          - cc: 113\n            label: C Fine\n            description: Voice C fine tuning.\n            type: vertical-slider\n            max: 99\n          - cc: 118\n            label: D Coarse\n            description: Voice D coarse tuning.\n            type: vertical-slider\n            max: 99\n          - cc: 114\n            label: D Fine\n            description: Voice D fine tuning.\n            type: vertical-slider\n            max: 99\n"}];
 const MIDI_NOTE_MIDDLE_C = 60;
 const MIDI_NOTE_VELOCITY = 96;
 const LOOP_INTERVAL_MS = 3000;
@@ -10,6 +10,7 @@ const MIDI_STOP = 0xfc;
 
 const allowedControlTypes = new Set([
   "vertical-slider",
+  "vertical-slider-group",
   "horizontal-slider",
   "switch",
   "toggle-button",
@@ -173,7 +174,15 @@ function setParseStatus(message, stateName) {
 }
 
 function countControls(instrument) {
-  return instrument.sections.reduce((count, section) => count + section.controls.length, 0);
+  return instrument.sections.reduce(
+    (count, section) => count + section.controls.reduce((sectionCount, control) => {
+      if (isVerticalSliderGroup(control)) {
+        return sectionCount + control.controls.length;
+      }
+      return sectionCount + 1;
+    }, 0),
+    0,
+  );
 }
 
 function renderInstrument(instrument) {
@@ -193,6 +202,9 @@ function renderInstrument(instrument) {
   for (const section of instrument.sections) {
     const sectionElement = document.createElement("section");
     sectionElement.className = "section-panel";
+    if (section.gridColumn) {
+      sectionElement.style.gridColumn = section.gridColumn;
+    }
 
     const heading = document.createElement("h3");
     heading.textContent = section.name;
@@ -201,12 +213,19 @@ function renderInstrument(instrument) {
     const controls = document.createElement("div");
     controls.className = "section-controls";
     for (const control of section.controls) {
-      controls.append(renderControl(control));
+      controls.append(renderControlItem(control));
     }
 
     sectionElement.append(controls);
     elements.controlsGrid.append(sectionElement);
   }
+}
+
+function renderControlItem(control) {
+  if (isVerticalSliderGroup(control)) {
+    return renderVerticalSliderGroup(control);
+  }
+  return renderControl(control);
 }
 
 function renderControl(control) {
@@ -256,10 +275,6 @@ function renderSliderControl(control) {
   range.value = String(currentValue);
   range.setAttribute("aria-label", control.label);
 
-  const meter = document.createElement("div");
-  meter.className = "value-meter";
-  meter.textContent = String(currentValue);
-
   const number = document.createElement("input");
   number.type = "number";
   number.min = String(control.min);
@@ -271,20 +286,77 @@ function renderSliderControl(control) {
     const midiValue = normalizeControlValue(control, value);
     range.value = String(midiValue);
     number.value = String(midiValue);
-    meter.textContent = String(midiValue);
     updateControlValue(control, midiValue);
   };
 
   range.addEventListener("input", () => syncValue(range.value));
   number.addEventListener("input", () => syncValue(number.value));
 
-  if (control.type === "vertical-slider") {
-    shell.append(range, meter, number);
-  } else {
-    shell.append(range, number);
-  }
+  shell.append(range, number);
 
   return shell;
+}
+
+function renderVerticalSliderGroup(group) {
+  const wrapper = document.createElement("article");
+  wrapper.className = "control vertical-slider-group";
+
+  const sliders = document.createElement("div");
+  sliders.className = "vertical-slider-group-controls";
+  if (group.description) {
+    sliders.title = group.description;
+  }
+  for (const control of group.controls) {
+    sliders.append(renderGroupedVerticalSlider(control));
+  }
+
+  wrapper.append(sliders);
+  return wrapper;
+}
+
+function renderGroupedVerticalSlider(control) {
+  const currentValue = getControlValue(control);
+  const item = document.createElement("div");
+  item.className = "vertical-slider-control";
+  item.dataset.cc = String(control.cc);
+
+  const label = document.createElement("div");
+  label.className = "vertical-slider-label";
+  label.textContent = control.label;
+  if (control.description) {
+    label.title = control.description;
+  }
+
+  const range = document.createElement("input");
+  range.type = "range";
+  range.min = String(control.min);
+  range.max = String(control.max);
+  range.value = String(currentValue);
+  range.setAttribute("aria-label", control.label);
+
+  const number = document.createElement("input");
+  number.type = "number";
+  number.min = String(control.min);
+  number.max = String(control.max);
+  number.value = String(currentValue);
+  number.setAttribute("aria-label", `${control.label} value`);
+
+  const cc = document.createElement("div");
+  cc.className = "vertical-slider-cc";
+  cc.textContent = `CC ${control.cc}`;
+
+  const syncValue = (value) => {
+    const midiValue = normalizeControlValue(control, value);
+    range.value = String(midiValue);
+    number.value = String(midiValue);
+    updateControlValue(control, midiValue);
+  };
+
+  range.addEventListener("input", () => syncValue(range.value));
+  number.addEventListener("input", () => syncValue(number.value));
+
+  item.append(label, range, number, cc);
+  return item;
 }
 
 function renderToggleControl(control) {
@@ -398,15 +470,11 @@ function syncRenderedControl(control, value) {
   if (control.type === "vertical-slider" || control.type === "horizontal-slider") {
     const range = wrapper.querySelector('input[type="range"]');
     const number = wrapper.querySelector('input[type="number"]');
-    const meter = wrapper.querySelector(".value-meter");
     if (range) {
       range.value = String(value);
     }
     if (number) {
       number.value = String(value);
-    }
-    if (meter) {
-      meter.textContent = String(value);
     }
     return;
   }
@@ -450,9 +518,23 @@ function findControlByCc(cc) {
   }
 
   for (const section of state.instrument.sections) {
-    const control = section.controls.find((candidate) => candidate.cc === cc);
+    const control = findSectionControlByCc(section, cc);
     if (control) {
       return control;
+    }
+  }
+  return null;
+}
+
+function findSectionControlByCc(section, cc) {
+  for (const candidate of section.controls) {
+    if (isVerticalSliderGroup(candidate)) {
+      const nestedControl = candidate.controls.find((control) => control.cc === cc);
+      if (nestedControl) {
+        return nestedControl;
+      }
+    } else if (candidate.cc === cc) {
+      return candidate;
     }
   }
   return null;
@@ -850,6 +932,7 @@ function validateSection(rawSection) {
 
   return {
     name,
+    gridColumn: stringOr(rawSection["grid-column"] ?? rawSection.gridColumn, "").trim(),
     controls: rawSection.controls.map((control) => validateControl(control, name)),
   };
 }
@@ -859,6 +942,38 @@ function validateControl(rawControl, sectionName) {
     throw new Error(`A control in section "${sectionName}" must be a mapping.`);
   }
 
+  const type = normalizeControlType(rawControl.type);
+  if (type === "vertical-slider-group") {
+    return validateVerticalSliderGroup(rawControl, sectionName);
+  }
+  if (!allowedControlTypes.has(type)) {
+    throw new Error(`Control "${rawControl.label || "unnamed"}" has unsupported type "${rawControl.type}".`);
+  }
+
+  return validateMidiControl(rawControl, sectionName, type);
+}
+
+function validateVerticalSliderGroup(rawGroup, sectionName) {
+  if (!Array.isArray(rawGroup.controls) || rawGroup.controls.length === 0) {
+    throw new Error(`A vertical slider group in section "${sectionName}" needs at least one control.`);
+  }
+
+  const controls = rawGroup.controls.map((rawControl) => {
+    const control = validateControl({ type: "vertical-slider", ...rawControl }, sectionName);
+    if (isVerticalSliderGroup(control) || control.type !== "vertical-slider") {
+      throw new Error(`A vertical slider group in section "${sectionName}" only supports vertical-slider controls.`);
+    }
+    return control;
+  });
+
+  return {
+    type: "vertical-slider-group",
+    description: stringOr(rawGroup.description, ""),
+    controls,
+  };
+}
+
+function validateMidiControl(rawControl, sectionName, type) {
   const cc = Number(rawControl.cc);
   if (!Number.isInteger(cc) || cc < 0 || cc > 127) {
     throw new Error(`Control "${rawControl.label || "unnamed"}" needs a CC number from 0 to 127.`);
@@ -867,11 +982,6 @@ function validateControl(rawControl, sectionName) {
   const label = stringOr(rawControl.label || rawControl.description, "").trim();
   if (!label) {
     throw new Error(`CC ${cc} needs a label.`);
-  }
-
-  const type = normalizeControlType(rawControl.type);
-  if (!allowedControlTypes.has(type)) {
-    throw new Error(`CC ${cc} "${label}" has unsupported type "${rawControl.type}".`);
   }
 
   const min = Number(rawControl.min ?? 0);
@@ -901,6 +1011,10 @@ function validateControl(rawControl, sectionName) {
   }
 
   return control;
+}
+
+function isVerticalSliderGroup(control) {
+  return control.type === "vertical-slider-group";
 }
 
 function validatePosition(rawPosition, cc, controlLabel) {
@@ -946,6 +1060,13 @@ function normalizeControlType(type) {
 
   if (normalized === "vertical" || normalized === "vertical-slider") {
     return "vertical-slider";
+  }
+  if (
+    normalized === "vertical-group" ||
+    normalized === "vertical-slider-group" ||
+    normalized === "vertical-sliders"
+  ) {
+    return "vertical-slider-group";
   }
   if (normalized === "horizontal" || normalized === "horizontal-slider" || normalized === "slider") {
     return "horizontal-slider";

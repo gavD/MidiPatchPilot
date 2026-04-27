@@ -34,6 +34,7 @@ theme:
     danger: "#ff6b6b"
 sections:
   - name: LFO
+    grid-column: span 2
     controls:
       - cc: 46
         label: LFO Rate
@@ -55,9 +56,23 @@ sections:
             value: 64
           - label: Random
             value: 127
+      - type: vertical-slider-group
+        controls:
+          - cc: 49
+            label: A
+            description: Envelope attack time.
+          - cc: 50
+            label: D
+            description: Envelope decay time.
+          - cc: 51
+            label: S
+            description: Envelope sustain level.
+          - cc: 52
+            label: R
+            description: Envelope release time.
 ```
 
-Supported control types are `vertical-slider`, `horizontal-slider`, `toggle-button`, and `switch`. Presets live in `presets/`; sliders can optionally define `min` and `max`.
+Supported control types are `vertical-slider`, `vertical-slider-group`, `horizontal-slider`, `toggle-button`, and `switch`. Presets live in `presets/`; sliders can optionally define `min` and `max`. A section can optionally define `grid-column`, such as `span 2`, to control its panel width. A `vertical-slider-group` contains vertical slider controls in its nested `controls` list.
 
 Included presets:
 
