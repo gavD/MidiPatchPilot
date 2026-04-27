@@ -20,16 +20,32 @@
         <aside class="side-panel" aria-label="Instrument and MIDI setup">
           <section class="panel-block">
             <div class="section-heading">
-              <h2>Instrument preset</h2>
+              <h2>Instrument</h2>
               <label class="file-picker">
-                <span>Load preset</span>
+                <span>Load from disk</span>
                 <input id="yaml-file" type="file" accept=".yaml,.yml,text/yaml,text/plain">
               </label>
             </div>
             <label class="field-label" for="preset-select">Preset</label>
-            <select id="preset-select" aria-label="Instrument preset"></select>
-            <textarea id="yaml-editor" spellcheck="false" aria-label="Instrument preset YAML editor"></textarea>
+            <select id="preset-select" aria-label="Instrument"></select>
+            <textarea id="yaml-editor" spellcheck="false" aria-label="Instrument YAML editor"></textarea>
             <div class="parse-status" id="parse-status" role="status">Ready</div>
+          </section>
+
+          <section class="panel-block">
+            <h2>Patches</h2>
+            <label class="field-label" for="patch-name">Name</label>
+            <input id="patch-name" type="text" autocomplete="off" placeholder="Patch name">
+            <button class="primary-action" id="save-patch" type="button">Save patch</button>
+
+            <label class="field-label" for="patch-select">Saved</label>
+            <select id="patch-select" aria-label="Saved patches"></select>
+            <div class="patch-actions">
+              <button class="ghost-action" id="apply-patch" type="button">Apply</button>
+              <button class="ghost-action" id="delete-patch" type="button">Delete</button>
+              <button class="ghost-action" id="export-patches" type="button">Export YAML</button>
+            </div>
+            <div class="parse-status" id="patch-status" role="status">No patches saved.</div>
           </section>
 
           <section class="panel-block">
@@ -107,7 +123,9 @@
               <p class="eyebrow">Live controls</p>
               <h2 id="control-summary">No instrument loaded</h2>
             </div>
-            <div class="theme-name" id="theme-name"></div>
+            <div class="toolbar-actions">
+              <button class="ghost-action" id="randomise-controls" type="button">Randomise</button>
+            </div>
           </div>
           <div class="controls-grid" id="controls-grid"></div>
         </section>

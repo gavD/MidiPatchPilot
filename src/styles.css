@@ -18,6 +18,10 @@
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 html,
 body {
   min-height: 100%;
@@ -78,7 +82,6 @@ button {
 }
 
 .midi-pill,
-.theme-name,
 .parse-status,
 .event-log {
   color: var(--muted);
@@ -217,7 +220,8 @@ button:focus-visible {
 }
 
 select,
-input[type="number"] {
+input[type="number"],
+input[type="text"] {
   appearance: none;
   background: var(--panel-alt);
   border: 1px solid var(--border);
@@ -343,11 +347,33 @@ input[type="number"] {
   padding: 0 10px;
 }
 
+.patch-actions {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 8px;
+}
+
+.patch-actions .ghost-action {
+  padding: 0 6px;
+}
+
 .toolbar {
   background: color-mix(in srgb, var(--panel-alt) 78%, black);
   border-bottom: 1px solid var(--border);
   min-height: 64px;
   padding: 12px 14px;
+}
+
+.toolbar-actions {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.toolbar-actions .ghost-action {
+  flex: 0 0 auto;
 }
 
 .controls-grid {
@@ -794,6 +820,11 @@ input[type="range"] {
 
   .app-header,
   .toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .toolbar-actions {
     align-items: stretch;
     flex-direction: column;
   }

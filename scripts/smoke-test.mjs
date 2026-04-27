@@ -19,6 +19,7 @@ class FakeElement {
     this.children = [];
     this.dataset = {};
     this.disabled = false;
+    this.hidden = false;
     this.eventListeners = new Map();
     this.parentElement = null;
     this.style = {
@@ -118,10 +119,17 @@ const requiredIds = [
   "yaml-file",
   "preset-select",
   "parse-status",
+  "patch-name",
+  "patch-select",
+  "save-patch",
+  "apply-patch",
+  "delete-patch",
+  "export-patches",
+  "patch-status",
   "instrument-title",
   "control-summary",
   "controls-grid",
-  "theme-name",
+  "randomise-controls",
   "connect-midi",
   "midi-status",
   "midi-channel",
@@ -157,6 +165,12 @@ const context = {
   JSON,
   Math,
   RegExp,
+  localStorage: {
+    getItem() {
+      return null;
+    },
+    setItem() {},
+  },
   document: {
     documentElement: new FakeElement("html", "document-element"),
     createElement: (tagName) => new FakeElement(tagName),
@@ -183,9 +197,16 @@ const controls = controlsGrid.querySelectorAll(".control");
 const midiControls = collectMidiControls(controlsGrid);
 const verticalSliderGroups = controlsGrid.querySelectorAll(".vertical-slider-group");
 const valueMeters = controlsGrid.querySelectorAll(".value-meter");
+const presetOptions = ids.get("preset-select").children;
 
 if (title !== "Behringer JT Mini") {
   throw new Error(`Expected default title to render, got "${title}".`);
+}
+if (!ids.get("yaml-editor").hidden) {
+  throw new Error("Expected preset YAML editor to be hidden for bundled presets.");
+}
+if (presetOptions[presetOptions.length - 1].textContent !== "Custom") {
+  throw new Error("Expected custom preset option to be labelled Custom.");
 }
 if (!summary.includes("15 MIDI CC controls")) {
   throw new Error(`Expected default control count, got "${summary}".`);

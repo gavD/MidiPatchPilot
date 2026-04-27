@@ -9,7 +9,9 @@ npm run build
 npm run serve -- --port 4173
 ```
 
-Open `http://127.0.0.1:4173`. Web MIDI usually requires a secure browser context; localhost is accepted by Chromium-based browsers. The app includes a preset selector for the bundled YAML presets, and loaded presets can still be edited directly in the YAML editor.
+Open `http://127.0.0.1:4173`. Web MIDI usually requires a secure browser context; localhost is accepted by Chromium-based browsers. The app includes a preset selector for the bundled YAML presets; choose `Custom` or load YAML from disk to edit an instrument definition directly.
+
+Saved patches are stored locally per instrument in browser `localStorage`. The Patches panel can save the current CC values, apply or delete saved patches, and export the current instrument's patches as YAML.
 
 The static bundle is emitted to `dist/` and does not load third-party runtime scripts, styles, or packages.
 

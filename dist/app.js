@@ -7,6 +7,8 @@ const YAML_RELOAD_DELAY_MS = 220;
 const MAX_INCOMING_LOG_EVENTS = 250;
 const MIDI_START = 0xfa;
 const MIDI_STOP = 0xfc;
+const PATCH_STORAGE_KEY = "multimidi.patches.v1";
+const CUSTOM_PRESET_VALUE = "__custom__";
 
 const allowedControlTypes = new Set([
   "vertical-slider",
@@ -26,6 +28,7 @@ const state = {
   reloadTimer: null,
   values: new Map(),
   highlightTimers: new Map(),
+  patches: {},
 };
 
 const elements = {
@@ -33,10 +36,17 @@ const elements = {
   yamlEditor: byId("yaml-editor"),
   yamlFile: byId("yaml-file"),
   parseStatus: byId("parse-status"),
+  patchName: byId("patch-name"),
+  patchSelect: byId("patch-select"),
+  savePatch: byId("save-patch"),
+  applyPatch: byId("apply-patch"),
+  deletePatch: byId("delete-patch"),
+  exportPatches: byId("export-patches"),
+  patchStatus: byId("patch-status"),
   instrumentTitle: byId("instrument-title"),
   controlSummary: byId("control-summary"),
   controlsGrid: byId("controls-grid"),
-  themeName: byId("theme-name"),
+  randomiseControls: byId("randomise-controls"),
   connectMidi: byId("connect-midi"),
   midiStatus: byId("midi-status"),
   midiChannel: byId("midi-channel"),
@@ -61,12 +71,18 @@ function byId(id) {
 }
 
 function initialize() {
+  state.patches = loadPatchLibrary();
   populateMidiChannels();
   populatePresetSelect();
   elements.yamlEditor.value = DEFAULT_INSTRUMENT_YAML;
+  updateYamlEditorVisibility();
   elements.presetSelect.addEventListener("change", handlePresetSelection);
   elements.yamlEditor.addEventListener("input", queueYamlReload);
   elements.yamlFile.addEventListener("change", handleYamlFile);
+  elements.savePatch.addEventListener("click", saveCurrentPatch);
+  elements.applyPatch.addEventListener("click", applySelectedPatch);
+  elements.deletePatch.addEventListener("click", deleteSelectedPatch);
+  elements.exportPatches.addEventListener("click", exportCurrentInstrumentPatches);
   elements.connectMidi.addEventListener("click", connectMidi);
   elements.midiInput.addEventListener("change", selectMidiInput);
   elements.midiOutput.addEventListener("change", selectMidiOutput);
@@ -74,6 +90,7 @@ function initialize() {
   elements.loopNote.addEventListener("change", syncLoopPlayback);
   elements.sendStart.addEventListener("click", sendMidiStart);
   elements.sendStop.addEventListener("click", sendMidiStop);
+  elements.randomiseControls.addEventListener("click", randomiseControls);
   elements.clearIncomingEvents.addEventListener("click", clearIncomingEvents);
   window.addEventListener("beforeunload", stopLoopPlayback);
   renderEmptyMidiSelect(elements.midiInput, "Connect MIDI first");
@@ -92,15 +109,15 @@ function populatePresetSelect() {
   }
 
   const customOption = document.createElement("option");
-  customOption.value = "__custom__";
-  customOption.textContent = "Custom YAML";
+  customOption.value = CUSTOM_PRESET_VALUE;
+  customOption.textContent = "Custom";
   elements.presetSelect.append(customOption);
 
   const defaultPreset = PRESET_MANIFEST.find((preset) => preset.yaml === DEFAULT_INSTRUMENT_YAML) || PRESET_MANIFEST[0];
   if (defaultPreset) {
     elements.presetSelect.value = defaultPreset.file;
   } else {
-    elements.presetSelect.value = "__custom__";
+    elements.presetSelect.value = CUSTOM_PRESET_VALUE;
   }
 }
 
@@ -115,7 +132,8 @@ function populateMidiChannels() {
 }
 
 function queueYamlReload() {
-  elements.presetSelect.value = "__custom__";
+  elements.presetSelect.value = CUSTOM_PRESET_VALUE;
+  updateYamlEditorVisibility();
   window.clearTimeout(state.reloadTimer);
   state.reloadTimer = window.setTimeout(() => {
     loadYaml(elements.yamlEditor.value);
@@ -123,6 +141,11 @@ function queueYamlReload() {
 }
 
 function handlePresetSelection() {
+  updateYamlEditorVisibility();
+  if (elements.presetSelect.value === CUSTOM_PRESET_VALUE) {
+    return;
+  }
+
   const preset = PRESET_MANIFEST.find((candidate) => candidate.file === elements.presetSelect.value);
   if (!preset) {
     return;
@@ -140,7 +163,8 @@ function handleYamlFile(event) {
 
   const reader = new FileReader();
   reader.addEventListener("load", () => {
-    elements.presetSelect.value = "__custom__";
+    elements.presetSelect.value = CUSTOM_PRESET_VALUE;
+    updateYamlEditorVisibility();
     elements.yamlEditor.value = String(reader.result || "");
     loadYaml(elements.yamlEditor.value);
   });
@@ -156,6 +180,7 @@ function loadYaml(source) {
     const instrument = validateInstrument(parsed);
     state.instrument = instrument;
     renderInstrument(instrument);
+    renderPatches();
     applyTheme(instrument.theme);
     setParseStatus(
       `Loaded ${instrument.name}: ${countControls(instrument)} controls in ${instrument.sections.length} sections.`,
@@ -185,10 +210,35 @@ function countControls(instrument) {
   );
 }
 
+function instrumentKey() {
+  return state.instrument ? state.instrument.name : "";
+}
+
+function getInstrumentControls(instrument = state.instrument) {
+  if (!instrument) {
+    return [];
+  }
+
+  const controls = [];
+  for (const section of instrument.sections) {
+    for (const control of section.controls) {
+      if (isVerticalSliderGroup(control)) {
+        controls.push(...control.controls);
+      } else {
+        controls.push(control);
+      }
+    }
+  }
+  return controls;
+}
+
+function updateYamlEditorVisibility() {
+  elements.yamlEditor.hidden = elements.presetSelect.value !== CUSTOM_PRESET_VALUE;
+}
+
 function renderInstrument(instrument) {
   elements.instrumentTitle.textContent = instrument.name;
   elements.controlSummary.textContent = `${countControls(instrument)} MIDI CC controls`;
-  elements.themeName.textContent = instrument.theme.name ? `Theme: ${instrument.theme.name}` : "";
   elements.controlsGrid.innerHTML = "";
 
   if (!instrument.sections.length) {
@@ -219,6 +269,199 @@ function renderInstrument(instrument) {
     sectionElement.append(controls);
     elements.controlsGrid.append(sectionElement);
   }
+}
+
+function renderPatches(selectedPatchId = elements.patchSelect.value) {
+  const patches = getCurrentInstrumentPatches();
+  elements.patchSelect.innerHTML = "";
+  const hasPatches = patches.length > 0;
+
+  if (!hasPatches) {
+    const option = document.createElement("option");
+    option.value = "";
+    option.textContent = state.instrument ? "No patches saved" : "Load an instrument first";
+    elements.patchSelect.append(option);
+    elements.patchStatus.textContent = state.instrument ? "No patches saved." : "Load an instrument to save patches.";
+  } else {
+    for (const patch of patches) {
+      const option = document.createElement("option");
+      option.value = patch.id;
+      option.textContent = patch.name;
+      elements.patchSelect.append(option);
+    }
+    if (patches.some((patch) => patch.id === selectedPatchId)) {
+      elements.patchSelect.value = selectedPatchId;
+    }
+    elements.patchStatus.textContent = `${patches.length} saved patch${patches.length === 1 ? "" : "es"}.`;
+  }
+
+  elements.patchSelect.disabled = !hasPatches;
+  elements.applyPatch.disabled = !hasPatches;
+  elements.deletePatch.disabled = !hasPatches;
+  elements.exportPatches.disabled = !hasPatches;
+  elements.savePatch.disabled = !state.instrument;
+}
+
+function getCurrentInstrumentPatches() {
+  const key = instrumentKey();
+  if (!key || !Array.isArray(state.patches[key])) {
+    return [];
+  }
+  return state.patches[key];
+}
+
+function saveCurrentPatch() {
+  if (!state.instrument) {
+    elements.patchStatus.textContent = "Load an instrument before saving a patch.";
+    return;
+  }
+
+  const name = elements.patchName.value.trim();
+  if (!name) {
+    elements.patchStatus.textContent = "Name the patch before saving it.";
+    elements.patchName.focus();
+    return;
+  }
+
+  const key = instrumentKey();
+  const patch = {
+    id: createPatchId(),
+    name,
+    instrument: key,
+    values: serializeCurrentPatchValues(),
+    savedAt: new Date().toISOString(),
+  };
+  state.patches[key] = [...getCurrentInstrumentPatches().filter((candidate) => candidate.name !== name), patch];
+  const didPersist = savePatchLibrary();
+  elements.patchName.value = "";
+  renderPatches(patch.id);
+  elements.patchStatus.textContent = didPersist
+    ? `Saved "${patch.name}".`
+    : `Saved "${patch.name}" for this session, but browser storage failed.`;
+}
+
+function serializeCurrentPatchValues() {
+  const values = {};
+  for (const control of getInstrumentControls()) {
+    values[String(control.cc)] = getControlValue(control);
+  }
+  return values;
+}
+
+function applySelectedPatch() {
+  const patch = getCurrentInstrumentPatches().find((candidate) => candidate.id === elements.patchSelect.value);
+  if (!patch) {
+    return;
+  }
+
+  applyPatchValues(patch.values);
+  elements.patchStatus.textContent = `Applied "${patch.name}".`;
+}
+
+function applyPatchValues(values) {
+  for (const control of getInstrumentControls()) {
+    const value = values[String(control.cc)];
+    if (Number.isFinite(Number(value))) {
+      updateControlValue(control, value);
+    }
+  }
+}
+
+function deleteSelectedPatch() {
+  const key = instrumentKey();
+  const patch = getCurrentInstrumentPatches().find((candidate) => candidate.id === elements.patchSelect.value);
+  if (!patch) {
+    return;
+  }
+
+  state.patches[key] = getCurrentInstrumentPatches().filter((candidate) => candidate.id !== patch.id);
+  const didPersist = savePatchLibrary();
+  renderPatches();
+  elements.patchStatus.textContent = didPersist
+    ? `Deleted "${patch.name}".`
+    : `Deleted "${patch.name}" for this session, but browser storage failed.`;
+}
+
+function exportCurrentInstrumentPatches() {
+  const patches = getCurrentInstrumentPatches();
+  if (!patches.length || !state.instrument) {
+    return;
+  }
+
+  const yaml = formatPatchesYaml(state.instrument.name, patches);
+  downloadText(`${safeFilename(state.instrument.name)}-patches.yaml`, yaml);
+  elements.patchStatus.textContent = `Exported ${patches.length} patch${patches.length === 1 ? "" : "es"}.`;
+}
+
+function formatPatchesYaml(instrumentName, patches) {
+  const lines = [
+    `instrument: ${quoteYamlString(instrumentName)}`,
+    "patches:",
+  ];
+
+  for (const patch of patches) {
+    lines.push(`  - name: ${quoteYamlString(patch.name)}`);
+    lines.push(`    savedAt: ${quoteYamlString(patch.savedAt)}`);
+    lines.push("    values:");
+    for (const [cc, value] of Object.entries(patch.values).sort((left, right) => Number(left[0]) - Number(right[0]))) {
+      lines.push(`      ${quoteYamlString(cc)}: ${coerceMidiValue(value)}`);
+    }
+  }
+
+  return `${lines.join("\n")}\n`;
+}
+
+function loadPatchLibrary() {
+  try {
+    if (typeof localStorage === "undefined") {
+      return {};
+    }
+    const raw = localStorage.getItem(PATCH_STORAGE_KEY);
+    if (!raw) {
+      return {};
+    }
+    const parsed = JSON.parse(raw);
+    return isPlainObject(parsed) ? parsed : {};
+  } catch (error) {
+    return {};
+  }
+}
+
+function savePatchLibrary() {
+  try {
+    if (typeof localStorage !== "undefined") {
+      localStorage.setItem(PATCH_STORAGE_KEY, JSON.stringify(state.patches));
+    }
+    return true;
+  } catch (error) {
+    elements.patchStatus.textContent = "Could not persist patches in this browser.";
+    return false;
+  }
+}
+
+function createPatchId() {
+  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function quoteYamlString(value) {
+  return `"${String(value).replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
+}
+
+function safeFilename(value) {
+  const safe = String(value).trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  return safe || "multimidi";
+}
+
+function downloadText(filename, text) {
+  const blob = new Blob([text], { type: "text/yaml;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
 }
 
 function renderControlItem(control) {
@@ -429,6 +672,27 @@ function updateControlValue(control, value) {
   state.values.set(String(control.cc), midiValue);
   syncRenderedControl(control, midiValue);
   sendControlChange(control.cc, midiValue);
+}
+
+function randomiseControls() {
+  const controls = getInstrumentControls();
+  for (const control of controls) {
+    updateControlValue(control, randomControlValue(control));
+  }
+  if (controls.length) {
+    logEvent(`Randomised ${controls.length} controls.`);
+  }
+}
+
+function randomControlValue(control) {
+  if (control.type === "switch" && control.positions.length) {
+    const index = Math.floor(Math.random() * control.positions.length);
+    return control.positions[index].value;
+  }
+  if (control.type === "toggle-button") {
+    return Math.random() >= 0.5 ? control.onValue : control.offValue;
+  }
+  return control.min + Math.floor(Math.random() * (control.max - control.min + 1));
 }
 
 function getControlValue(control) {
