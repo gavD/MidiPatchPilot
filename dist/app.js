@@ -326,6 +326,7 @@ function saveCurrentPatch() {
         name,
         instrument: key,
         values: serializeCurrentPatchValues(),
+        lfos: serializeCurrentPatchLfos(),
         savedAt: new Date().toISOString(),
     };
     state.patches[key] = [...getCurrentInstrumentPatches().filter((candidate) => candidate.name !== name), patch];
@@ -339,12 +340,14 @@ function saveCurrentPatch() {
 function serializeCurrentPatchValues() {
     const values = {};
     for (const control of getInstrumentControls()) {
-        values[String(control.cc)] = getControlValue(control);
+        values[String(control.cc)] = getPatchControlValue(control);
     }
     return values;
 }
 function loadPatch(patch) {
+    stopAllLfos();
     applyPatchValues(patch.values);
+    applyPatchLfos(patch.lfos);
     elements.patchStatus.textContent = `Loaded "${patch.name}".`;
 }
 function applyPatchValues(values) {
@@ -354,6 +357,75 @@ function applyPatchValues(values) {
             updateControlValue(control, value);
         }
     }
+}
+function serializeCurrentPatchLfos() {
+    const lfos = {};
+    for (const control of getInstrumentControls()) {
+        if (!isSliderControl(control)) {
+            continue;
+        }
+        const lfo = state.lfos.get(String(control.cc));
+        if (lfo) {
+            lfos[String(control.cc)] = serializeLfoState(control, lfo);
+        }
+    }
+    return lfos;
+}
+function serializeLfoState(control, lfo) {
+    return {
+        enabled: lfo.enabled,
+        depth: normalizeLfoDepth(control, lfo.depth),
+        rate: normalizeLfoRate(lfo.rate),
+        waveform: normalizeLfoWaveform(lfo.waveform),
+    };
+}
+function getPatchControlValue(control) {
+    const lfo = state.lfos.get(String(control.cc));
+    if (lfo?.enabled && isSliderControl(control)) {
+        return normalizeControlValue(control, lfo.baseValue);
+    }
+    return getControlValue(control);
+}
+function applyPatchLfos(lfos) {
+    if (!isPlainObject(lfos)) {
+        return;
+    }
+    for (const [cc, rawLfo] of Object.entries(lfos)) {
+        const control = findControlByCc(Number(cc));
+        if (!control || !isSliderControl(control)) {
+            continue;
+        }
+        const lfo = normalizePatchLfo(control, rawLfo);
+        if (!lfo) {
+            continue;
+        }
+        state.lfos.set(String(control.cc), {
+            cc: control.cc,
+            enabled: lfo.enabled,
+            depth: lfo.depth,
+            rate: lfo.rate,
+            waveform: lfo.waveform,
+            baseValue: getControlValue(control),
+            startedAt: lfoNow(),
+            lastSentAt: 0,
+            lastValue: null,
+        });
+        syncLfoButton(control);
+    }
+    if (hasActiveLfos()) {
+        startLfoEngine();
+    }
+}
+function normalizePatchLfo(control, rawLfo) {
+    if (!isPlainObject(rawLfo)) {
+        return null;
+    }
+    return {
+        enabled: rawLfo.enabled === true,
+        depth: normalizeLfoDepth(control, rawLfo.depth),
+        rate: normalizeLfoRate(rawLfo.rate),
+        waveform: normalizeLfoWaveform(rawLfo.waveform),
+    };
 }
 function deletePatch(patch) {
     const key = instrumentKey();
@@ -389,8 +461,26 @@ function formatPatchesYaml(instrumentName, patches) {
         for (const [cc, value] of Object.entries(patch.values).sort((left, right) => Number(left[0]) - Number(right[0]))) {
             lines.push(`      ${quoteYamlString(cc)}: ${coerceMidiValue(value)}`);
         }
+        const lfoEntries = Object.entries(patch.lfos || {}).sort((left, right) => Number(left[0]) - Number(right[0]));
+        if (lfoEntries.length) {
+            lines.push("    lfos:");
+            for (const [cc, rawLfo] of lfoEntries) {
+                if (!isPlainObject(rawLfo)) {
+                    continue;
+                }
+                const lfo = rawLfo;
+                lines.push(`      ${quoteYamlString(cc)}:`);
+                lines.push(`        enabled: ${lfo.enabled === true ? "true" : "false"}`);
+                lines.push(`        depth: ${coerceMidiValue(lfo.depth)}`);
+                lines.push(`        rate: ${formatYamlNumber(normalizeLfoRate(lfo.rate))}`);
+                lines.push(`        waveform: ${quoteYamlString(normalizeLfoWaveform(lfo.waveform))}`);
+            }
+        }
     }
     return `${lines.join("\n")}\n`;
+}
+function formatYamlNumber(value) {
+    return Number.isInteger(value) ? String(value) : value.toFixed(1);
 }
 function loadPatchLibrary() {
     try {
@@ -773,6 +863,7 @@ function stopAllLfos() {
         lfo.enabled = false;
         lfo.lastValue = null;
     }
+    syncAllLfoButtons();
     state.lfos.clear();
     stopLfoEngine();
     closeLfoModal();
@@ -919,6 +1010,13 @@ function syncLfoButton(control) {
         }
         button.setAttribute("aria-pressed", String(isEnabled));
         button.classList.toggle("is-active", isEnabled);
+    }
+}
+function syncAllLfoButtons() {
+    for (const control of getInstrumentControls()) {
+        if (isSliderControl(control)) {
+            syncLfoButton(control);
+        }
     }
 }
 function isLfoEnabled(control) {

@@ -160,6 +160,8 @@ for (const id of requiredIds) {
   ids.set(id, new FakeElement("div", id));
 }
 
+const localStorageValues = new Map();
+
 const context = {
   console,
   Date,
@@ -177,10 +179,12 @@ const context = {
   Math,
   RegExp,
   localStorage: {
-    getItem() {
-      return null;
+    getItem(key) {
+      return localStorageValues.get(key) || null;
     },
-    setItem() {},
+    setItem(key, value) {
+      localStorageValues.set(key, String(value));
+    },
   },
   document: {
     body: new FakeElement("body", "body"),
@@ -193,10 +197,14 @@ const context = {
   navigator: {},
   window: {
     addEventListener() {},
-    clearInterval,
-    clearTimeout,
-    setInterval,
-    setTimeout,
+    clearInterval() {},
+    clearTimeout() {},
+    setInterval() {
+      return 1;
+    },
+    setTimeout() {
+      return 1;
+    },
   },
 };
 
@@ -263,6 +271,47 @@ if (lfoModalTitle.textContent !== "Modulation LFO") {
 }
 if (lfoModal.querySelectorAll(".lfo-field").length !== 3) {
   throw new Error("Expected LFO modal to render depth, rate, and waveform fields.");
+}
+const lfoInputs = collectElements(lfoModal, (element) => element.tagName === "INPUT");
+const lfoRanges = lfoInputs.filter((element) => element.type === "range");
+const lfoEnabled = lfoInputs.find((element) => element.type === "checkbox");
+const lfoWaveform = collectElements(lfoModal, (element) => element.tagName === "SELECT")[0];
+if (!lfoEnabled || lfoRanges.length !== 2 || !lfoWaveform) {
+  throw new Error("Expected LFO modal to expose on/off, depth, rate, and waveform inputs.");
+}
+lfoRanges[0].value = "17";
+fireEvent(lfoRanges[0], "input");
+lfoRanges[1].value = "2.5";
+fireEvent(lfoRanges[1], "input");
+lfoWaveform.value = "sine";
+fireEvent(lfoWaveform, "change");
+lfoEnabled.checked = true;
+fireEvent(lfoEnabled, "change");
+ids.get("patch-name").value = "Moving LFO";
+fireEvent(ids.get("save-patch"), "click");
+const savedLfoPatchLibrary = JSON.parse(localStorageValues.get("multimidi.patches.v1"));
+const savedLfoPatch = savedLfoPatchLibrary["Behringer JT Mini"].find((patch) => patch.name === "Moving LFO");
+if (!savedLfoPatch?.lfos?.["1"]?.enabled) {
+  throw new Error("Expected saved patch to persist enabled LFO state for CC 1.");
+}
+if (
+  savedLfoPatch.lfos["1"].depth !== 17 ||
+  savedLfoPatch.lfos["1"].rate !== 2.5 ||
+  savedLfoPatch.lfos["1"].waveform !== "sine"
+) {
+  throw new Error("Expected saved patch to persist LFO depth, rate, and waveform.");
+}
+lfoEnabled.checked = false;
+fireEvent(lfoEnabled, "change");
+ids.get("patch-name").value = "Dry";
+fireEvent(ids.get("save-patch"), "click");
+lfoEnabled.checked = true;
+fireEvent(lfoEnabled, "change");
+const dryPatchRow = findPatchRow("Dry");
+const dryPatchLoad = dryPatchRow.querySelectorAll(".ghost-action")[0];
+fireEvent(dryPatchLoad, "click");
+if (lfoButtons[0].getAttribute("aria-pressed") !== "false") {
+  throw new Error("Expected loading a patch to clear the previously running LFO.");
 }
 if (!verticalSliderGroups[0].firstElementChild?.classList.contains("vertical-slider-group-controls")) {
   throw new Error("Expected vertical slider group to render without its own label header.");
@@ -407,6 +456,33 @@ function collectMidiControls(root) {
     }
   });
   return matches;
+}
+
+function collectElements(root, predicate) {
+  const matches = [];
+  walk(root, (element) => {
+    if (predicate(element)) {
+      matches.push(element);
+    }
+  });
+  return matches;
+}
+
+function fireEvent(element, type) {
+  const handler = element.eventListeners.get(type);
+  if (!handler) {
+    throw new Error(`Expected ${element.tagName}#${element.id || ""} to have a ${type} handler.`);
+  }
+  handler({ target: element });
+}
+
+function findPatchRow(name) {
+  const rows = ids.get("patch-list").querySelectorAll(".patch-row");
+  const match = rows.find((row) => row.children.some((child) => child.textContent === name));
+  if (!match) {
+    throw new Error(`Could not find patch row for ${name}.`);
+  }
+  return match;
 }
 
 function findById(root, id) {
