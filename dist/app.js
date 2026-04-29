@@ -410,7 +410,7 @@ function applyPatchLfos(lfos) {
             lastSentAt: 0,
             lastValue: null,
         });
-        syncLfoButton(control);
+        syncLfoPresentation(control);
     }
     if (hasActiveLfos()) {
         startLfoEngine();
@@ -597,7 +597,7 @@ function renderSliderControl(control) {
     };
     range.addEventListener("input", () => syncValue(range.value));
     number.addEventListener("input", () => syncValue(number.value));
-    shell.append(range, number);
+    shell.append(renderSliderLane(control, range, currentValue), number);
     return shell;
 }
 function renderVerticalSliderGroup(group) {
@@ -651,8 +651,19 @@ function renderGroupedVerticalSlider(control) {
     };
     range.addEventListener("input", () => syncValue(range.value));
     number.addEventListener("input", () => syncValue(number.value));
-    item.append(label, range, number, meta);
+    item.append(label, renderSliderLane(control, range, currentValue), number, meta);
     return item;
+}
+function renderSliderLane(control, range, value) {
+    const lane = document.createElement("div");
+    lane.className = `slider-lane ${control.type === "vertical-slider" ? "is-vertical" : "is-horizontal"}`;
+    lane.dataset.lfoLaneCc = String(control.cc);
+    const ghost = document.createElement("div");
+    ghost.className = "lfo-ghost";
+    ghost.setAttribute("aria-hidden", "true");
+    lane.append(ghost, range);
+    updateLfoLane(lane, control, value, isLfoEnabled(control));
+    return lane;
 }
 function renderLfoButton(control) {
     const button = document.createElement("button");
@@ -837,7 +848,7 @@ function setLfoEnabled(control, shouldEnable) {
         stopLfoEngineIfIdle();
         logEvent(`${control.label} LFO off.`);
     }
-    syncLfoButton(control);
+    syncLfoPresentation(control);
 }
 function startLfoEngine() {
     if (state.lfoTimer) {
@@ -863,7 +874,7 @@ function stopAllLfos() {
         lfo.enabled = false;
         lfo.lastValue = null;
     }
-    syncAllLfoButtons();
+    syncAllLfoPresentations();
     state.lfos.clear();
     stopLfoEngine();
     closeLfoModal();
@@ -911,8 +922,7 @@ function scheduleLfoTick(delayMs) {
 }
 function applyLfoControlValue(control, value) {
     const midiValue = normalizeControlValue(control, value);
-    state.values.set(String(control.cc), midiValue);
-    syncRenderedControl(control, midiValue);
+    syncLfoGhost(control, midiValue);
     sendControlChange(control.cc, midiValue, false);
 }
 function calculateLfoValue(control, lfo, now, effectiveRate) {
@@ -1001,6 +1011,7 @@ function recenterActiveLfo(control, midiValue) {
     lfo.startedAt = lfoNow();
     lfo.lastSentAt = 0;
     lfo.lastValue = null;
+    syncLfoGhost(control, midiValue);
 }
 function syncLfoButton(control) {
     const isEnabled = isLfoEnabled(control);
@@ -1012,10 +1023,37 @@ function syncLfoButton(control) {
         button.classList.toggle("is-active", isEnabled);
     }
 }
-function syncAllLfoButtons() {
+function syncLfoGhost(control, value = getControlValue(control)) {
+    const wrapper = elements.controlsGrid.querySelector(`[data-cc="${control.cc}"]`);
+    if (!wrapper) {
+        return;
+    }
+    const lane = wrapper.querySelector(".slider-lane");
+    if (!lane) {
+        return;
+    }
+    updateLfoLane(lane, control, value, isLfoEnabled(control));
+}
+function updateLfoLane(lane, control, value, isVisible) {
+    lane.style.setProperty("--lfo-position", String(normalizeLfoPosition(control, value)));
+    lane.classList.toggle("has-lfo", isVisible);
+}
+function normalizeLfoPosition(control, value) {
+    const range = control.max - control.min;
+    if (range <= 0) {
+        return 0;
+    }
+    return clampNumber((normalizeControlValue(control, value) - control.min) / range, 0, 1);
+}
+function syncLfoPresentation(control) {
+    const lfo = state.lfos.get(String(control.cc));
+    syncLfoButton(control);
+    syncLfoGhost(control, lfo?.lastValue ?? lfo?.baseValue ?? getControlValue(control));
+}
+function syncAllLfoPresentations() {
     for (const control of getInstrumentControls()) {
         if (isSliderControl(control)) {
-            syncLfoButton(control);
+            syncLfoPresentation(control);
         }
     }
 }

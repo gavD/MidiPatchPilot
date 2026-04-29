@@ -557,6 +557,57 @@ input[type="text"] {
   justify-content: start;
 }
 
+.slider-lane {
+  display: grid;
+  position: relative;
+}
+
+.slider-lane input[type="range"] {
+  position: relative;
+  z-index: 2;
+}
+
+.lfo-ghost {
+  background: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--background) 65%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 24%, transparent);
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  transition: opacity 120ms ease;
+  z-index: 1;
+}
+
+.slider-lane.has-lfo .lfo-ghost {
+  opacity: 0.9;
+}
+
+.slider-lane.is-horizontal {
+  align-items: center;
+  min-height: 28px;
+}
+
+.slider-lane.is-horizontal .lfo-ghost {
+  height: 20px;
+  left: calc(var(--lfo-position, 0) * 100%);
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 5px;
+}
+
+.slider-lane.is-vertical {
+  height: 160px;
+  width: 48px;
+}
+
+.slider-lane.is-vertical .lfo-ghost {
+  bottom: calc(var(--lfo-position, 0) * 100%);
+  height: 5px;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  width: 20px;
+}
+
 input[type="range"] {
   accent-color: var(--primary);
   width: 100%;
@@ -1075,6 +1126,20 @@ input[type="range"] {
     height: auto;
     writing-mode: horizontal-tb;
     width: 100%;
+  }
+
+  .slider-shell.is-vertical .slider-lane.is-vertical {
+    height: 28px;
+    width: 100%;
+  }
+
+  .slider-shell.is-vertical .slider-lane.is-vertical .lfo-ghost {
+    bottom: auto;
+    height: 20px;
+    left: calc(var(--lfo-position, 0) * 100%);
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 5px;
   }
 
   .vertical-slider-group-controls {

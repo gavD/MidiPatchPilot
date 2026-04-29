@@ -110,19 +110,33 @@ class FakeElement {
   }
 
   querySelectorAll(selector) {
-    if (!selector.startsWith(".")) {
-      return [];
-    }
-
-    const className = selector.slice(1);
     const matches = [];
     walk(this, (element) => {
-      if (element.classList.contains(className)) {
+      if (matchesSelector(element, selector)) {
         matches.push(element);
       }
     });
     return matches;
   }
+}
+
+function matchesSelector(element, selector) {
+  if (selector.startsWith(".")) {
+    return element.classList.contains(selector.slice(1));
+  }
+
+  const dataMatch = selector.match(/^\[data-([a-z-]+)="([^"]+)"\]$/);
+  if (dataMatch) {
+    const key = dataMatch[1].replace(/-([a-z])/g, (_match, letter) => letter.toUpperCase());
+    return element.dataset[key] === dataMatch[2];
+  }
+
+  const typeMatch = selector.match(/^([a-z]+)\[type="([^"]+)"\]$/i);
+  if (typeMatch) {
+    return element.tagName === typeMatch[1].toUpperCase() && element.type === typeMatch[2];
+  }
+
+  return false;
 }
 
 const ids = new Map();
@@ -161,6 +175,9 @@ for (const id of requiredIds) {
 }
 
 const localStorageValues = new Map();
+const scheduledTimeouts = [];
+let nextTimeoutId = 1;
+let performanceNow = 0;
 
 const context = {
   console,
@@ -177,6 +194,11 @@ const context = {
   Boolean,
   JSON,
   Math,
+  performance: {
+    now() {
+      return performanceNow;
+    },
+  },
   RegExp,
   localStorage: {
     getItem(key) {
@@ -198,12 +220,20 @@ const context = {
   window: {
     addEventListener() {},
     clearInterval() {},
-    clearTimeout() {},
+    clearTimeout(id) {
+      const index = scheduledTimeouts.findIndex((timer) => timer.id === id);
+      if (index >= 0) {
+        scheduledTimeouts.splice(index, 1);
+      }
+    },
     setInterval() {
       return 1;
     },
-    setTimeout() {
-      return 1;
+    setTimeout(handler) {
+      const id = nextTimeoutId;
+      nextTimeoutId += 1;
+      scheduledTimeouts.push({ id, handler });
+      return id;
     },
   },
 };
@@ -220,6 +250,7 @@ const controls = controlsGrid.querySelectorAll(".control");
 const midiControls = collectMidiControls(controlsGrid);
 const verticalSliderGroups = controlsGrid.querySelectorAll(".vertical-slider-group");
 const lfoButtons = controlsGrid.querySelectorAll(".lfo-button");
+const sliderLanes = controlsGrid.querySelectorAll(".slider-lane");
 const valueMeters = controlsGrid.querySelectorAll(".value-meter");
 const presetOptions = ids.get("preset-select").children;
 
@@ -256,6 +287,9 @@ if (verticalSliderGroups.length !== 1) {
 if (lfoButtons.length !== 13) {
   throw new Error(`Expected one LFO button per slider, got ${lfoButtons.length}.`);
 }
+if (sliderLanes.length !== 13) {
+  throw new Error(`Expected one LFO ghost lane per slider, got ${sliderLanes.length}.`);
+}
 const openLfoModal = lfoButtons[0].eventListeners.get("click");
 if (!openLfoModal) {
   throw new Error("Expected LFO button to open a modal.");
@@ -287,6 +321,18 @@ lfoWaveform.value = "sine";
 fireEvent(lfoWaveform, "change");
 lfoEnabled.checked = true;
 fireEvent(lfoEnabled, "change");
+if (!sliderLanes[0].classList.contains("has-lfo")) {
+  throw new Error("Expected enabling an LFO to reveal the ghost lane marker.");
+}
+const modulationSlider = collectElements(sliderLanes[0], (element) => element.tagName === "INPUT")[0];
+performanceNow = 100;
+runNextTimeout();
+if (modulationSlider.value !== "0") {
+  throw new Error(`Expected LFO tick to leave the fader at its base value, got ${modulationSlider.value}.`);
+}
+if (Number(sliderLanes[0].style.properties.get("--lfo-position")) <= 0) {
+  throw new Error("Expected LFO tick to move the ghost marker behind the fader.");
+}
 ids.get("patch-name").value = "Moving LFO";
 fireEvent(ids.get("save-patch"), "click");
 const savedLfoPatchLibrary = JSON.parse(localStorageValues.get("multimidi.patches.v1"));
@@ -312,6 +358,9 @@ const dryPatchLoad = dryPatchRow.querySelectorAll(".ghost-action")[0];
 fireEvent(dryPatchLoad, "click");
 if (lfoButtons[0].getAttribute("aria-pressed") !== "false") {
   throw new Error("Expected loading a patch to clear the previously running LFO.");
+}
+if (sliderLanes[0].classList.contains("has-lfo")) {
+  throw new Error("Expected loading a dry patch to hide the LFO ghost marker.");
 }
 if (!verticalSliderGroups[0].firstElementChild?.classList.contains("vertical-slider-group-controls")) {
   throw new Error("Expected vertical slider group to render without its own label header.");
@@ -474,6 +523,14 @@ function fireEvent(element, type) {
     throw new Error(`Expected ${element.tagName}#${element.id || ""} to have a ${type} handler.`);
   }
   handler({ target: element });
+}
+
+function runNextTimeout() {
+  const timer = scheduledTimeouts.shift();
+  if (!timer) {
+    throw new Error("Expected a scheduled timeout to run.");
+  }
+  timer.handler();
 }
 
 function findPatchRow(name) {
