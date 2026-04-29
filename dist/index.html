@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -38,7 +38,7 @@
               <input id="patch-name" type="text" autocomplete="off" placeholder="Patch name" aria-label="Patch name">
               <button class="primary-action" id="save-patch" type="button">Save patch</button>
             </div>
-            <div class="patch-list" id="patch-list" aria-label="Saved patches"></div>
+            <ul class="patch-list" id="patch-list"></ul>
             <button class="ghost-action export-patches-action" id="export-patches" type="button">export all patches</button>
             <div class="parse-status" id="patch-status" role="status">No patches saved.</div>
           </section>
@@ -75,7 +75,7 @@
                 </span>
                 Play middle C
               </button>
-              <label class="checkbox-row" for="loop-note" title="loop every 3 seconds">
+              <label class="checkbox-row" title="loop every 3 seconds">
                 <input id="loop-note" type="checkbox">
                 <span>loop</span>
               </label>
@@ -97,7 +97,7 @@
                 </span>
                 Stop
               </button>
-              <span class="info-dot" title="Sends MIDI Start and Stop transport messages for instruments that support them." aria-label="Sends MIDI Start and Stop transport messages for instruments that support them.">i</span>
+              <span class="info-dot" title="Sends MIDI Start and Stop transport messages for instruments that support them." aria-hidden="true">i</span>
             </div>
             <p class="event-log" id="event-log">No MIDI messages sent yet.</p>
           </section>

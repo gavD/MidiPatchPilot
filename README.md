@@ -4,6 +4,12 @@ MultiMIDI is a runtime-free Web MIDI patch editor. Instrument panels are generat
 
 ## Run
 
+Install dependencies:
+
+```sh
+npm install
+```
+
 ```sh
 npm run dev
 ```
@@ -24,6 +30,24 @@ Saved patches are stored locally per instrument in browser `localStorage`. The P
 The static bundle is emitted to `dist/` and does not load third-party runtime scripts, styles, or packages.
 
 For isolated incoming MIDI testing, open `http://127.0.0.1:4173/midi-monitor.html`. That page only listens to MIDI input events and never sends MIDI messages.
+
+## Linting
+
+Run all linters with:
+
+```sh
+npm run lint
+```
+
+You can also run each layer separately:
+
+```sh
+npm run lint:ts
+npm run lint:css
+npm run lint:html
+```
+
+TypeScript and JavaScript are checked with ESLint, CSS with Stylelint, and HTML templates with HTML-validate.
 
 ## Publishing a Version
 

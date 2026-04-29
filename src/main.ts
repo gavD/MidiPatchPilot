@@ -1,31 +1,6 @@
-interface Navigator {
-  requestMIDIAccess?: (options?: { sysex?: boolean }) => Promise<MidiAccessLike>;
-}
-
-interface MidiOutputLike {
-  id: string;
-  name?: string;
-  manufacturer?: string;
-  send: (data: number[], timestamp?: number) => void;
-}
-
-interface MidiInputLike {
-  id: string;
-  name?: string;
-  manufacturer?: string;
-  onmidimessage: ((event: MidiMessageEventLike) => void) | null;
-}
-
-interface MidiAccessLike {
-  inputs: Map<string, MidiInputLike>;
-  outputs: Map<string, MidiOutputLike>;
-  onstatechange: ((event: Event) => void) | null;
-}
-
-interface MidiMessageEventLike {
-  data: Uint8Array;
-  timeStamp: number;
-}
+type MidiOutputLike = MIDIOutput;
+type MidiInputLike = MIDIInput;
+type MidiAccessLike = MIDIAccess;
 
 interface InstrumentDefinition {
   name: string;
@@ -73,6 +48,25 @@ interface PatchDefinition {
   savedAt: string;
 }
 
+interface PresetManifestItem {
+  file: string;
+  name: string;
+  yaml: string;
+}
+
+interface AppState {
+  instrument: InstrumentDefinition | null;
+  midiAccess: MidiAccessLike | null;
+  midiInput: MidiInputLike | null;
+  midiOutput: MidiOutputLike | null;
+  incomingEventCount: number;
+  loopTimer: number | null;
+  reloadTimer: number | null;
+  values: Map<string, number>;
+  highlightTimers: Map<number, number>;
+  patches: Record<string, PatchDefinition[]>;
+}
+
 interface SwitchPosition {
   label: string;
   value: number;
@@ -87,8 +81,8 @@ type MidiControlType =
 
 type ControlType = MidiControlType | "vertical-slider-group";
 
-const DEFAULT_INSTRUMENT_YAML = "__DEFAULT_INSTRUMENT_YAML__";
-const PRESET_MANIFEST = "__PRESET_MANIFEST__";
+const DEFAULT_INSTRUMENT_YAML = "__DEFAULT_INSTRUMENT_YAML__" as string;
+const PRESET_MANIFEST = "__PRESET_MANIFEST__" as unknown as PresetManifestItem[];
 const MIDI_NOTE_MIDDLE_C = 60;
 const MIDI_NOTE_VELOCITY = 96;
 const LOOP_INTERVAL_MS = 3000;
@@ -99,7 +93,7 @@ const MIDI_STOP = 0xfc;
 const PATCH_STORAGE_KEY = "multimidi.patches.v1";
 const CUSTOM_PRESET_VALUE = "__custom__";
 
-const allowedControlTypes = new Set([
+const allowedControlTypes = new Set<ControlType>([
   "vertical-slider",
   "vertical-slider-group",
   "horizontal-slider",
@@ -107,7 +101,7 @@ const allowedControlTypes = new Set([
   "toggle-button",
 ]);
 
-const state = {
+const state: AppState = {
   instrument: null,
   midiAccess: null,
   midiInput: null,
@@ -115,8 +109,8 @@ const state = {
   incomingEventCount: 0,
   loopTimer: null,
   reloadTimer: null,
-  values: new Map(),
-  highlightTimers: new Map(),
+  values: new Map<string, number>(),
+  highlightTimers: new Map<number, number>(),
   patches: {},
 };
 
@@ -361,7 +355,7 @@ function renderPatches() {
   const hasPatches = patches.length > 0;
 
   if (!hasPatches) {
-    const empty = document.createElement("div");
+    const empty = document.createElement("li");
     empty.className = "patch-empty";
     empty.textContent = state.instrument ? "No patches saved" : "Load an instrument first";
     elements.patchList.append(empty);
@@ -378,7 +372,7 @@ function renderPatches() {
 }
 
 function renderPatchRow(patch) {
-  const row = document.createElement("div");
+  const row = document.createElement("li");
   row.className = "patch-row";
 
   const name = document.createElement("div");
@@ -486,6 +480,10 @@ function exportCurrentInstrumentPatches() {
   elements.patchStatus.textContent = `Exported ${patches.length} patch${patches.length === 1 ? "" : "es"}.`;
 }
 
+/**
+ * @param {string} instrumentName
+ * @param {PatchDefinition[]} patches
+ */
 function formatPatchesYaml(instrumentName, patches) {
   const lines = [
     `instrument: ${quoteYamlString(instrumentName)}`,
@@ -515,7 +513,7 @@ function loadPatchLibrary() {
     }
     const parsed = JSON.parse(raw);
     return isPlainObject(parsed) ? parsed : {};
-  } catch (error) {
+  } catch {
     return {};
   }
 }
@@ -526,7 +524,7 @@ function savePatchLibrary() {
       localStorage.setItem(PATCH_STORAGE_KEY, JSON.stringify(state.patches));
     }
     return true;
-  } catch (error) {
+  } catch {
     elements.patchStatus.textContent = "Could not persist patches in this browser.";
     return false;
   }
@@ -1303,7 +1301,7 @@ function validateControl(rawControl, sectionName) {
   if (type === "vertical-slider-group") {
     return validateVerticalSliderGroup(rawControl, sectionName);
   }
-  if (!allowedControlTypes.has(type)) {
+  if (!isControlType(type)) {
     throw new Error(`Control "${rawControl.label || "unnamed"}" has unsupported type "${rawControl.type}".`);
   }
 
@@ -1370,7 +1368,7 @@ function validateMidiControl(rawControl, sectionName, type) {
   return control;
 }
 
-function isVerticalSliderGroup(control) {
+function isVerticalSliderGroup(control): control is VerticalSliderGroupDefinition {
   return control.type === "vertical-slider-group";
 }
 
@@ -1388,7 +1386,7 @@ function validatePosition(rawPosition, cc, controlLabel) {
     throw new Error(`Position "${label}" for CC ${cc} needs a value from 0 to 127.`);
   }
 
-  const position = {
+  const position: SwitchPosition = {
     label,
     value,
   };
@@ -1435,6 +1433,10 @@ function normalizeControlType(type) {
     return "switch";
   }
   return normalized;
+}
+
+function isControlType(type): type is ControlType {
+  return allowedControlTypes.has(type as ControlType);
 }
 
 function applyTheme(theme) {

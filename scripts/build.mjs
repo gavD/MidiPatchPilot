@@ -1,5 +1,6 @@
 import { copyFile, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
+import ts from "typescript";
 import { fileURLToPath } from "node:url";
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -64,11 +65,13 @@ await Promise.all([
 console.log(`Built static site in ${path.relative(rootDir, distDir)}`);
 
 function compileTypescript(source) {
-  return source
-    .replace(/^interface\s+[^{]+\{[\s\S]*?^}\n/gm, "")
-    .replace(/^type\s+\w+\s*=[\s\S]*?;\n/gm, "")
-    .replace(/\s+as\s+any/g, "")
-    .trimStart();
+  const result = ts.transpileModule(source, {
+    compilerOptions: {
+      module: ts.ModuleKind.None,
+      target: ts.ScriptTarget.ES2021,
+    },
+  });
+  return result.outputText.trimStart();
 }
 
 function renderHtml(source) {
