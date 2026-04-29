@@ -81,6 +81,11 @@ button {
   text-transform: uppercase;
 }
 
+.app-version {
+  color: var(--muted);
+  text-transform: none;
+}
+
 .midi-pill,
 .parse-status,
 .event-log {

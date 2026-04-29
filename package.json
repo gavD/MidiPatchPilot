@@ -6,6 +6,7 @@
   "description": "Runtime-free Web MIDI patch editor generated from instrument YAML.",
   "scripts": {
     "build": "node scripts/build.mjs",
+    "dev": "node scripts/dev-server.mjs --watch",
     "serve": "node scripts/build.mjs && node scripts/dev-server.mjs",
     "test": "npm run build && node scripts/smoke-test.mjs",
     "typecheck": "tsc --noEmit"

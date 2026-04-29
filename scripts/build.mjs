@@ -7,11 +7,12 @@ const distDir = path.join(rootDir, "dist");
 const srcDir = path.join(rootDir, "src");
 const presetsDir = path.join(rootDir, "presets");
 const defaultYamlPath = path.join(presetsDir, "behringer-jt-mini.yaml");
+const packageJsonPath = path.join(rootDir, "package.json");
 
 await rm(distDir, { recursive: true, force: true });
 await mkdir(path.join(distDir, "presets"), { recursive: true });
 
-const [html, monitorHtml, css, tsSource, monitorSource, defaultYaml, presetFiles] = await Promise.all([
+const [html, monitorHtml, css, tsSource, monitorSource, defaultYaml, presetFiles, packageJsonSource] = await Promise.all([
   readFile(path.join(srcDir, "index.html"), "utf8"),
   readFile(path.join(srcDir, "midi-monitor.html"), "utf8"),
   readFile(path.join(srcDir, "styles.css"), "utf8"),
@@ -19,7 +20,10 @@ const [html, monitorHtml, css, tsSource, monitorSource, defaultYaml, presetFiles
   readFile(path.join(srcDir, "midi-monitor.ts"), "utf8"),
   readFile(defaultYamlPath, "utf8"),
   readdir(presetsDir),
+  readFile(packageJsonPath, "utf8"),
 ]);
+const packageJson = JSON.parse(packageJsonSource);
+const appVersion = packageJson.version;
 const presetYamlFiles = presetFiles.filter((file) => /\.ya?ml$/i.test(file)).sort((left, right) => {
   if (left === "behringer-jt-mini.yaml") {
     return -1;
@@ -46,8 +50,8 @@ const appJs = compileTypescript(tsSource)
 const monitorJs = compileTypescript(monitorSource);
 
 await Promise.all([
-  writeFile(path.join(distDir, "index.html"), html, "utf8"),
-  writeFile(path.join(distDir, "midi-monitor.html"), monitorHtml, "utf8"),
+  writeFile(path.join(distDir, "index.html"), renderHtml(html), "utf8"),
+  writeFile(path.join(distDir, "midi-monitor.html"), renderHtml(monitorHtml), "utf8"),
   writeFile(path.join(distDir, "styles.css"), css, "utf8"),
   writeFile(path.join(distDir, "app.js"), appJs, "utf8"),
   writeFile(path.join(distDir, "midi-monitor.js"), monitorJs, "utf8"),
@@ -62,6 +66,10 @@ function compileTypescript(source) {
     .replace(/^type\s+\w+\s*=[\s\S]*?;\n/gm, "")
     .replace(/\s+as\s+any/g, "")
     .trimStart();
+}
+
+function renderHtml(source) {
+  return source.replaceAll("__APP_VERSION__", appVersion);
 }
 
 function extractPresetName(yaml, file) {

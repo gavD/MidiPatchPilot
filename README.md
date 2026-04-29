@@ -5,17 +5,41 @@ MultiMIDI is a runtime-free Web MIDI patch editor. Instrument panels are generat
 ## Run
 
 ```sh
+npm run dev
+```
+
+Open `http://127.0.0.1:4173`. The dev server builds once, watches `src/` and `presets/`, rebuilds on change, and reloads open browser windows after a successful rebuild.
+
+For a one-shot static build and server:
+
+```sh
 npm run build
 npm run serve -- --port 4173
 ```
 
-Open `http://127.0.0.1:4173`. Web MIDI usually requires a secure browser context; localhost is accepted by Chromium-based browsers. The app includes a preset selector for the bundled YAML presets; choose `Custom` or load YAML from disk to edit an instrument definition directly.
+Web MIDI usually requires a secure browser context; localhost is accepted by Chromium-based browsers. The app includes a preset selector for the bundled YAML presets; choose `Custom` or load YAML from disk to edit an instrument definition directly.
 
 Saved patches are stored locally per instrument in browser `localStorage`. The Patches panel can save the current CC values, apply or delete saved patches, and export the current instrument's patches as YAML.
 
 The static bundle is emitted to `dist/` and does not load third-party runtime scripts, styles, or packages.
 
 For isolated incoming MIDI testing, open `http://127.0.0.1:4173/midi-monitor.html`. That page only listens to MIDI input events and never sends MIDI messages.
+
+## Publishing a Version
+
+The app version is managed in `package.json` and rendered into the app header during `npm run build`.
+
+Start from a clean working tree, then create the version tag from that clean state:
+
+```sh
+git status --short
+npm test
+npm version patch
+git push
+git push --tags
+```
+
+Use `npm version minor` or `npm version major` instead of `patch` when appropriate. Avoid tagging with uncommitted changes; the tag should correspond to the exact source that produces the visible app version.
 
 ## Instrument YAML
 

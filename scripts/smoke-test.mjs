@@ -5,12 +5,16 @@ import { fileURLToPath } from "node:url";
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const distDir = path.join(rootDir, "dist");
+const packageJson = JSON.parse(await readFile(path.join(rootDir, "package.json"), "utf8"));
 const indexHtml = await readFile(path.join(distDir, "index.html"), "utf8");
+const monitorHtml = await readFile(path.join(distDir, "midi-monitor.html"), "utf8");
 const appJs = await readFile(path.join(distDir, "app.js"), "utf8");
 const monitorJs = await readFile(path.join(distDir, "midi-monitor.js"), "utf8");
 const distFiles = await readdir(distDir, { recursive: true });
 
 assertIndexHtml(indexHtml);
+assertVisibleVersion(indexHtml, "dist/index.html");
+assertVisibleVersion(monitorHtml, "dist/midi-monitor.html");
 assertNoRuntimeUrls(appJs, monitorJs, distFiles);
 
 class FakeElement {
@@ -258,6 +262,16 @@ function assertIndexHtml(source) {
     if (!source.includes(snippet)) {
       throw new Error(`dist/index.html is missing ${snippet}.`);
     }
+  }
+}
+
+function assertVisibleVersion(source, filename) {
+  const expectedVersion = `v${packageJson.version}`;
+  if (!source.includes(expectedVersion)) {
+    throw new Error(`${filename} is missing visible app version ${expectedVersion}.`);
+  }
+  if (source.includes("__APP_VERSION__")) {
+    throw new Error(`${filename} still contains the app version placeholder.`);
   }
 }
 
