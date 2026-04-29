@@ -24,6 +24,9 @@ const [html, monitorHtml, css, tsSource, monitorSource, defaultYaml, presetFiles
 ]);
 const packageJson = JSON.parse(packageJsonSource);
 const appVersion = packageJson.version;
+if (typeof appVersion !== "string" || !appVersion.trim()) {
+  throw new Error("package.json must define a non-empty version string.");
+}
 const presetYamlFiles = presetFiles.filter((file) => /\.ya?ml$/i.test(file)).sort((left, right) => {
   if (left === "behringer-jt-mini.yaml") {
     return -1;

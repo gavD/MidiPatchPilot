@@ -33,13 +33,17 @@ Start from a clean working tree, then create the version tag from that clean sta
 
 ```sh
 git status --short
+npm version patch --no-git-tag-version
 npm test
-npm version patch
+git add package.json dist
+git commit -m "v0.1.1"
+git tag v0.1.1
+git status --short
 git push
 git push --tags
 ```
 
-Use `npm version minor` or `npm version major` instead of `patch` when appropriate. Avoid tagging with uncommitted changes; the tag should correspond to the exact source that produces the visible app version.
+Use `npm version minor --no-git-tag-version` or `npm version major --no-git-tag-version` instead of `patch` when appropriate, and replace `v0.1.1` with the version you created. Avoid tagging with uncommitted changes; the tag should correspond to the exact source and generated `dist/` files that produce the visible app version.
 
 ## Instrument YAML
 
