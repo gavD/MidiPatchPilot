@@ -77,6 +77,12 @@ class FakeElement {
     this.eventListeners.set(type, handler);
   }
 
+  removeEventListener(type, handler) {
+    if (this.eventListeners.get(type) === handler) {
+      this.eventListeners.delete(type);
+    }
+  }
+
   append(...children) {
     for (const child of children) {
       if (child instanceof FakeElement) {
@@ -177,9 +183,12 @@ const context = {
     setItem() {},
   },
   document: {
+    body: new FakeElement("body", "body"),
     documentElement: new FakeElement("html", "document-element"),
+    addEventListener() {},
     createElement: (tagName) => new FakeElement(tagName),
     getElementById: (id) => ids.get(id) || null,
+    removeEventListener() {},
   },
   navigator: {},
   window: {
@@ -202,6 +211,7 @@ const sectionPanels = controlsGrid.querySelectorAll(".section-panel");
 const controls = controlsGrid.querySelectorAll(".control");
 const midiControls = collectMidiControls(controlsGrid);
 const verticalSliderGroups = controlsGrid.querySelectorAll(".vertical-slider-group");
+const lfoButtons = controlsGrid.querySelectorAll(".lfo-button");
 const valueMeters = controlsGrid.querySelectorAll(".value-meter");
 const presetOptions = ids.get("preset-select").children;
 
@@ -234,6 +244,25 @@ if (midiControls.length !== 15) {
 }
 if (verticalSliderGroups.length !== 1) {
   throw new Error(`Expected one vertical slider group, got ${verticalSliderGroups.length}.`);
+}
+if (lfoButtons.length !== 13) {
+  throw new Error(`Expected one LFO button per slider, got ${lfoButtons.length}.`);
+}
+const openLfoModal = lfoButtons[0].eventListeners.get("click");
+if (!openLfoModal) {
+  throw new Error("Expected LFO button to open a modal.");
+}
+openLfoModal();
+const lfoModal = context.document.body.children.find((child) => child.classList.contains("lfo-modal"));
+if (!lfoModal || lfoModal.hidden) {
+  throw new Error("Expected LFO modal to be visible after clicking an LFO button.");
+}
+const lfoModalTitle = findById(lfoModal, "lfo-modal-title");
+if (lfoModalTitle.textContent !== "Modulation LFO") {
+  throw new Error(`Expected Modulation LFO modal title, got "${lfoModalTitle.textContent}".`);
+}
+if (lfoModal.querySelectorAll(".lfo-field").length !== 3) {
+  throw new Error("Expected LFO modal to render depth, rate, and waveform fields.");
 }
 if (!verticalSliderGroups[0].firstElementChild?.classList.contains("vertical-slider-group-controls")) {
   throw new Error("Expected vertical slider group to render without its own label header.");
@@ -378,4 +407,17 @@ function collectMidiControls(root) {
     }
   });
   return matches;
+}
+
+function findById(root, id) {
+  let match = null;
+  walk(root, (element) => {
+    if (element.id === id) {
+      match = element;
+    }
+  });
+  if (!match) {
+    throw new Error(`Could not find dynamic element #${id}.`);
+  }
+  return match;
 }

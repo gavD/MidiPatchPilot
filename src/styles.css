@@ -495,6 +495,13 @@ input[type="text"] {
   min-width: 0;
 }
 
+.control-actions {
+  align-items: flex-start;
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 6px;
+}
+
 .control-title strong {
   display: block;
   font-size: 0.96rem;
@@ -518,6 +525,23 @@ input[type="text"] {
   font-size: 0.78rem;
   font-weight: 850;
   padding: 4px 6px;
+}
+
+.lfo-button {
+  background: #0c0d0d;
+  border: 1px solid var(--border);
+  color: var(--text);
+  flex: 0 0 auto;
+  font-size: 0.72rem;
+  font-weight: 850;
+  min-height: 26px;
+  padding: 0 7px;
+}
+
+.lfo-button[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #181101;
 }
 
 .slider-shell {
@@ -588,11 +612,25 @@ input[type="range"] {
   width: 64px;
 }
 
+.vertical-slider-meta {
+  align-items: center;
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+}
+
 .vertical-slider-cc {
   color: var(--muted);
   font-size: 0.68rem;
   font-weight: 800;
   line-height: 1;
+}
+
+.vertical-slider-meta .lfo-button {
+  font-size: 0.66rem;
+  min-height: 22px;
+  padding: 0 5px;
 }
 
 .toggle-button {
@@ -846,6 +884,99 @@ input[type="range"] {
   color: var(--accent);
   font-size: 0.75rem;
   text-transform: uppercase;
+}
+
+.lfo-modal {
+  background: rgb(0 0 0 / 58%);
+  display: grid;
+  inset: 0;
+  padding: 16px;
+  place-items: center;
+  position: fixed;
+  z-index: 40;
+}
+
+.lfo-dialog {
+  background: color-mix(in srgb, var(--panel) 94%, black);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  max-width: 420px;
+  width: min(100%, 420px);
+}
+
+.lfo-dialog-header,
+.lfo-field-header,
+.lfo-toggle-row {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.lfo-dialog-header {
+  background: color-mix(in srgb, var(--panel-alt) 82%, black);
+  border-bottom: 1px solid var(--border);
+  min-height: 52px;
+  padding: 10px 12px;
+}
+
+.lfo-dialog-header h2 {
+  font-size: 1rem;
+  letter-spacing: 0;
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.lfo-close {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  flex: 0 0 auto;
+  font-size: 0.78rem;
+  font-weight: 850;
+  min-height: 30px;
+  padding: 0 8px;
+}
+
+.lfo-form {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.lfo-toggle-row {
+  background: var(--panel-alt);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-weight: 850;
+  min-height: 42px;
+  padding: 8px 10px;
+}
+
+.lfo-toggle-row input {
+  accent-color: var(--primary);
+  height: 20px;
+  width: 20px;
+}
+
+.lfo-field {
+  display: grid;
+  gap: 6px;
+}
+
+.lfo-field-header {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.lfo-value {
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  text-transform: none;
 }
 
 @media (width <= 1040px) {
