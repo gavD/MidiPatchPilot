@@ -70,7 +70,6 @@ interface AppState {
   incomingEventCount: number;
   loopTimer: number | null;
   lfoTimer: number | null;
-  lfoModal: HTMLElement | null;
   reloadTimer: number | null;
   values: Map<string, number>;
   lfos: Map<string, LfoState>;
@@ -91,7 +90,7 @@ type MidiControlType =
   | "toggle-button";
 
 type ControlType = MidiControlType | "vertical-slider-group";
-type LfoWaveform = "triangle" | "saw" | "reverse-saw" | "square" | "sine";
+type LfoWaveform = "triangle" | "saw" | "reverse-saw" | "square" | "sine" | "random";
 
 interface LfoState {
   cc: number;
@@ -131,12 +130,13 @@ const LFO_MAX_CONTROL_SENDS_PER_SECOND = 240;
 const LFO_MIN_CONTROL_SENDS_PER_SECOND = 2;
 const LFO_TAU = Math.PI * 2;
 
-const lfoWaveformOptions: { value: LfoWaveform; label: string }[] = [
-  { value: "triangle", label: "Triangle" },
-  { value: "saw", label: "Saw" },
-  { value: "reverse-saw", label: "Reverse saw" },
-  { value: "square", label: "Square" },
-  { value: "sine", label: "Sine" },
+const lfoWaveformOptions: { value: LfoWaveform; label: string; icon: string }[] = [
+  { value: "triangle", label: "Triangle", icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 16 8 6l5 10 5-10 3 6"></path></svg>' },
+  { value: "saw", label: "Saw", icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17 12 7v10l9-10"></path></svg>' },
+  { value: "reverse-saw", label: "Reverse saw", icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7l9 10V7l9 10"></path></svg>' },
+  { value: "square", label: "Square", icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 16V7h7v9h7V7h4"></path></svg>' },
+  { value: "sine", label: "Sine", icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12c2.2-7 6.6-7 9 0s6.8 7 9 0"></path></svg>' },
+  { value: "random", label: "Random", icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17h3V8h4v6h4V5h5"></path><circle cx="6" cy="6" r="1"></circle><circle cx="12" cy="18" r="1"></circle><circle cx="19" cy="14" r="1"></circle></svg>' },
 ];
 
 const allowedControlTypes = new Set<ControlType>([
@@ -155,7 +155,6 @@ const state: AppState = {
   incomingEventCount: 0,
   loopTimer: null,
   lfoTimer: null,
-  lfoModal: null,
   reloadTimer: null,
   values: new Map<string, number>(),
   lfos: new Map<string, LfoState>(),
@@ -748,7 +747,7 @@ function renderControl(control) {
   wrapper.append(header);
 
   if (isSliderControl(control)) {
-    wrapper.append(renderSliderControl(control));
+    wrapper.append(renderSliderControl(control), renderInlineLfoControls(control));
   } else if (control.type === "toggle-button") {
     wrapper.append(renderToggleControl(control));
   } else {
@@ -854,7 +853,7 @@ function renderGroupedVerticalSlider(control) {
   range.addEventListener("input", () => syncValue(range.value));
   number.addEventListener("input", () => syncValue(number.value));
 
-  item.append(label, renderSliderLane(control, range, currentValue), number, meta);
+  item.append(label, renderSliderLane(control, range, currentValue), number, meta, renderInlineLfoControls(control));
   return item;
 }
 
@@ -878,59 +877,23 @@ function renderLfoButton(control) {
   button.type = "button";
   button.textContent = "LFO";
   button.dataset.lfoCc = String(control.cc);
-  button.setAttribute("aria-label", `${control.label} LFO`);
-  button.setAttribute("aria-pressed", String(isLfoEnabled(control)));
-  button.addEventListener("click", () => openLfoModal(control));
+  syncLfoButtonElement(button, control);
+  button.addEventListener("click", () => {
+    setLfoEnabled(control, !isLfoEnabled(control));
+  });
   return button;
 }
 
-function openLfoModal(control) {
-  const lfo = getOrCreateLfo(control);
-  const modal = ensureLfoModal();
-  modal.innerHTML = "";
-  modal.hidden = false;
-  modal.classList.add("is-open");
-  modal.setAttribute("role", "dialog");
-  modal.setAttribute("aria-modal", "true");
-  modal.setAttribute("aria-labelledby", "lfo-modal-title");
-
-  const dialog = document.createElement("div");
-  dialog.className = "lfo-dialog";
-
-  const header = document.createElement("div");
-  header.className = "lfo-dialog-header";
-
-  const title = document.createElement("h2");
-  title.id = "lfo-modal-title";
-  title.textContent = `${control.label} LFO`;
-
-  const close = document.createElement("button");
-  close.className = "lfo-close";
-  close.type = "button";
-  close.textContent = "Close";
-  close.addEventListener("click", closeLfoModal);
-
-  header.append(title, close);
-
-  const form = document.createElement("div");
-  form.className = "lfo-form";
-
-  const enabledLabel = document.createElement("label");
-  enabledLabel.className = "lfo-toggle-row";
-
-  const enabledText = document.createElement("span");
-  enabledText.textContent = "On/off";
-
-  const enabled = document.createElement("input");
-  enabled.type = "checkbox";
-  enabled.checked = lfo.enabled;
-  enabled.setAttribute("aria-label", `${control.label} LFO on/off`);
-
-  enabledLabel.append(enabledText, enabled);
+function renderInlineLfoControls(control) {
+  const lfo = getLfoViewState(control);
+  const panel = document.createElement("div");
+  panel.className = "lfo-inline-controls";
+  panel.dataset.lfoPanelCc = String(control.cc);
+  panel.hidden = !lfo.enabled;
 
   const depthValue = document.createElement("output");
   const depth = createLfoRange(
-    "Depth",
+    "LFO Depth",
     0,
     maxLfoDepth(control),
     1,
@@ -938,10 +901,12 @@ function openLfoModal(control) {
     `${control.label} LFO depth`,
     depthValue,
   );
+  depth.input.dataset.lfoControl = "depth";
+  depthValue.dataset.lfoOutput = "depth";
 
   const rateValue = document.createElement("output");
   const rate = createLfoRange(
-    "Rate",
+    "LFO Rate",
     LFO_MIN_RATE_HZ,
     LFO_MAX_RATE_HZ,
     0.1,
@@ -949,98 +914,70 @@ function openLfoModal(control) {
     `${control.label} LFO rate`,
     rateValue,
   );
+  rate.input.dataset.lfoControl = "rate";
+  rateValue.dataset.lfoOutput = "rate";
 
-  const waveformField = document.createElement("label");
+  const waveformField = document.createElement("div");
   waveformField.className = "lfo-field";
 
   const waveformHeader = document.createElement("span");
   waveformHeader.className = "lfo-field-header";
-  waveformHeader.textContent = "Waveform";
+  waveformHeader.textContent = "LFO Waveform";
 
-  const waveform = document.createElement("select");
-  waveform.setAttribute("aria-label", `${control.label} LFO waveform`);
+  const waveformButtons = document.createElement("div");
+  waveformButtons.className = "lfo-waveform-buttons";
+  waveformButtons.setAttribute("aria-label", `${control.label} LFO waveform`);
+  waveformButtons.setAttribute("role", "group");
+
   for (const optionDefinition of lfoWaveformOptions) {
-    const option = document.createElement("option");
-    option.value = optionDefinition.value;
-    option.textContent = optionDefinition.label;
-    waveform.append(option);
+    const button = document.createElement("button");
+    button.className = "lfo-waveform-button";
+    button.type = "button";
+    button.dataset.lfoWaveform = optionDefinition.value;
+    button.innerHTML = optionDefinition.icon;
+    button.title = optionDefinition.label;
+    button.setAttribute("aria-label", `${control.label} LFO ${optionDefinition.label} waveform`);
+    button.setAttribute("aria-pressed", String(optionDefinition.value === lfo.waveform));
+    button.addEventListener("click", () => {
+      const lfo = getOrCreateLfo(control);
+      lfo.waveform = optionDefinition.value;
+      lfo.lastValue = null;
+      syncInlineValues();
+      syncLfoPresentation(control);
+    });
+    waveformButtons.append(button);
   }
-  waveform.value = lfo.waveform;
 
-  waveformField.append(waveformHeader, waveform);
-  form.append(enabledLabel, depth.field, rate.field, waveformField);
-  dialog.append(header, form);
-  modal.append(dialog);
+  waveformField.append(waveformHeader, waveformButtons);
+  panel.append(depth.field, rate.field, waveformField);
 
-  const syncModalValues = () => {
-    depthValue.textContent = String(lfo.depth);
-    rateValue.textContent = formatLfoRateLabel(control, lfo);
+  const syncInlineValues = () => {
+    const currentLfo = getLfoViewState(control);
+    depth.input.value = String(currentLfo.depth);
+    rate.input.value = String(currentLfo.rate);
+    depthValue.textContent = String(currentLfo.depth);
+    rateValue.textContent = formatLfoRateLabel(control, currentLfo);
+    syncWaveformButtons(waveformButtons, currentLfo.waveform);
   };
 
-  syncModalValues();
-
-  enabled.addEventListener("change", () => {
-    setLfoEnabled(control, enabled.checked);
-    syncModalValues();
-  });
+  syncInlineValues();
 
   depth.input.addEventListener("input", () => {
+    const lfo = getOrCreateLfo(control);
     lfo.depth = normalizeLfoDepth(control, depth.input.value);
     lfo.lastValue = null;
-    depth.input.value = String(lfo.depth);
-    syncModalValues();
+    syncInlineValues();
+    syncLfoPresentation(control);
   });
 
   rate.input.addEventListener("input", () => {
+    const lfo = getOrCreateLfo(control);
     lfo.rate = normalizeLfoRate(rate.input.value);
-    rate.input.value = String(lfo.rate);
-    syncModalValues();
+    syncInlineValues();
+    syncLfoPresentation(control);
   });
 
-  waveform.addEventListener("change", () => {
-    lfo.waveform = normalizeLfoWaveform(waveform.value);
-    lfo.lastValue = null;
-    syncModalValues();
-  });
-
-  modal.addEventListener("click", closeLfoModalFromBackdrop);
-  document.addEventListener("keydown", closeLfoModalFromKeyboard);
-}
-
-function ensureLfoModal() {
-  if (state.lfoModal) {
-    return state.lfoModal;
-  }
-
-  const modal = document.createElement("div");
-  modal.className = "lfo-modal";
-  modal.hidden = true;
-  document.body.append(modal);
-  state.lfoModal = modal;
-  return modal;
-}
-
-function closeLfoModal() {
-  if (!state.lfoModal) {
-    return;
-  }
-
-  state.lfoModal.hidden = true;
-  state.lfoModal.classList.remove("is-open");
-  state.lfoModal.removeEventListener("click", closeLfoModalFromBackdrop);
-  document.removeEventListener("keydown", closeLfoModalFromKeyboard);
-}
-
-function closeLfoModalFromBackdrop(event) {
-  if (event.target === state.lfoModal) {
-    closeLfoModal();
-  }
-}
-
-function closeLfoModalFromKeyboard(event) {
-  if (event.key === "Escape") {
-    closeLfoModal();
-  }
+  return panel;
 }
 
 function createLfoRange(labelText, min, max, step, value, ariaLabel, valueElement) {
@@ -1093,6 +1030,16 @@ function getOrCreateLfo(control) {
   return lfo;
 }
 
+function getLfoViewState(control): PatchLfoDefinition {
+  const lfo = state.lfos.get(String(control.cc));
+  return {
+    enabled: Boolean(lfo?.enabled),
+    depth: normalizeLfoDepth(control, lfo?.depth ?? Math.round(maxLfoDepth(control) / 2)),
+    rate: normalizeLfoRate(lfo?.rate ?? LFO_DEFAULT_RATE_HZ),
+    waveform: normalizeLfoWaveform(lfo?.waveform ?? "triangle"),
+  };
+}
+
 function setLfoEnabled(control, shouldEnable) {
   const lfo = getOrCreateLfo(control);
   if (shouldEnable) {
@@ -1142,7 +1089,6 @@ function stopAllLfos() {
   syncAllLfoPresentations();
   state.lfos.clear();
   stopLfoEngine();
-  closeLfoModal();
 }
 
 function runLfoTick() {
@@ -1217,11 +1163,13 @@ function calculateLfoTiming(control, lfo, activeCount) {
   const maxUpdateHz = Math.min(LFO_MAX_CONTROL_SENDS_PER_SECOND, perControlBudget);
   const depthRatio = maxLfoDepth(control) > 0 ? lfo.depth / maxLfoDepth(control) : 0;
   const depthScaledSamples = Math.max(samplesPerCycle, Math.ceil(samplesPerCycle * (0.5 + depthRatio)));
-  const requestedUpdateHz = lfo.rate * depthScaledSamples;
-  const updateHz = clampNumber(requestedUpdateHz, LFO_MIN_CONTROL_SENDS_PER_SECOND, maxUpdateHz);
+  const isRandom = lfo.waveform === "random";
+  const requestedUpdateHz = isRandom ? lfo.rate : lfo.rate * depthScaledSamples;
+  const minUpdateHz = isRandom ? LFO_MIN_RATE_HZ : LFO_MIN_CONTROL_SENDS_PER_SECOND;
+  const updateHz = clampNumber(requestedUpdateHz, minUpdateHz, maxUpdateHz);
   return {
     updateHz,
-    effectiveRate: Math.min(lfo.rate, updateHz / depthScaledSamples),
+    effectiveRate: isRandom ? updateHz : Math.min(lfo.rate, updateHz / depthScaledSamples),
   };
 }
 
@@ -1231,6 +1179,9 @@ function getEffectiveLfoRate(control, lfo) {
 }
 
 function sampleLfoWaveform(waveform, phase) {
+  if (waveform === "random") {
+    return (Math.random() * 2) - 1;
+  }
   if (waveform === "sine") {
     return Math.sin(phase * LFO_TAU);
   }
@@ -1253,6 +1204,9 @@ function sampleLfoWaveform(waveform, phase) {
 }
 
 function samplesPerLfoCycle(waveform) {
+  if (waveform === "random") {
+    return 1;
+  }
   if (waveform === "square") {
     return 2;
   }
@@ -1304,14 +1258,21 @@ function recenterActiveLfo(control, midiValue) {
 }
 
 function syncLfoButton(control) {
-  const isEnabled = isLfoEnabled(control);
   for (const button of elements.controlsGrid.querySelectorAll(".lfo-button")) {
     if (button.dataset.lfoCc !== String(control.cc)) {
       continue;
     }
-    button.setAttribute("aria-pressed", String(isEnabled));
-    button.classList.toggle("is-active", isEnabled);
+    syncLfoButtonElement(button, control);
   }
+}
+
+function syncLfoButtonElement(button, control) {
+  const isEnabled = isLfoEnabled(control);
+  const title = `LFO for ${control.label} is ${isEnabled ? "on" : "off"}`;
+  button.title = title;
+  button.setAttribute("aria-label", title);
+  button.setAttribute("aria-pressed", String(isEnabled));
+  button.classList.toggle("is-active", isEnabled);
 }
 
 function syncLfoGhost(control, value = getControlValue(control)) {
@@ -1341,10 +1302,53 @@ function normalizeLfoPosition(control, value) {
   return clampNumber((normalizeControlValue(control, value) - control.min) / range, 0, 1);
 }
 
+function syncInlineLfoControls(control) {
+  const wrapper = elements.controlsGrid.querySelector(`[data-cc="${control.cc}"]`);
+  if (!wrapper) {
+    return;
+  }
+
+  const panel = wrapper.querySelector(".lfo-inline-controls");
+  if (!panel) {
+    return;
+  }
+
+  const lfo = getLfoViewState(control);
+  panel.hidden = !lfo.enabled;
+
+  const depthInput = panel.querySelector('[data-lfo-control="depth"]');
+  const rateInput = panel.querySelector('[data-lfo-control="rate"]');
+  const depthOutput = panel.querySelector('[data-lfo-output="depth"]');
+  const rateOutput = panel.querySelector('[data-lfo-output="rate"]');
+
+  if (depthInput) {
+    depthInput.value = String(lfo.depth);
+  }
+  if (rateInput) {
+    rateInput.value = String(lfo.rate);
+  }
+  if (depthOutput) {
+    depthOutput.textContent = String(lfo.depth);
+  }
+  if (rateOutput) {
+    rateOutput.textContent = formatLfoRateLabel(control, lfo);
+  }
+  syncWaveformButtons(panel, lfo.waveform);
+}
+
+function syncWaveformButtons(root, waveform) {
+  for (const button of root.querySelectorAll(".lfo-waveform-button")) {
+    const isActive = button.dataset.lfoWaveform === waveform;
+    button.setAttribute("aria-pressed", String(isActive));
+    button.classList.toggle("is-active", isActive);
+  }
+}
+
 function syncLfoPresentation(control) {
   const lfo = state.lfos.get(String(control.cc));
   syncLfoButton(control);
   syncLfoGhost(control, lfo?.lastValue ?? lfo?.baseValue ?? getControlValue(control));
+  syncInlineLfoControls(control);
 }
 
 function syncAllLfoPresentations() {

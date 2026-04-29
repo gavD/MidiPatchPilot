@@ -250,6 +250,7 @@ const controls = controlsGrid.querySelectorAll(".control");
 const midiControls = collectMidiControls(controlsGrid);
 const verticalSliderGroups = controlsGrid.querySelectorAll(".vertical-slider-group");
 const lfoButtons = controlsGrid.querySelectorAll(".lfo-button");
+const lfoPanels = controlsGrid.querySelectorAll(".lfo-inline-controls");
 const sliderLanes = controlsGrid.querySelectorAll(".slider-lane");
 const valueMeters = controlsGrid.querySelectorAll(".value-meter");
 const presetOptions = ids.get("preset-select").children;
@@ -290,37 +291,44 @@ if (lfoButtons.length !== 13) {
 if (sliderLanes.length !== 13) {
   throw new Error(`Expected one LFO ghost lane per slider, got ${sliderLanes.length}.`);
 }
-const openLfoModal = lfoButtons[0].eventListeners.get("click");
-if (!openLfoModal) {
-  throw new Error("Expected LFO button to open a modal.");
+if (lfoPanels.length !== 13) {
+  throw new Error(`Expected one inline LFO panel per slider, got ${lfoPanels.length}.`);
 }
-openLfoModal();
-const lfoModal = context.document.body.children.find((child) => child.classList.contains("lfo-modal"));
-if (!lfoModal || lfoModal.hidden) {
-  throw new Error("Expected LFO modal to be visible after clicking an LFO button.");
+if (!lfoPanels[0].hidden) {
+  throw new Error("Expected inline LFO controls to be hidden while the LFO is off.");
 }
-const lfoModalTitle = findById(lfoModal, "lfo-modal-title");
-if (lfoModalTitle.textContent !== "Modulation LFO") {
-  throw new Error(`Expected Modulation LFO modal title, got "${lfoModalTitle.textContent}".`);
+if (lfoButtons[0].title !== "LFO for Modulation is off") {
+  throw new Error(`Expected off-state LFO button title, got "${lfoButtons[0].title}".`);
 }
-if (lfoModal.querySelectorAll(".lfo-field").length !== 3) {
-  throw new Error("Expected LFO modal to render depth, rate, and waveform fields.");
+fireEvent(lfoButtons[0], "click");
+if (lfoButtons[0].getAttribute("aria-pressed") !== "true" || lfoButtons[0].title !== "LFO for Modulation is on") {
+  throw new Error("Expected LFO button to toggle on and expose on-state title text.");
 }
-const lfoInputs = collectElements(lfoModal, (element) => element.tagName === "INPUT");
+if (lfoPanels[0].hidden) {
+  throw new Error("Expected inline LFO controls to be visible after toggling the LFO on.");
+}
+if (lfoPanels[0].querySelectorAll(".lfo-field").length !== 3) {
+  throw new Error("Expected inline LFO controls to render depth, rate, and waveform fields.");
+}
+const lfoInputs = collectElements(lfoPanels[0], (element) => element.tagName === "INPUT");
 const lfoRanges = lfoInputs.filter((element) => element.type === "range");
-const lfoEnabled = lfoInputs.find((element) => element.type === "checkbox");
-const lfoWaveform = collectElements(lfoModal, (element) => element.tagName === "SELECT")[0];
-if (!lfoEnabled || lfoRanges.length !== 2 || !lfoWaveform) {
-  throw new Error("Expected LFO modal to expose on/off, depth, rate, and waveform inputs.");
+const lfoWaveformButtons = lfoPanels[0].querySelectorAll(".lfo-waveform-button");
+const sineWaveform = lfoWaveformButtons.find((button) => button.dataset.lfoWaveform === "sine");
+const randomWaveform = lfoWaveformButtons.find((button) => button.dataset.lfoWaveform === "random");
+if (lfoRanges.length !== 2 || lfoWaveformButtons.length !== 6 || !sineWaveform || !randomWaveform) {
+  throw new Error("Expected inline LFO controls to expose depth, rate, and six waveform buttons.");
+}
+if (randomWaveform.title !== "Random") {
+  throw new Error(`Expected Random waveform button title, got "${randomWaveform.title}".`);
 }
 lfoRanges[0].value = "17";
 fireEvent(lfoRanges[0], "input");
 lfoRanges[1].value = "2.5";
 fireEvent(lfoRanges[1], "input");
-lfoWaveform.value = "sine";
-fireEvent(lfoWaveform, "change");
-lfoEnabled.checked = true;
-fireEvent(lfoEnabled, "change");
+fireEvent(sineWaveform, "click");
+if (sineWaveform.getAttribute("aria-pressed") !== "true") {
+  throw new Error("Expected clicking a waveform button to mark it active.");
+}
 if (!sliderLanes[0].classList.contains("has-lfo")) {
   throw new Error("Expected enabling an LFO to reveal the ghost lane marker.");
 }
@@ -333,6 +341,10 @@ if (modulationSlider.value !== "0") {
 if (Number(sliderLanes[0].style.properties.get("--lfo-position")) <= 0) {
   throw new Error("Expected LFO tick to move the ghost marker behind the fader.");
 }
+fireEvent(randomWaveform, "click");
+if (randomWaveform.getAttribute("aria-pressed") !== "true") {
+  throw new Error("Expected Random waveform button to mark itself active.");
+}
 ids.get("patch-name").value = "Moving LFO";
 fireEvent(ids.get("save-patch"), "click");
 const savedLfoPatchLibrary = JSON.parse(localStorageValues.get("multimidi.patches.v1"));
@@ -343,16 +355,17 @@ if (!savedLfoPatch?.lfos?.["1"]?.enabled) {
 if (
   savedLfoPatch.lfos["1"].depth !== 17 ||
   savedLfoPatch.lfos["1"].rate !== 2.5 ||
-  savedLfoPatch.lfos["1"].waveform !== "sine"
+  savedLfoPatch.lfos["1"].waveform !== "random"
 ) {
   throw new Error("Expected saved patch to persist LFO depth, rate, and waveform.");
 }
-lfoEnabled.checked = false;
-fireEvent(lfoEnabled, "change");
+fireEvent(lfoButtons[0], "click");
+if (!lfoPanels[0].hidden || lfoButtons[0].title !== "LFO for Modulation is off") {
+  throw new Error("Expected toggling LFO off to hide inline controls and expose off-state title text.");
+}
 ids.get("patch-name").value = "Dry";
 fireEvent(ids.get("save-patch"), "click");
-lfoEnabled.checked = true;
-fireEvent(lfoEnabled, "change");
+fireEvent(lfoButtons[0], "click");
 const dryPatchRow = findPatchRow("Dry");
 const dryPatchLoad = dryPatchRow.querySelectorAll(".ghost-action")[0];
 fireEvent(dryPatchLoad, "click");
@@ -361,6 +374,9 @@ if (lfoButtons[0].getAttribute("aria-pressed") !== "false") {
 }
 if (sliderLanes[0].classList.contains("has-lfo")) {
   throw new Error("Expected loading a dry patch to hide the LFO ghost marker.");
+}
+if (!lfoPanels[0].hidden) {
+  throw new Error("Expected loading a dry patch to hide inline LFO controls.");
 }
 if (!verticalSliderGroups[0].firstElementChild?.classList.contains("vertical-slider-group-controls")) {
   throw new Error("Expected vertical slider group to render without its own label header.");
@@ -538,19 +554,6 @@ function findPatchRow(name) {
   const match = rows.find((row) => row.children.some((child) => child.textContent === name));
   if (!match) {
     throw new Error(`Could not find patch row for ${name}.`);
-  }
-  return match;
-}
-
-function findById(root, id) {
-  let match = null;
-  walk(root, (element) => {
-    if (element.id === id) {
-      match = element;
-    }
-  });
-  if (!match) {
-    throw new Error(`Could not find dynamic element #${id}.`);
   }
   return match;
 }

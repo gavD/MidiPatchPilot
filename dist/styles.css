@@ -527,7 +527,8 @@ input[type="text"] {
   padding: 4px 6px;
 }
 
-.lfo-button {
+.lfo-button,
+.lfo-waveform-button {
   background: #0c0d0d;
   border: 1px solid var(--border);
   color: var(--text);
@@ -538,10 +539,42 @@ input[type="text"] {
   padding: 0 7px;
 }
 
-.lfo-button[aria-pressed="true"] {
+.lfo-button[aria-pressed="true"],
+.lfo-waveform-button[aria-pressed="true"] {
   background: var(--accent);
   border-color: var(--accent);
   color: #181101;
+}
+
+.lfo-waveform-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.lfo-waveform-button {
+  align-items: center;
+  display: inline-flex;
+  height: 32px;
+  justify-content: center;
+  padding: 0;
+  width: 36px;
+}
+
+.lfo-waveform-button svg {
+  display: block;
+  fill: none;
+  height: 22px;
+  stroke: currentcolor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+  width: 22px;
+}
+
+.lfo-waveform-button circle {
+  fill: currentcolor;
+  stroke: none;
 }
 
 .slider-shell {
@@ -937,78 +970,18 @@ input[type="range"] {
   text-transform: uppercase;
 }
 
-.lfo-modal {
-  background: rgb(0 0 0 / 58%);
-  display: grid;
-  inset: 0;
-  padding: 16px;
-  place-items: center;
-  position: fixed;
-  z-index: 40;
-}
-
-.lfo-dialog {
-  background: color-mix(in srgb, var(--panel) 94%, black);
+.lfo-inline-controls {
+  background: color-mix(in srgb, var(--panel-alt) 78%, black);
   border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-  max-width: 420px;
-  width: min(100%, 420px);
-}
-
-.lfo-dialog-header,
-.lfo-field-header,
-.lfo-toggle-row {
-  align-items: center;
-  display: flex;
+  display: grid;
   gap: 8px;
-  justify-content: space-between;
-}
-
-.lfo-dialog-header {
-  background: color-mix(in srgb, var(--panel-alt) 82%, black);
-  border-bottom: 1px solid var(--border);
-  min-height: 52px;
-  padding: 10px 12px;
-}
-
-.lfo-dialog-header h2 {
-  font-size: 1rem;
-  letter-spacing: 0;
-  margin: 0;
   min-width: 0;
-  overflow-wrap: anywhere;
+  padding: 8px;
 }
 
-.lfo-close {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text);
-  flex: 0 0 auto;
-  font-size: 0.78rem;
-  font-weight: 850;
-  min-height: 30px;
-  padding: 0 8px;
-}
-
-.lfo-form {
-  display: grid;
-  gap: 12px;
-  padding: 12px;
-}
-
-.lfo-toggle-row {
-  background: var(--panel-alt);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-weight: 850;
-  min-height: 42px;
-  padding: 8px 10px;
-}
-
-.lfo-toggle-row input {
-  accent-color: var(--primary);
-  height: 20px;
-  width: 20px;
+.vertical-slider-control .lfo-inline-controls {
+  min-width: 150px;
+  width: 100%;
 }
 
 .lfo-field {
@@ -1017,9 +990,13 @@ input[type="range"] {
 }
 
 .lfo-field-header {
+  align-items: center;
   color: var(--muted);
+  display: flex;
   font-size: 0.78rem;
   font-weight: 850;
+  gap: 8px;
+  justify-content: space-between;
   text-transform: uppercase;
 }
 
@@ -1029,6 +1006,7 @@ input[type="range"] {
   text-align: right;
   text-transform: none;
 }
+
 
 @media (width <= 1040px) {
   .workspace {
