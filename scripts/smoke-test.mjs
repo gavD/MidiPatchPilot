@@ -347,8 +347,13 @@ if (randomWaveform.getAttribute("aria-pressed") !== "true") {
 }
 ids.get("patch-name").value = "Moving LFO";
 fireEvent(ids.get("save-patch"), "click");
-const savedLfoPatchLibrary = JSON.parse(localStorageValues.get("multimidi.patches.v1"));
+const savedLfoPatchLibrary = JSON.parse(localStorageValues.get("midi-patchpilot.patches.v1"));
 const savedLfoPatch = savedLfoPatchLibrary["Behringer JT Mini"].find((patch) => patch.name === "Moving LFO");
+const movingPatchRow = findPatchRow("Moving LFO");
+const movingPatchSave = findPatchAction(movingPatchRow, "save");
+if (!movingPatchRow.classList.contains("is-active") || !movingPatchSave) {
+  throw new Error("Expected the newly saved patch to be highlighted with an overwrite save action.");
+}
 if (!savedLfoPatch?.lfos?.["1"]?.enabled) {
   throw new Error("Expected saved patch to persist enabled LFO state for CC 1.");
 }
@@ -359,6 +364,14 @@ if (
 ) {
   throw new Error("Expected saved patch to persist LFO depth, rate, and waveform.");
 }
+lfoRanges[0].value = "21";
+fireEvent(lfoRanges[0], "input");
+fireEvent(movingPatchSave, "click");
+const overwrittenPatchLibrary = JSON.parse(localStorageValues.get("midi-patchpilot.patches.v1"));
+const overwrittenPatch = overwrittenPatchLibrary["Behringer JT Mini"].find((patch) => patch.name === "Moving LFO");
+if (overwrittenPatch.lfos["1"].depth !== 21) {
+  throw new Error("Expected active patch save action to overwrite the saved LFO depth.");
+}
 fireEvent(lfoButtons[0], "click");
 if (!lfoPanels[0].hidden || lfoButtons[0].title !== "LFO for Modulation is off") {
   throw new Error("Expected toggling LFO off to hide inline controls and expose off-state title text.");
@@ -367,7 +380,7 @@ ids.get("patch-name").value = "Dry";
 fireEvent(ids.get("save-patch"), "click");
 fireEvent(lfoButtons[0], "click");
 const dryPatchRow = findPatchRow("Dry");
-const dryPatchLoad = dryPatchRow.querySelectorAll(".ghost-action")[0];
+const dryPatchLoad = findPatchAction(dryPatchRow, "load");
 fireEvent(dryPatchLoad, "click");
 if (lfoButtons[0].getAttribute("aria-pressed") !== "false") {
   throw new Error("Expected loading a patch to clear the previously running LFO.");
@@ -394,11 +407,15 @@ console.log("Smoke test passed");
 
 function assertIndexHtml(source) {
   const requiredSnippets = [
-    'title="Load a YAML file from your device that confiigured MultiMidi for your MIDI instrument"',
+    'title="Load a YAML file from your device that configures Midi PatchPilot for your MIDI instrument"',
     'title="Ransomises the value of all controls"',
     'title="loop every 3 seconds"',
     'id="patch-list"',
+    "Save as new patch",
     "export all patches",
+    "https://gavindavieslimited.com/",
+    "Brought to you by",
+    "Licensed under the GNU GPL.",
   ];
 
   for (const snippet of requiredSnippets) {
@@ -556,4 +573,12 @@ function findPatchRow(name) {
     throw new Error(`Could not find patch row for ${name}.`);
   }
   return match;
+}
+
+function findPatchAction(row, label) {
+  const action = row.querySelectorAll(".ghost-action").find((button) => button.textContent === label);
+  if (!action) {
+    throw new Error(`Could not find ${label} patch action.`);
+  }
+  return action;
 }

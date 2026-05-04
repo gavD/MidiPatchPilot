@@ -1,6 +1,6 @@
-# MultiMIDI
+# Midi PatchPilot
 
-MultiMIDI is a runtime-free Web MIDI patch editor. Instrument panels are generated from YAML, MIDI CC changes are sent immediately, and the generated site is plain HTML, CSS, and JavaScript.
+Midi PatchPilot is a runtime-free Web MIDI patch editor. Instrument panels are generated from YAML, MIDI CC changes are sent immediately, and the generated site is plain HTML, CSS, and JavaScript.
 
 ## Run
 
@@ -25,11 +25,15 @@ npm run serve -- --port 4173
 
 Web MIDI usually requires a secure browser context; localhost is accepted by Chromium-based browsers. The app includes a preset selector for the bundled YAML presets; choose `Custom` or load YAML from disk to edit an instrument definition directly.
 
-Saved patches are stored locally per instrument in browser `localStorage`. The Patches panel can save the current CC values, apply or delete saved patches, and export the current instrument's patches as YAML.
+Saved patches are stored locally per instrument in browser `localStorage`. The Patches panel can save the current CC values as a new patch, load and overwrite the active patch, delete saved patches, and export the current instrument's patches as YAML.
 
 The static bundle is emitted to `dist/` and does not load third-party runtime scripts, styles, or packages.
 
 For isolated incoming MIDI testing, open `http://127.0.0.1:4173/midi-monitor.html`. That page only listens to MIDI input events and never sends MIDI messages.
+
+## Licence
+
+Midi PatchPilot is licensed under the GNU General Public License v3.0 or later.
 
 ## Linting
 

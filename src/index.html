@@ -3,14 +3,14 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>MultiMIDI Patch Editor</title>
+    <title>Midi PatchPilot Patch Editor</title>
     <link rel="stylesheet" href="./styles.css">
   </head>
   <body>
     <div class="app-shell">
       <header class="app-header">
         <div>
-          <p class="eyebrow">MultiMIDI <span class="app-version">v__APP_VERSION__</span></p>
+          <p class="eyebrow">Midi PatchPilot <span class="app-version">v__APP_VERSION__</span></p>
           <h1 id="instrument-title">Patch Editor</h1>
         </div>
         <div class="midi-pill" id="midi-status" role="status">MIDI not connected</div>
@@ -21,7 +21,7 @@
           <section class="panel-block">
             <div class="section-heading">
               <h2>Instrument</h2>
-              <label class="file-picker" title="Load a YAML file from your device that confiigured MultiMidi for your MIDI instrument">
+              <label class="file-picker" title="Load a YAML file from your device that configures Midi PatchPilot for your MIDI instrument">
                 <span>Load from disk</span>
                 <input id="yaml-file" type="file" accept=".yaml,.yml,text/yaml,text/plain">
               </label>
@@ -30,17 +30,6 @@
             <select id="preset-select" aria-label="Instrument"></select>
             <textarea id="yaml-editor" spellcheck="false" aria-label="Instrument YAML editor"></textarea>
             <div class="parse-status" id="parse-status" role="status"></div>
-          </section>
-
-          <section class="panel-block">
-            <h2 id="patch-heading">Patches</h2>
-            <div class="patch-save-row">
-              <input id="patch-name" type="text" autocomplete="off" placeholder="Patch name" aria-label="Patch name">
-              <button class="primary-action" id="save-patch" type="button">Save patch</button>
-            </div>
-            <ul class="patch-list" id="patch-list"></ul>
-            <button class="ghost-action export-patches-action" id="export-patches" type="button">export all patches</button>
-            <div class="parse-status" id="patch-status" role="status">No patches saved.</div>
           </section>
 
           <section class="panel-block">
@@ -114,6 +103,19 @@
           </section>
         </aside>
 
+        <aside class="patch-panel" aria-label="Saved patches">
+          <section class="panel-block">
+            <h2 id="patch-heading">Patches</h2>
+            <ul class="patch-list" id="patch-list"></ul>
+            <button class="ghost-action export-patches-action" id="export-patches" type="button">export all patches</button>
+            <div class="patch-save-row">
+              <input id="patch-name" type="text" autocomplete="off" placeholder="Patch name" aria-label="Patch name">
+              <button class="primary-action" id="save-patch" type="button">Save as new patch</button>
+            </div>
+            <div class="parse-status" id="patch-status" role="status">No patches saved.</div>
+          </section>
+        </aside>
+
         <section class="editor-panel" aria-label="CC editor">
           <div class="toolbar">
             <div>
@@ -127,6 +129,11 @@
           <div class="controls-grid" id="controls-grid"></div>
         </section>
       </main>
+
+      <footer class="app-footer">
+        <span>Brought to you by <a href="https://gavindavieslimited.com/" target="_blank" rel="noreferrer">Gavin Davies Limited</a></span>
+        <span>Licensed under the GNU GPL.</span>
+      </footer>
     </div>
 
     <script src="./app.js" defer></script>

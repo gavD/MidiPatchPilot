@@ -10,7 +10,7 @@ const distDir = path.join(rootDir, "dist");
 const srcDir = path.join(rootDir, "src");
 const presetsDir = path.join(rootDir, "presets");
 const buildScript = path.join(rootDir, "scripts", "build.mjs");
-const liveReloadPath = "/__multimidi_reload";
+const liveReloadPath = "/__midi_patchpilot_reload";
 const rebuildDelayMs = 80;
 const args = new Map();
 
@@ -231,7 +231,7 @@ function listen(portToTry, attempts) {
   });
 
   server.listen(portToTry, host, () => {
-    console.log(`Serving MultiMIDI at http://${host}:${portToTry}`);
+    console.log(`Serving Midi PatchPilot at http://${host}:${portToTry}`);
   });
 }
 

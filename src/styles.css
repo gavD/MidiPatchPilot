@@ -60,6 +60,32 @@ button {
   max-width: 1480px;
 }
 
+.app-footer {
+  align-items: center;
+  background: color-mix(in srgb, var(--panel) 92%, black);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 0.88rem;
+  gap: 8px 16px;
+  justify-content: space-between;
+  margin: 12px auto 0;
+  max-width: 1480px;
+  padding: 10px 12px;
+}
+
+.app-footer a {
+  color: var(--accent);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.app-footer a:hover,
+.app-footer a:focus-visible {
+  color: var(--primary);
+}
+
 .app-header h1,
 .toolbar h2,
 .panel-block h2,
@@ -114,13 +140,15 @@ button {
 }
 
 .side-panel,
+.patch-panel,
 .editor-panel {
   background: color-mix(in srgb, var(--panel) 92%, black);
   border: 1px solid var(--border);
   box-shadow: var(--shadow);
 }
 
-.side-panel {
+.side-panel,
+.patch-panel {
   align-self: start;
   display: grid;
   gap: 0;
@@ -128,7 +156,14 @@ button {
   overflow: auto;
 }
 
+.patch-panel {
+  grid-column: 1;
+  grid-row: 2;
+}
+
 .editor-panel {
+  grid-column: 2;
+  grid-row: 1 / span 2;
   min-height: calc(100vh - 100px);
   overflow: hidden;
 }
@@ -204,6 +239,12 @@ button:focus-visible {
 .parse-status {
   min-height: 24px;
   margin-top: 8px;
+  opacity: 1;
+  transition: opacity 500ms ease;
+}
+
+.parse-status.is-faded {
+  opacity: 0;
 }
 
 .parse-status.is-error,
@@ -267,6 +308,7 @@ input[type="text"] {
   display: grid;
   gap: 6px;
   grid-template-columns: minmax(0, 1fr) auto;
+  margin-top: 8px;
 }
 
 .patch-save-row .primary-action {
@@ -301,6 +343,12 @@ input[type="text"] {
   grid-template-columns: minmax(0, 1fr) auto;
   min-height: 36px;
   padding: 6px;
+}
+
+.patch-row.is-active {
+  background: color-mix(in srgb, var(--panel-alt) 74%, var(--primary));
+  border-color: color-mix(in srgb, var(--primary) 70%, white);
+  box-shadow: inset 3px 0 0 var(--primary);
 }
 
 .patch-row-name {
@@ -1007,6 +1055,27 @@ input[type="range"] {
   text-transform: none;
 }
 
+@media (width >= 1840px) {
+  .app-header,
+  .workspace,
+  .app-footer {
+    max-width: none;
+  }
+
+  .workspace {
+    grid-template-columns: minmax(320px, 420px) minmax(280px, 360px) minmax(0, 1fr);
+  }
+
+  .patch-panel {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .editor-panel {
+    grid-column: 3;
+    grid-row: 1;
+  }
+}
 
 @media (width <= 1040px) {
   .workspace {
@@ -1019,7 +1088,10 @@ input[type="range"] {
   }
 
   .side-panel,
+  .patch-panel,
   .editor-panel {
+    grid-column: auto;
+    grid-row: auto;
     max-height: none;
     min-height: auto;
   }

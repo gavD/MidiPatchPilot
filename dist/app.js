@@ -4,10 +4,12 @@ const MIDI_NOTE_MIDDLE_C = 60;
 const MIDI_NOTE_VELOCITY = 96;
 const LOOP_INTERVAL_MS = 3000;
 const YAML_RELOAD_DELAY_MS = 220;
+const STATUS_FADE_DELAY_MS = 3500;
 const MAX_INCOMING_LOG_EVENTS = 250;
 const MIDI_START = 0xfa;
 const MIDI_STOP = 0xfc;
-const PATCH_STORAGE_KEY = "multimidi.patches.v1";
+const PATCH_STORAGE_KEY = "midi-patchpilot.patches.v1";
+const LEGACY_PATCH_STORAGE_KEY = "multimidi.patches.v1";
 const CUSTOM_PRESET_VALUE = "__custom__";
 const LFO_DEFAULT_RATE_HZ = 1;
 const LFO_MIN_RATE_HZ = 0.1;
@@ -48,7 +50,9 @@ const state = {
     values: new Map(),
     lfos: new Map(),
     highlightTimers: new Map(),
+    statusFadeTimers: new Map(),
     patches: {},
+    activePatchId: null,
 };
 const elements = {
     presetSelect: byId("preset-select"),
@@ -184,6 +188,7 @@ function loadYaml(source) {
         const instrument = validateInstrument(parsed);
         stopAllLfos();
         state.instrument = instrument;
+        state.activePatchId = null;
         renderInstrument(instrument);
         renderPatches();
         applyTheme(instrument.theme);
@@ -195,9 +200,35 @@ function loadYaml(source) {
     }
 }
 function setParseStatus(message, stateName) {
-    elements.parseStatus.textContent = message;
-    elements.parseStatus.classList.toggle("is-error", stateName === "error");
-    elements.parseStatus.classList.toggle("is-ok", stateName === "ok");
+    setStatusMessage(elements.parseStatus, message, stateName, true);
+}
+function setPatchStatus(message, stateName = "") {
+    setStatusMessage(elements.patchStatus, message, stateName, true);
+}
+function setPersistentPatchStatus(message, stateName = "") {
+    setStatusMessage(elements.patchStatus, message, stateName, false);
+}
+function setStatusMessage(element, message, stateName, shouldFade) {
+    const existingTimer = state.statusFadeTimers.get(element);
+    if (existingTimer) {
+        window.clearTimeout(existingTimer);
+        state.statusFadeTimers.delete(element);
+    }
+    element.textContent = message;
+    element.classList.toggle("is-error", stateName === "error");
+    element.classList.toggle("is-ok", stateName === "ok");
+    element.classList.remove("is-faded");
+    if (!message) {
+        element.classList.add("is-faded");
+        return;
+    }
+    if (!shouldFade) {
+        return;
+    }
+    state.statusFadeTimers.set(element, window.setTimeout(() => {
+        element.classList.add("is-faded");
+        state.statusFadeTimers.delete(element);
+    }, STATUS_FADE_DELAY_MS));
 }
 function countControls(instrument) {
     return instrument.sections.reduce((count, section) => count + section.controls.reduce((sectionCount, control) => {
@@ -264,18 +295,21 @@ function renderPatches() {
     elements.patchHeading.textContent = state.instrument ? `Patches for ${state.instrument.name}` : "Patches";
     elements.patchList.innerHTML = "";
     const hasPatches = patches.length > 0;
+    if (state.activePatchId && !patches.some((patch) => patch.id === state.activePatchId)) {
+        state.activePatchId = null;
+    }
     if (!hasPatches) {
         const empty = document.createElement("li");
         empty.className = "patch-empty";
         empty.textContent = state.instrument ? "No patches saved" : "Load an instrument first";
         elements.patchList.append(empty);
-        elements.patchStatus.textContent = state.instrument ? "No patches saved." : "Load an instrument to save patches.";
+        setPersistentPatchStatus(state.instrument ? "No patches saved." : "Load an instrument to save patches.");
     }
     else {
         for (const patch of patches) {
             elements.patchList.append(renderPatchRow(patch));
         }
-        elements.patchStatus.textContent = `${patches.length} saved patch${patches.length === 1 ? "" : "es"}.`;
+        setPersistentPatchStatus(`${patches.length} saved patch${patches.length === 1 ? "" : "es"}.`);
     }
     elements.exportPatches.disabled = !hasPatches;
     elements.savePatch.disabled = !state.instrument;
@@ -283,11 +317,24 @@ function renderPatches() {
 function renderPatchRow(patch) {
     const row = document.createElement("li");
     row.className = "patch-row";
+    const isActive = patch.id === state.activePatchId;
+    if (isActive) {
+        row.classList.add("is-active");
+        row.setAttribute("aria-current", "true");
+    }
     const name = document.createElement("div");
     name.className = "patch-row-name";
     name.textContent = patch.name;
     const actions = document.createElement("div");
     actions.className = "patch-row-actions";
+    if (isActive) {
+        const overwrite = document.createElement("button");
+        overwrite.className = "ghost-action";
+        overwrite.type = "button";
+        overwrite.textContent = "save";
+        overwrite.addEventListener("click", () => overwritePatch(patch));
+        actions.append(overwrite);
+    }
     const load = document.createElement("button");
     load.className = "ghost-action";
     load.type = "button";
@@ -311,12 +358,12 @@ function getCurrentInstrumentPatches() {
 }
 function saveCurrentPatch() {
     if (!state.instrument) {
-        elements.patchStatus.textContent = "Load an instrument before saving a patch.";
+        setPatchStatus("Load an instrument before saving a patch.", "error");
         return;
     }
     const name = elements.patchName.value.trim();
     if (!name) {
-        elements.patchStatus.textContent = "Name the patch before saving it.";
+        setPatchStatus("Name the patch before saving it.", "error");
         elements.patchName.focus();
         return;
     }
@@ -329,13 +376,14 @@ function saveCurrentPatch() {
         lfos: serializeCurrentPatchLfos(),
         savedAt: new Date().toISOString(),
     };
-    state.patches[key] = [...getCurrentInstrumentPatches().filter((candidate) => candidate.name !== name), patch];
+    state.patches[key] = [...getCurrentInstrumentPatches(), patch];
+    state.activePatchId = patch.id;
     const didPersist = savePatchLibrary();
     elements.patchName.value = "";
     renderPatches();
-    elements.patchStatus.textContent = didPersist
-        ? `Saved "${patch.name}".`
-        : `Saved "${patch.name}" for this session, but browser storage failed.`;
+    setPatchStatus(didPersist
+        ? `Saved new patch "${patch.name}".`
+        : `Saved "${patch.name}" for this session, but browser storage failed.`);
 }
 function serializeCurrentPatchValues() {
     const values = {};
@@ -348,7 +396,36 @@ function loadPatch(patch) {
     stopAllLfos();
     applyPatchValues(patch.values);
     applyPatchLfos(patch.lfos);
-    elements.patchStatus.textContent = `Loaded "${patch.name}".`;
+    state.activePatchId = patch.id;
+    renderPatches();
+    setPatchStatus(`Loaded "${patch.name}".`);
+}
+function overwritePatch(patch) {
+    if (!state.instrument) {
+        setPatchStatus("Load an instrument before saving a patch.", "error");
+        return;
+    }
+    const key = instrumentKey();
+    const patches = getCurrentInstrumentPatches();
+    if (!patches.some((candidate) => candidate.id === patch.id)) {
+        state.activePatchId = null;
+        renderPatches();
+        setPatchStatus("Load a saved patch before overwriting it.", "error");
+        return;
+    }
+    const updatedPatch = {
+        ...patch,
+        values: serializeCurrentPatchValues(),
+        lfos: serializeCurrentPatchLfos(),
+        savedAt: new Date().toISOString(),
+    };
+    state.patches[key] = patches.map((candidate) => candidate.id === patch.id ? updatedPatch : candidate);
+    state.activePatchId = updatedPatch.id;
+    const didPersist = savePatchLibrary();
+    renderPatches();
+    setPatchStatus(didPersist
+        ? `Saved "${updatedPatch.name}".`
+        : `Saved "${updatedPatch.name}" for this session, but browser storage failed.`);
 }
 function applyPatchValues(values) {
     for (const control of getInstrumentControls()) {
@@ -430,11 +507,14 @@ function normalizePatchLfo(control, rawLfo) {
 function deletePatch(patch) {
     const key = instrumentKey();
     state.patches[key] = getCurrentInstrumentPatches().filter((candidate) => candidate.id !== patch.id);
+    if (state.activePatchId === patch.id) {
+        state.activePatchId = null;
+    }
     const didPersist = savePatchLibrary();
     renderPatches();
-    elements.patchStatus.textContent = didPersist
+    setPatchStatus(didPersist
         ? `Deleted "${patch.name}".`
-        : `Deleted "${patch.name}" for this session, but browser storage failed.`;
+        : `Deleted "${patch.name}" for this session, but browser storage failed.`);
 }
 function exportCurrentInstrumentPatches() {
     const patches = getCurrentInstrumentPatches();
@@ -443,7 +523,7 @@ function exportCurrentInstrumentPatches() {
     }
     const yaml = formatPatchesYaml(state.instrument.name, patches);
     downloadText(`${safeFilename(state.instrument.name)}-patches.yaml`, yaml);
-    elements.patchStatus.textContent = `Exported ${patches.length} patch${patches.length === 1 ? "" : "es"}.`;
+    setPatchStatus(`Exported ${patches.length} patch${patches.length === 1 ? "" : "es"}.`);
 }
 /**
  * @param {string} instrumentName
@@ -487,7 +567,7 @@ function loadPatchLibrary() {
         if (typeof localStorage === "undefined") {
             return {};
         }
-        const raw = localStorage.getItem(PATCH_STORAGE_KEY);
+        const raw = localStorage.getItem(PATCH_STORAGE_KEY) || localStorage.getItem(LEGACY_PATCH_STORAGE_KEY);
         if (!raw) {
             return {};
         }
@@ -506,7 +586,7 @@ function savePatchLibrary() {
         return true;
     }
     catch {
-        elements.patchStatus.textContent = "Could not persist patches in this browser.";
+        setPatchStatus("Could not persist patches in this browser.", "error");
         return false;
     }
 }
@@ -518,7 +598,7 @@ function quoteYamlString(value) {
 }
 function safeFilename(value) {
     const safe = String(value).trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-    return safe || "multimidi";
+    return safe || "midi-patchpilot";
 }
 function downloadText(filename, text) {
     const blob = new Blob([text], { type: "text/yaml;charset=utf-8" });
