@@ -16,7 +16,7 @@ sections:
       - cc: 1
         label: Modulation
         description: Modulation amount.
-        type: vertical-slider
+        type: horizontal-slider
       - cc: 91
         label: Chorus Depth
         description: Chorus depth.
@@ -58,6 +58,25 @@ sections:
             value: 64
           - label: Saw
             value: 106
+      - cc: 56
+        label: LFO 1 Destination
+        description: LFO 1 destination.
+        type: switch
+        positions:
+          - label: VCF
+            value: 32
+          - label: OSC
+            value: 96
+      - cc: 72
+        label: LFO 1 Rate
+        description: LFO 1 rate.
+        type: horizontal-slider
+        max: 99
+      - cc: 70
+        label: LFO 1 Amount
+        description: LFO 1 modulation amount.
+        type: horizontal-slider
+        max: 99
       - cc: 55
         label: LFO 2 Waveform
         description: LFO 2 waveform.
@@ -69,28 +88,9 @@ sections:
             value: 64
           - label: Saw
             value: 106
-      - cc: 56
-        label: LFO 1 Destination
-        description: LFO 1 destination.
-        type: switch
-        positions:
-          - label: VCF
-            value: 32
-          - label: OSC
-            value: 96
-      - cc: 70
-        label: LFO 1 Amount
-        description: LFO 1 modulation amount.
-        type: horizontal-slider
-        max: 99
       - cc: 28
         label: LFO 2 Amount
         description: LFO 2 modulation amount.
-        type: horizontal-slider
-        max: 99
-      - cc: 72
-        label: LFO 1 Rate
-        description: LFO 1 rate.
         type: horizontal-slider
         max: 99
       - cc: 73
@@ -103,7 +103,7 @@ sections:
       - cc: 74
         label: Filter Cutoff
         description: Filter cutoff.
-        type: vertical-slider
+        type: horizontal-slider
         max: 99
       - cc: 71
         label: Filter Resonance
@@ -115,88 +115,97 @@ sections:
         description: Filter envelope amount.
         type: horizontal-slider
   - name: Amplifier Envelope
+    grid-column: span 2
     controls:
-      - cc: 81
-        label: Amplitude Envelope Attack
-        description: Amplitude envelope attack.
-        type: horizontal-slider
-        max: 99
-      - cc: 82
-        label: Amplitude Envelope Decay
-        description: Amplitude envelope decay.
-        type: horizontal-slider
-        max: 99
-      - cc: 83
-        label: Amplitude Envelope Sustain
-        description: Amplitude envelope sustain.
-        type: horizontal-slider
-        max: 99
-      - cc: 84
-        label: Amplitude Envelope Release
-        description: Amplitude envelope release.
-        type: horizontal-slider
-        max: 99
+      - type: vertical-slider-group
+        controls:
+          - cc: 81
+            label: A
+            description: Amplitude envelope attack.
+            type: vertical-slider
+            max: 99
+          - cc: 82
+            label: D
+            description: Amplitude envelope decay.
+            type: vertical-slider
+            max: 99
+          - cc: 83
+            label: S
+            description: Amplitude envelope sustain.
+            type: vertical-slider
+            max: 99
+          - cc: 84
+            label: R
+            description: Amplitude envelope release.
+            type: vertical-slider
+            max: 99
   - name: Filter Envelope
+    grid-column: span 2
     controls:
-      - cc: 85
-        label: Filter Envelope Attack
-        description: Filter envelope attack.
-        type: horizontal-slider
-        max: 99
-      - cc: 86
-        label: Filter Envelope Decay
-        description: Filter envelope decay.
-        type: horizontal-slider
-        max: 99
-      - cc: 87
-        label: Filter Envelope Sustain
-        description: Filter envelope sustain.
-        type: horizontal-slider
-        max: 99
-      - cc: 88
-        label: Filter Envelope Release
-        description: Filter envelope release.
-        type: horizontal-slider
-        max: 99
+      - type: vertical-slider-group
+        controls:
+          - cc: 85
+            label: A
+            description: Filter envelope attack.
+            type: vertical-slider
+            max: 99
+          - cc: 86
+            label: D
+            description: Filter envelope decay.
+            type: vertical-slider
+            max: 99
+          - cc: 87
+            label: S
+            description: Filter envelope sustain.
+            type: vertical-slider
+            max: 99
+          - cc: 88
+            label: R
+            description: Filter envelope release.
+            type: vertical-slider
+            max: 99
   - name: Tuning
+    grid-column: span 3
     controls:
-      - cc: 111
-        label: Voice A Fine Tuning
-        description: Voice A fine tuning.
-        type: horizontal-slider
-        max: 99
-      - cc: 112
-        label: Voice B Fine Tuning
-        description: Voice B fine tuning.
-        type: horizontal-slider
-        max: 99
-      - cc: 113
-        label: Voice C Fine Tuning
-        description: Voice C fine tuning.
-        type: horizontal-slider
-        max: 99
-      - cc: 114
-        label: Voice D Fine Tuning
-        description: Voice D fine tuning.
-        type: horizontal-slider
-        max: 99
-      - cc: 115
-        label: Voice A Coarse Tuning
-        description: Voice A coarse tuning.
-        type: horizontal-slider
-        max: 99
-      - cc: 116
-        label: Voice B Coarse Tuning
-        description: Voice B coarse tuning.
-        type: horizontal-slider
-        max: 99
-      - cc: 117
-        label: Voice C Coarse Tuning
-        description: Voice C coarse tuning.
-        type: horizontal-slider
-        max: 99
-      - cc: 118
-        label: Voice D Coarse Tuning
-        description: Voice D coarse tuning.
-        type: horizontal-slider
-        max: 99
+      - type: vertical-slider-group
+        controls:
+          - cc: 115
+            label: A Coarse
+            description: Voice A coarse tuning.
+            type: vertical-slider
+            max: 99
+          - cc: 111
+            label: A Fine
+            description: Voice A fine tuning.
+            type: vertical-slider
+            max: 99
+          - cc: 116
+            label: B Coarse
+            description: Voice B coarse tuning.
+            type: vertical-slider
+            max: 99
+          - cc: 112
+            label: B Fine
+            description: Voice B fine tuning.
+            type: vertical-slider
+            max: 99
+          - cc: 117
+            label: C Coarse
+            description: Voice C coarse tuning.
+            type: vertical-slider
+            max: 99
+          - cc: 113
+            label: C Fine
+            description: Voice C fine tuning.
+            type: vertical-slider
+            max: 99
+          - cc: 118
+            label: D Coarse
+            description: Voice D coarse tuning.
+            type: vertical-slider
+            max: 99
+          - cc: 114
+            label: D Fine
+            description: Voice D fine tuning.
+            type: vertical-slider
+            max: 99

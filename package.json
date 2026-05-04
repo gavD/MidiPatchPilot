@@ -1,17 +1,29 @@
 {
-  "name": "multimidi",
-  "version": "0.1.0",
+  "name": "midi-patchpilot",
+  "version": "0.2.0",
   "private": true,
+  "license": "GPL-3.0-or-later",
   "type": "module",
   "description": "Runtime-free Web MIDI patch editor generated from instrument YAML.",
   "scripts": {
     "build": "node scripts/build.mjs",
+    "dev": "node scripts/dev-server.mjs --watch",
+    "lint": "npm run lint:ts && npm run lint:css && npm run lint:html",
+    "lint:css": "stylelint \"src/**/*.css\"",
+    "lint:html": "html-validate \"src/**/*.html\"",
+    "lint:ts": "eslint .",
     "serve": "node scripts/build.mjs && node scripts/dev-server.mjs",
     "test": "npm run build && node scripts/smoke-test.mjs",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": {},
   "devDependencies": {
-    "typescript": "^5.8.3"
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.2.1",
+    "globals": "^17.5.0",
+    "html-validate": "^10.13.1",
+    "stylelint": "^17.9.1",
+    "stylelint-config-standard": "^40.0.0",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.59.1"
   }
 }

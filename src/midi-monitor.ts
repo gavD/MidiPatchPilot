@@ -1,31 +1,26 @@
-interface Navigator {
-  requestMIDIAccess?: (options?: { sysex?: boolean }) => Promise<MidiAccessLike>;
+type MidiInputLike = MIDIInput;
+type MidiAccessLike = MIDIAccess;
+
+interface MonitorState {
+  access: MidiAccessLike | null;
+  input: MidiInputLike | null;
+  eventCount: number;
+  ccValues: Map<string, CcValue>;
 }
 
-interface MidiInputLike {
-  id: string;
-  name?: string;
-  manufacturer?: string;
-  onmidimessage: ((event: MidiMessageEventLike) => void) | null;
-}
-
-interface MidiAccessLike {
-  inputs: Map<string, MidiInputLike>;
-  onstatechange: ((event: Event) => void) | null;
-}
-
-interface MidiMessageEventLike {
-  data: Uint8Array;
-  timeStamp: number;
+interface CcValue {
+  channel: number;
+  controller: number;
+  value: number;
 }
 
 const MAX_LOG_EVENTS = 160;
 
-const monitorState = {
+const monitorState: MonitorState = {
   access: null,
   input: null,
   eventCount: 0,
-  ccValues: new Map(),
+  ccValues: new Map<string, CcValue>(),
 };
 
 const monitorElements = {

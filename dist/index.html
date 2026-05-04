@@ -1,16 +1,16 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>MultiMIDI Patch Editor</title>
+    <title>Midi PatchPilot Patch Editor</title>
     <link rel="stylesheet" href="./styles.css">
   </head>
   <body>
     <div class="app-shell">
       <header class="app-header">
         <div>
-          <p class="eyebrow">MultiMIDI</p>
+          <p class="eyebrow">Midi PatchPilot <span class="app-version">v0.2.0</span></p>
           <h1 id="instrument-title">Patch Editor</h1>
         </div>
         <div class="midi-pill" id="midi-status" role="status">MIDI not connected</div>
@@ -20,16 +20,16 @@
         <aside class="side-panel" aria-label="Instrument and MIDI setup">
           <section class="panel-block">
             <div class="section-heading">
-              <h2>Instrument preset</h2>
-              <label class="file-picker">
-                <span>Load preset</span>
+              <h2>Instrument</h2>
+              <label class="file-picker" title="Load a YAML file from your device that configures Midi PatchPilot for your MIDI instrument">
+                <span>Load from disk</span>
                 <input id="yaml-file" type="file" accept=".yaml,.yml,text/yaml,text/plain">
               </label>
             </div>
             <label class="field-label" for="preset-select">Preset</label>
-            <select id="preset-select" aria-label="Instrument preset"></select>
-            <textarea id="yaml-editor" spellcheck="false" aria-label="Instrument preset YAML editor"></textarea>
-            <div class="parse-status" id="parse-status" role="status">Ready</div>
+            <select id="preset-select" aria-label="Instrument"></select>
+            <textarea id="yaml-editor" spellcheck="false" aria-label="Instrument YAML editor"></textarea>
+            <div class="parse-status" id="parse-status" role="status"></div>
           </section>
 
           <section class="panel-block">
@@ -55,18 +55,20 @@
 
           <section class="panel-block">
             <h2>Test Area</h2>
-            <button class="secondary-action" id="play-note" type="button">
-              <span class="button-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" role="img">
-                  <path d="M8 5v14l11-7z"></path>
-                </svg>
-              </span>
-              Play middle C
-            </button>
-            <label class="checkbox-row" for="loop-note">
-              <input id="loop-note" type="checkbox">
-              <span>Loop every 3 seconds</span>
-            </label>
+            <div class="test-play-row">
+              <button class="secondary-action" id="play-note" type="button">
+                <span class="button-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" role="img">
+                    <path d="M8 5v14l11-7z"></path>
+                  </svg>
+                </span>
+                Play middle C
+              </button>
+              <label class="checkbox-row" title="loop every 3 seconds">
+                <input id="loop-note" type="checkbox">
+                <span>loop</span>
+              </label>
+            </div>
             <div class="transport-row">
               <button class="transport-action" id="send-start" type="button">
                 <span class="button-icon" aria-hidden="true">
@@ -84,7 +86,7 @@
                 </span>
                 Stop
               </button>
-              <span class="info-dot" title="Sends MIDI Start and Stop transport messages for instruments that support them." aria-label="Sends MIDI Start and Stop transport messages for instruments that support them.">i</span>
+              <span class="info-dot" title="Sends MIDI Start and Stop transport messages for instruments that support them." aria-hidden="true">i</span>
             </div>
             <p class="event-log" id="event-log">No MIDI messages sent yet.</p>
           </section>
@@ -101,17 +103,37 @@
           </section>
         </aside>
 
+        <aside class="patch-panel" aria-label="Saved patches">
+          <section class="panel-block">
+            <h2 id="patch-heading">Patches</h2>
+            <ul class="patch-list" id="patch-list"></ul>
+            <button class="ghost-action export-patches-action" id="export-patches" type="button">export all patches</button>
+            <div class="patch-save-row">
+              <input id="patch-name" type="text" autocomplete="off" placeholder="Patch name" aria-label="Patch name">
+              <button class="primary-action" id="save-patch" type="button">Save as new patch</button>
+            </div>
+            <div class="parse-status" id="patch-status" role="status">No patches saved.</div>
+          </section>
+        </aside>
+
         <section class="editor-panel" aria-label="CC editor">
           <div class="toolbar">
             <div>
               <p class="eyebrow">Live controls</p>
               <h2 id="control-summary">No instrument loaded</h2>
             </div>
-            <div class="theme-name" id="theme-name"></div>
+            <div class="toolbar-actions">
+              <button class="ghost-action" id="randomise-controls" type="button" title="Ransomises the value of all controls">Randomise</button>
+            </div>
           </div>
           <div class="controls-grid" id="controls-grid"></div>
         </section>
       </main>
+
+      <footer class="app-footer">
+        <span>Brought to you by <a href="https://gavindavieslimited.com/" target="_blank" rel="noreferrer">Gavin Davies Limited</a></span>
+        <span>Licensed under the GNU GPL.</span>
+      </footer>
     </div>
 
     <script src="./app.js" defer></script>

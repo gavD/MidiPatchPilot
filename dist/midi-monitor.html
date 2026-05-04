@@ -1,16 +1,16 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>MultiMIDI Input Monitor</title>
+    <title>Midi PatchPilot Input Monitor</title>
     <link rel="stylesheet" href="./styles.css">
   </head>
   <body>
     <div class="app-shell monitor-shell">
       <header class="app-header">
         <div>
-          <p class="eyebrow">MultiMIDI</p>
+          <p class="eyebrow">Midi PatchPilot <span class="app-version">v0.2.0</span></p>
           <h1>MIDI Input Monitor</h1>
         </div>
         <div class="midi-pill" id="monitor-status" role="status">MIDI not connected</div>
@@ -21,8 +21,8 @@
           <div class="panel-block">
             <h2>Input</h2>
             <label class="field-label" for="midi-input">MIDI input</label>
-            <select id="midi-input" aria-label="MIDI input"></select>
-            <label class="checkbox-row" for="include-sysex">
+            <select id="midi-input"></select>
+            <label class="checkbox-row">
               <input id="include-sysex" type="checkbox">
               <span>Include SysEx messages</span>
             </label>
@@ -81,6 +81,11 @@
           </div>
         </section>
       </main>
+
+      <footer class="app-footer">
+        <span>Brought to you by <a href="https://gavindavieslimited.com/" target="_blank" rel="noreferrer">Gavin Davies Limited</a></span>
+        <span>Licensed under the GNU GPL.</span>
+      </footer>
     </div>
 
     <script src="./midi-monitor.js" defer></script>
