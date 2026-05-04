@@ -2,6 +2,8 @@
 
 Midi PatchPilot is a runtime-free Web MIDI patch editor. Instrument panels are generated from YAML, MIDI CC changes are sent immediately, and the generated site is plain HTML, CSS, and JavaScript.
 
+Try it at [https://gavd.github.io/MidiPatchPilot/](https://gavd.github.io/MidiPatchPilot/)!
+
 ## Run
 
 Install dependencies:
