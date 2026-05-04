@@ -137,3 +137,7 @@ Included presets:
 - `behringer-jt-mini.yaml`
 - `behringer-pro-vs-mini.yaml`
 - `behringer-jt-4000m-micro.yaml`
+
+## Similar software/prior art
+
+- This project was partially inspired by [https://gary909.github.io/JT-Midi-Editor/](https://gary909.github.io/JT-Midi-Editor/), but I wanted to build my own editor largely for fun.
