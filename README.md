@@ -4,6 +4,8 @@ Midi PatchPilot is a runtime-free Web MIDI patch editor. Instrument panels are g
 
 Try it at [https://gavd.github.io/MidiPatchPilot/](https://gavd.github.io/MidiPatchPilot/)!
 
+[<img src="screenshot.jpg" width="800">](./screenshot.jpg)
+
 ## Run
 
 Install dependencies:
